@@ -78,6 +78,7 @@
               "projects/data-robot/src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/data-robot/src/styles.less"
             ],
             "scripts": []
@@ -138,9 +139,10 @@
             "karmaConfig": "projects/data-robot/karma.conf.js",
             "assets": [
               "projects/data-robot/src/favicon.ico",
-              "projects/data-robot/src/assets"
+              "projects/data-robot/src/assets",
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/data-robot/src/styles.less"
             ],
             "scripts": []

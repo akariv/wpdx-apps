@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonComponent } from './common.component';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
+import { MapLayerComponent } from './map-layer/map-layer.component';
 
 
 
 @NgModule({
-  declarations: [CommonComponent, AppLayoutComponent],
+  declarations: [AppLayoutComponent, MapLayerComponent],
   imports: [
   ],
-  exports: [CommonComponent]
+  exports: [AppLayoutComponent, MapLayerComponent]
 })
 export class CommonModule { }

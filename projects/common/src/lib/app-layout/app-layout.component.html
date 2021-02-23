@@ -1,1 +1,9 @@
-<p>app-layout works!</p>
+<div class='app'>
+    <div class='header'>
+        <img class='logo' src='assets/img/logo.png'>
+        <h1><ng-content select='.title'></ng-content></h1>
+    </div>
+    <div class='content'>
+        <ng-content select='.content'></ng-content>
+    </div>
+</div>

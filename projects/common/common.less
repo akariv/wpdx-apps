@@ -1,0 +1,32 @@
+
+@primaryBrand: #3EC2FF;
+
+.fontSans {
+    font-family: 'Rubik', Helvetica, sans-serif;
+    font-style: normal;
+}
+
+
+.mobile(@rules) {
+    @media only screen and (max-width: 600px) {
+        @rules();
+    }
+}
+
+.desktop(@rules) {
+    @media only screen and (min-width: 601px) {
+        @rules();
+    }
+}
+
+.mobile({
+    ::ng-deep .layout-desktop {
+        display: none !important;
+    }
+});
+
+.desktop({
+    ::ng-deep .layout-mobile {
+        display: none !important;
+    }
+});
