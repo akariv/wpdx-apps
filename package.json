@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prod": "ng build --project common && ng build --project data-robot --base-href=wpdx-apps/"
+    "prod": "ng build --project common && ng build --project data-robot --base-href=/wpdx-apps/"
   },
   "private": true,
   "dependencies": {
