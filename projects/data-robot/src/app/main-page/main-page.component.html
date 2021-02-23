@@ -3,15 +3,17 @@
     <div class='content'>
         <lib-map-layer
             [style]='"mapbox://styles/wpdx/ckl88cymr11bm17o2bj8rgiut"'
+            (map)='map = $event'
         ></lib-map-layer>
         <div class='controls'>
             <mat-card>
                 <div class='row'>
                     <label i18n>Prediction Timeframe</label>
                     <mat-button-toggle-group [(ngModel)]="layer" aria-label="Layer Selection">
-                        <mat-button-toggle value="layer_0">Today + 0</mat-button-toggle>
-                        <mat-button-toggle value="layer_1">Today + 1</mat-button-toggle>
-                        <mat-button-toggle value="layer_3">Today + 3</mat-button-toggle>
+                        <mat-button-toggle value="datarobot-slim-year-0">Current</mat-button-toggle>
+                        <mat-button-toggle value="datarobot-slim-year-1">Today + 1</mat-button-toggle>
+                        <mat-button-toggle value="datarobot-slim-year-3">Today + 3</mat-button-toggle>
+                        <mat-button-toggle value="combined">Combined</mat-button-toggle>
                     </mat-button-toggle-group>    
                 </div>    
             </mat-card>
