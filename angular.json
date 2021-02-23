@@ -1,7 +1,178 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "common": {
+      "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "less",
+          "skipTests": true
+        }
+      },
+      "root": "projects/common",
+      "sourceRoot": "projects/common/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/common/tsconfig.lib.json",
+            "project": "projects/common/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/common/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/common/src/test.ts",
+            "tsConfig": "projects/common/tsconfig.spec.json",
+            "karmaConfig": "projects/common/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/common/tsconfig.lib.json",
+              "projects/common/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "data-robot": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "less",
+          "skipTests": true
+        }
+      },
+      "root": "projects/data-robot",
+      "sourceRoot": "projects/data-robot/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/data-robot",
+            "index": "projects/data-robot/src/index.html",
+            "main": "projects/data-robot/src/main.ts",
+            "polyfills": "projects/data-robot/src/polyfills.ts",
+            "tsConfig": "projects/data-robot/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/data-robot/src/favicon.ico",
+              "projects/data-robot/src/assets"
+            ],
+            "styles": [
+              "projects/data-robot/src/styles.less"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/data-robot/src/environments/environment.ts",
+                  "with": "projects/data-robot/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "data-robot:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "data-robot:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "data-robot:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/data-robot/src/test.ts",
+            "polyfills": "projects/data-robot/src/polyfills.ts",
+            "tsConfig": "projects/data-robot/tsconfig.spec.json",
+            "karmaConfig": "projects/data-robot/karma.conf.js",
+            "assets": [
+              "projects/data-robot/src/favicon.ico",
+              "projects/data-robot/src/assets"
+            ],
+            "styles": [
+              "projects/data-robot/src/styles.less"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/data-robot/tsconfig.app.json",
+              "projects/data-robot/tsconfig.spec.json",
+              "projects/data-robot/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/data-robot/e2e/protractor.conf.js",
+            "devServerTarget": "data-robot:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "data-robot:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "common"
 }
