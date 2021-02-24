@@ -1,0 +1,38 @@
+@import '../common.less';
+
+@headerSize: 70px;
+
+:host {
+   display: block;
+   height: 100%;
+   width: 100%;
+   
+   > div.app {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-flow: column;
+    > .header {
+        flex: 0 0 @headerSize;
+        height: @headerSize;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        padding: 8px 16px;
+        .fontSans;
+        color: @primaryBrand;
+        box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+        
+        > .logo {
+            height: 100%;
+        }
+        > h1 {
+            margin: 0 32px;
+        }
+    }
+    > .content {
+        flex: 1 1 100%;
+    }
+   }
+}

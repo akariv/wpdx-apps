@@ -1,0 +1,45 @@
+{
+  "bytes": 117670,
+  "count_of_rows": 1081,
+  "hash": "efe8bd5e59634899a83ecab6ac12a3b2",
+  "profile": "data-package",
+  "resources": [
+    {
+      "bytes": 117670,
+      "encoding": "utf-8",
+      "format": "json",
+      "hash": "eb21ca8c567ddc5b66cff2ff922415ac",
+      "mediatype": "text/json",
+      "name": "concat",
+      "path": "data/concat.json",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "format": "default",
+            "name": "clean_country_name",
+            "type": "string"
+          },
+          {
+            "format": "default",
+            "name": "clean_adm1",
+            "type": "string"
+          },
+          {
+            "format": "default",
+            "name": "clean_adm2",
+            "type": "string"
+          },
+          {
+            "format": "default",
+            "name": "clean_adm3",
+            "type": "string"
+          }
+        ],
+        "missingValues": [
+          ""
+        ]
+      }
+    }
+  ]
+}
