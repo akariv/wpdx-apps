@@ -1,5 +1,5 @@
 <app-layout>
-    <div class='title'>DataRobot Predictions</div>
+    <div class='title'>{{title}}</div>
     <div class='content'>
         <app-map-layer
             [style]='"mapbox://styles/wpdx/ckl88cymr11bm17o2bj8rgiut"'
@@ -7,16 +7,17 @@
         ></app-map-layer>
         <div class='controls'>
             <mat-card>
-                <div class='row'>
-                    <label i18n>Prediction Timeframe</label>
+                <mat-card-title i18n>Prediction Timeframe</mat-card-title>
+                <mat-card-actions>
                     <mat-button-toggle-group [(ngModel)]="layer" aria-label="Layer Selection">
                         <mat-button-toggle value="datarobot-slim-year-0">Current</mat-button-toggle>
                         <mat-button-toggle value="datarobot-slim-year-1">Today + 1</mat-button-toggle>
                         <mat-button-toggle value="datarobot-slim-year-3">Today + 3</mat-button-toggle>
                         <mat-button-toggle value="combined">Combined</mat-button-toggle>
                     </mat-button-toggle-group>    
-                </div>    
+                </mat-card-actions>
             </mat-card>
+            <app-adm-selector optionsUrl='/assets/status-predictions/levels.json' (state)='handleState($event)'></app-adm-selector>
         </div>
     </div>
 </app-layout>

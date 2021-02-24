@@ -1,0 +1,35 @@
+<mat-card>
+    <mat-card-title i18n>Region</mat-card-title>
+    <mat-card-actions>
+        <mat-label i18n>Country Name</mat-label>
+        <mat-select [(value)]='country_name'>
+            <mat-option *ngFor="let option of country_name_options" [value]="option">
+            {{option.value}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+    <mat-card-actions *ngIf='adm1_options && adm1_options.length'>
+        <mat-label i18n>Adm Level 1</mat-label>
+        <mat-select [(value)]='adm1'>
+            <mat-option *ngFor="let option of adm1_options" [value]="option">
+            {{option.value}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+    <mat-card-actions *ngIf='adm2_options && adm2_options.length'>
+        <mat-label i18n>Adm Level 2</mat-label>
+        <mat-select [(value)]='adm2'>
+            <mat-option *ngFor="let option of adm2_options" [value]="option">
+            {{option.value}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+    <mat-card-actions *ngIf='adm3_options && adm3_options.length'>
+        <mat-label i18n>Adm Level 3</mat-label>
+        <mat-select [(value)]='adm3'>
+            <mat-option *ngFor="let option of adm3_options" [value]="option">
+            {{option.value}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+</mat-card>

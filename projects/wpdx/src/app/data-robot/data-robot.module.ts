@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CommonComponentsModule } from '../common-components/common.module';
+import { CommonComponentsModule } from '../common-components/common-components.module';
 
 
 @NgModule({
