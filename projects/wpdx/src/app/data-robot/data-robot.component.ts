@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import * as mapboxgl from 'mapbox-gl';
 import { AirtableService } from '../airtable.service';
@@ -27,6 +27,10 @@ export class DataRobotComponent implements OnInit {
   title = '';
   about = '';
 
+  popupProperties = {};
+
+  @ViewChild('popup') popup: ElementRef;
+
   constructor(private airtable: AirtableService, 
               public layout: LayoutService,
               private firstTime: FirstTimeService) {
@@ -47,6 +51,31 @@ export class DataRobotComponent implements OnInit {
     this._map = value;
     this._map.on('style.load', () => {
       this.layer = this.LAYERS[0];
+      for (const layer of this.LAYERS) {
+        this._map.on('click', layer, (e) => {
+          const coordinates = (e.features[0].geometry as any).coordinates.slice();
+          this.popupProperties = e.features[0].properties;
+           
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+          
+          setTimeout(() => {
+            new mapboxgl.Popup()
+                        .setLngLat(coordinates)
+                        .setHTML((this.popup.nativeElement as HTMLElement).innerHTML)
+                        .addTo(this._map);
+          });
+        }); 
+        this._map.on('mouseenter', layer, () => {
+          this._map.getCanvas().style.cursor = 'pointer';
+        });
+           
+          // Change it back to a pointer when it leaves.
+        this._map.on('mouseleave', layer, () => {
+          this._map.getCanvas().style.cursor = '';
+        });
+      }
     });
   }
 
