@@ -1,23 +1,40 @@
-<app-layout>
+<app-layout (info)='panel = "about"'>
     <div class='title'>{{title}}</div>
     <div class='content'>
         <app-map-layer
             [style]='"mapbox://styles/wpdx/ckl88cymr11bm17o2bj8rgiut"'
             (map)='map = $event'
         ></app-map-layer>
-        <div class='controls'>
-            <mat-card>
-                <mat-card-title i18n>Prediction Timeframe</mat-card-title>
-                <mat-card-actions>
-                    <mat-button-toggle-group [(ngModel)]="layer" aria-label="Layer Selection">
-                        <mat-button-toggle value="datarobot-slim-year-0">Current</mat-button-toggle>
-                        <mat-button-toggle value="datarobot-slim-year-1">Today + 1</mat-button-toggle>
-                        <mat-button-toggle value="datarobot-slim-year-3">Today + 3</mat-button-toggle>
-                        <mat-button-toggle value="combined">Combined</mat-button-toggle>
-                    </mat-button-toggle-group>    
-                </mat-card-actions>
-            </mat-card>
-            <app-adm-selector optionsUrl='/assets/status-predictions/levels.json' (state)='handleState($event)'></app-adm-selector>
-        </div>
+
+        <mat-expansion-panel class='controls'>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Filter & Search
+              </mat-panel-title>
+              <mat-panel-description>
+                <mat-icon fontSet='material-icons-outlined'>filter_alt</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div>
+                <mat-card>
+                    <mat-card-title i18n>Timeframe</mat-card-title>
+                    <mat-card-actions>
+                        <mat-select [(value)]='layer'>
+                            <mat-option value="datarobot-slim-last-known">Last Known</mat-option>
+                            <mat-option value="datarobot-slim-year-0">As of Today</mat-option>
+                            <mat-option value="datarobot-slim-year-1">Today + 1</mat-option>
+                            <mat-option value="datarobot-slim-year-3">Today + 3</mat-option>
+                            <mat-option value="combined">Combined View</mat-option>
+                        </mat-select>                
+                    </mat-card-actions>
+                </mat-card>
+                <app-adm-selector optionsUrl='/assets/status-predictions/levels.json' (state)='handleState($event)'></app-adm-selector>
+            </div>
+        </mat-expansion-panel>
+
+        <app-about-panel [open]='panel === "about"' (close)='panel = ""'>
+            <div [innerHtml]='marked(about)'></div>
+        </app-about-panel>
     </div>
 </app-layout>

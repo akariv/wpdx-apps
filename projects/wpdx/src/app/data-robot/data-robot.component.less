@@ -15,23 +15,36 @@
 
     .controls {
         position: absolute;
-        top: 16px;
-        left: 16px;
-        z-index: 20;
-
-        .row {
-            display: flex;
-            flex-flow: column;
-            align-items: flex-start;
+        z-index: @zIndexFilters;
+        .desktop({
+            top: 16px;
+            left: 16px;    
+        });
+        .mobile({
+            top: 0;
+            left: 0;
             width: 100%;
+        });
+        justify-content: space-between;
+        align-items: center;
 
-            label {
-                .fontSans;
-                font-weight: 300;
-                margin-right: 24px;
-                margin-bottom: 16px;
-                font-size: 16px;
-            }
+        .mat-expansion-panel-header-description {
+            flex: 0 0 auto;
+        }
+
+        .mobile({
+            ::ng-deep {
+                .mat-card-title {
+                    font-size: 18px;
+                }
+            }    
+        });
+        label {
+            .fontSans;
+            font-weight: 300;
+            margin-right: 24px;
+            margin-bottom: 16px;
+            font-size: 16px;
         }
     }
 }

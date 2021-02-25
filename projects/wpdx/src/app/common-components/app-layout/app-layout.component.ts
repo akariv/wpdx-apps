@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-layout',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app-layout.component.less']
 })
 export class AppLayoutComponent implements OnInit {
+
+  @Output() info = new EventEmitter<void>();
 
   constructor() { }
 

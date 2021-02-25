@@ -6,8 +6,10 @@ import { DataRobotComponent } from './data-robot.component';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonComponentsModule } from '../common-components/common-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -21,6 +23,9 @@ import { CommonComponentsModule } from '../common-components/common-components.m
     FormsModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatSelectModule,
   ]
 })
 export class DataRobotModule { }

@@ -1,11 +1,18 @@
 
 @primaryBrand: #3EC2FF;
 
+@zIndexHeader: 1;
+@zIndexFilters: 2;
+@zIndexSidePanel: 3;
+
 .fontSans {
     font-family: 'Rubik', Helvetica, sans-serif;
     font-style: normal;
 }
 
+.nice-shadow {
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+}
 
 .mobile(@rules) {
     @media only screen and (max-width: 600px) {

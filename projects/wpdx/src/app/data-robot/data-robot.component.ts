@@ -4,6 +4,8 @@ import * as mapboxgl from 'mapbox-gl';
 import { AirtableService } from '../airtable.service';
 
 import * as marked from 'marked';
+import { LayoutService } from '../layout.service';
+import { FirstTimeService } from '../first-time.service';
 @Component({
   selector: 'app-data-robot',
   templateUrl: './data-robot.component.html',
@@ -12,6 +14,7 @@ import * as marked from 'marked';
 export class DataRobotComponent implements OnInit {
 
   LAYERS = [
+    'datarobot-slim-last-known',
     'datarobot-slim-year-0',
     'datarobot-slim-year-1',
     'datarobot-slim-year-3',
@@ -19,14 +22,22 @@ export class DataRobotComponent implements OnInit {
   marked = marked;
   _layer = '';
   _map: mapboxgl.Map;
+  panel = '';
 
   title = '';
+  about = '';
 
-  constructor(private airtable: AirtableService) {
+  constructor(private airtable: AirtableService, 
+              public layout: LayoutService,
+              private firstTime: FirstTimeService) {
     airtable.fetchWpdxTools().subscribe((mapping) => {
       const settings: any = mapping['status-predictions'];
       this.title = settings.Title;
+      this.about = settings.About;
     });
+    if (firstTime.firstTime('status-predictions')) {
+      this.panel = 'about';
+    }
   }
 
   ngOnInit(): void {

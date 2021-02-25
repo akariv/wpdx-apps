@@ -21,14 +21,33 @@
         padding: 8px 16px;
         .fontSans;
         color: @primaryBrand;
-        box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
-        z-index: 1;
+        .nice-shadow;
+        z-index: @zIndexHeader;
         
         > .logo {
-            height: 100%;
+            .desktop({
+                height: 100%;
+            });
+            .mobile({
+                height: 80%;
+            });
         }
         > h1 {
-            margin: 0 32px;
+            margin: 0;
+            margin-inline-start: 32px;
+            .desktop({
+                font-size: 24px;
+                line-height: 24px;
+            });
+            .mobile({
+                font-size: 16px;
+                line-height: 16px;
+            });
+        }
+        .info {
+            margin-inline-start: auto;
+            margin-inline-end: 16px;
+            cursor: pointer;
         }
     }
     > .content {
