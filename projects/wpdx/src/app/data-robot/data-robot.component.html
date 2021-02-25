@@ -39,5 +39,17 @@
     </div>
 </app-layout>
 <div [style.display]='"none"' #popup>
-    Hello!
+    <p><label>Functional:</label> {{popupProperties.status_id}} <label>on</label> {{popupProperties.report_date}}</p>
+    <p><label>Location:</label> {{popupProperties.country_name}}/{{popupProperties.adm1}}/{{popupProperties.adm2}}/{{popupProperties.adm3}}</p>
+    <p><label>Coordinates:</label> {{popupProperties.lat}}/{{popupProperties.lon}}</p>
+    <p><label>Source:</label> {{popupProperties.source}}</p>
+    <p><label>Management:</label> {{popupProperties.source}}</p>
+    <p><label>Water Source/Tech:</label> {{popupProperties.water_source}}/{{popupProperties.water_tech}}</p>
+    <ng-container *ngIf='popupProperties.photo_lnk'>
+        <p><label>Photo:</label></p>
+        <img [src]='popupProperties.photo_lnk' (error)='$event.target.style.display="none"'>
+    </ng-container>
+    <ng-container *ngIf='!popupProperties.photo_lnk'>
+        <label>(No Photo)</label>
+    </ng-container>
 </div>

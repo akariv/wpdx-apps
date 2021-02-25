@@ -27,7 +27,7 @@ export class DataRobotComponent implements OnInit {
   title = '';
   about = '';
 
-  popupProperties = {};
+  popupProperties: any = {};
 
   @ViewChild('popup') popup: ElementRef;
 
@@ -51,7 +51,9 @@ export class DataRobotComponent implements OnInit {
     this._map = value;
     this._map.on('style.load', () => {
       this.layer = this.LAYERS[0];
+      let offset = -18;
       for (const layer of this.LAYERS) {
+        offset += 6;
         this._map.on('click', layer, (e) => {
           const coordinates = (e.features[0].geometry as any).coordinates.slice();
           this.popupProperties = e.features[0].properties;
@@ -61,7 +63,7 @@ export class DataRobotComponent implements OnInit {
           }
           
           setTimeout(() => {
-            new mapboxgl.Popup()
+            new mapboxgl.Popup({maxWidth: '600px', offset: [-offset, 0]})
                         .setLngLat(coordinates)
                         .setHTML((this.popup.nativeElement as HTMLElement).innerHTML)
                         .addTo(this._map);
