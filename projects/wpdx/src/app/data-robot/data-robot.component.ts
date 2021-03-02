@@ -117,11 +117,12 @@ export class DataRobotComponent implements OnInit {
           '==', ['get', f], ['literal', state[f]]
         ]);
       }
-  
     }
     console.log('filter', filter);
     for (const layer of this.LAYERS) {
       this.map.setFilter(layer, filter);
     }
+    filter.push(['!=', ['get', 'photo_lnk'], '']);
+    this.map.setFilter('datarobot-slim-photos', filter);
   }
 }

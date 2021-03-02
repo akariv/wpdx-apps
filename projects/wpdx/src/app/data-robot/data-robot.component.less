@@ -46,6 +46,14 @@
             margin-bottom: 16px;
             font-size: 16px;
         }
+        .legend-row {
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            .status-circle {
+                margin-inline-end: 8px;
+            }
+        }
     }
 }
 ::ng-deep .mapboxgl-popup {
@@ -101,14 +109,7 @@
                 flex-flow: column;
                 align-items: center;
                 .status-circle {
-                    width: 12px;
-                    height: 12px;
-                    border: 1px solid black;
-                    border-radius: 6px;
-                    background-color: #b80000;
-                    &.functional {
-                        background-color: #086efd;
-                    }
+                    margin-bottom: 12px;
                 }
                 .status-date {
                     text-align: center;
@@ -126,4 +127,16 @@
         .nice-shadow;
     }
 
+}
+
+.status-circle {
+    width: 24px;
+    height: 24px;
+    border: 1px solid black;
+    border-radius: 12px;
+    background-color: #b80000;
+    display: inline-block;
+    &.functional {
+        background-color: #086efd;
+    }
 }
