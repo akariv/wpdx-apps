@@ -1,6 +1,6 @@
 <app-side-panel [position]='position' [open]='open'>
     <div class='about'>
-        <div class='close' (click)='close.emit()'>
+        <div class='close' (click)='closed.emit()'>
             <mat-icon aria-hidden="false" aria-label="close icon">close</mat-icon>
         </div>
         <ng-content></ng-content>
