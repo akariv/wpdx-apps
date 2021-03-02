@@ -1,0 +1,7 @@
+<div class='logos'>
+    <div class='logo' *ngFor='let logo of logos'>
+        <a [href]='logo.url' [title]='logo.name' target="_blank">
+            <img [src]='logo.logo[0].thumbnails.large.url'>
+        </a>
+    </div>
+</div>

@@ -13,6 +13,8 @@ import { FirstTimeService } from '../first-time.service';
 })
 export class DataRobotComponent implements OnInit {
 
+  @ViewChild('popup') popup: ElementRef;
+
   LAYERS = [
     'datarobot-slim-last-known',
     'datarobot-slim-year-0',
@@ -29,9 +31,8 @@ export class DataRobotComponent implements OnInit {
 
   popupProperties: any = {};
 
-  @ViewChild('popup') popup: ElementRef;
 
-  constructor(private airtable: AirtableService, 
+  constructor(private airtable: AirtableService,
               public layout: LayoutService,
               private firstTime: FirstTimeService) {
     airtable.fetchWpdxTools().subscribe((mapping) => {

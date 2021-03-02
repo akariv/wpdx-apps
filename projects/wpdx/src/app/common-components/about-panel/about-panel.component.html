@@ -4,5 +4,6 @@
             <mat-icon aria-hidden="false" aria-label="close icon">close</mat-icon>
         </div>
         <ng-content></ng-content>
+        <app-logos-bar *ngIf='logosKey' [logosKey]='logosKey'></app-logos-bar>
     </div>
 </app-side-panel>

@@ -33,7 +33,7 @@
             </div>
         </mat-expansion-panel>
 
-        <app-about-panel [open]='panel === "about"' (close)='panel = ""'>
+        <app-about-panel [open]='panel === "about"' logosKey='status-predictions' (closed)='panel = ""'>
             <div [innerHtml]='marked(about)'></div>
         </app-about-panel>
     </div>

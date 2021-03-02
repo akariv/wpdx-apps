@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { AboutPanelComponent } from './about-panel/about-panel.component';
+import { LogosBarComponent } from './logos-bar/logos-bar.component';
 
 
 
@@ -17,7 +18,8 @@ import { AboutPanelComponent } from './about-panel/about-panel.component';
     MapLayerComponent,
     AdmSelectorComponent,
     SidePanelComponent,
-    AboutPanelComponent
+    AboutPanelComponent,
+    LogosBarComponent
   ],
   imports: [
     CommonModule,

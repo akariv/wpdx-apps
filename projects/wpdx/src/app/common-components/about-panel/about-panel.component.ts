@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AirtableService } from '../../airtable.service';
 import { LayoutService } from '../../layout.service';
 
 @Component({
@@ -9,9 +10,10 @@ import { LayoutService } from '../../layout.service';
 export class AboutPanelComponent implements OnInit {
 
   @Input() open = false;
-  @Output() close = new EventEmitter<void>();
+  @Input() logosKey: string;
+  @Output() closed = new EventEmitter<void>();
 
-  constructor(public layout: LayoutService) { }
+  constructor(public layout: LayoutService) {}
 
   ngOnInit(): void {
   }
