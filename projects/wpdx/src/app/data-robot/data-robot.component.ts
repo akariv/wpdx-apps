@@ -57,13 +57,14 @@ export class DataRobotComponent implements OnInit {
         this._map.on('click', layer, (e) => {
           const coordinates = (e.features[0].geometry as any).coordinates.slice();
           this.popupProperties = e.features[0].properties;
+          console.log('PROPERTIES', this.popupProperties);
            
           while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
           
           setTimeout(() => {
-            new mapboxgl.Popup({maxWidth: '600px', offset: [-offset, 0]})
+            new mapboxgl.Popup({maxWidth: '1000px', offset: [-offset, 0]})
                         .setLngLat(coordinates)
                         .setHTML((this.popup.nativeElement as HTMLElement).innerHTML)
                         .addTo(this._map);

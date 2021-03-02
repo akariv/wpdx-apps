@@ -50,16 +50,78 @@
 }
 ::ng-deep .mapboxgl-popup {
     max-width: 600px;
-    font-size: 12px;
-    line-height: 18px;
-    .fontSans;
     .mapboxgl-popup-content {
         padding: 16px 8px;
     }
-    label {
-        font-weight: 500;
+}
+
+.popup-template {
+    font-size: 12px;
+    line-height: 18px;
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+
+    .popup-info {
+        display: flex;
+        flex-flow: column;
+        align-items: flex-start; 
+        flex: 1 1 auto;
+        .fontSans;
+        p {
+            margin: 0 0 4px;
+            margin-top: 8px;
+        }
+        a, a:visited, a:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        mat-icon {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+        label {
+            font-weight: 500;
+            mat-icon {
+                font-size: 24px;
+                vertical-align: bottom;
+            }
+        }
+        
+        .popup-functionality {
+            display: flex;
+            flex-flow: row;
+            align-items: flex-start;
+            width: 364px;
+
+            .popup-functionality-single {
+                flex: 0 0 75px;
+                margin: 8px;
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                .status-circle {
+                    width: 12px;
+                    height: 12px;
+                    border: 1px solid black;
+                    border-radius: 6px;
+                    background-color: #b80000;
+                    &.functional {
+                        background-color: #086efd;
+                    }
+                }
+                .status-date {
+                    text-align: center;
+                }
+            }
+        }
     }
-    p {
-        margin: 0 0 4px;
+
+    > img {
+        margin-left: 16px;
+        margin-right: 8px;
+        flex: 0 0 auto;
+        .nice-shadow;
     }
+
 }
