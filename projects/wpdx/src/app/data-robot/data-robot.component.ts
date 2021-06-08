@@ -15,15 +15,15 @@ export class DataRobotComponent implements OnInit {
 
   @ViewChild('popup') popup: ElementRef;
 
-  LAYERS = [
+  cLAYERS = [
     'datarobot-slim-last-known',
     'datarobot-slim-year-0',
     'datarobot-slim-year-1',
     'datarobot-slim-year-3',
   ];
   marked = marked;
-  _layer = '';
-  _map: mapboxgl.Map;
+  pLayer = '';
+  pMap: mapboxgl.Map;
   panel = '';
 
   title = '';
@@ -49,52 +49,52 @@ export class DataRobotComponent implements OnInit {
   }
 
   set map(value) {
-    this._map = value;
-    this._map.on('style.load', () => {
-      this.layer = this.LAYERS[0];
+    this.pMap = value;
+    this.pMap.on('style.load', () => {
+      this.layer = this.cLAYERS[0];
       let offset = -18;
-      for (const layer of this.LAYERS) {
+      for (const layer of this.cLAYERS) {
         offset += 6;
-        this._map.on('click', layer, (e) => {
+        this.pMap.on('click', layer, (e) => {
           const coordinates = (e.features[0].geometry as any).coordinates.slice();
           this.popupProperties = e.features[0].properties;
           console.log('PROPERTIES', this.popupProperties);
-           
+
           while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
-          
+
           setTimeout(() => {
             new mapboxgl.Popup({maxWidth: '1000px', offset: [-offset, 0]})
                         .setLngLat(coordinates)
                         .setHTML((this.popup.nativeElement as HTMLElement).innerHTML)
-                        .addTo(this._map);
+                        .addTo(this.pMap);
           });
-        }); 
-        this._map.on('mouseenter', layer, () => {
-          this._map.getCanvas().style.cursor = 'pointer';
         });
-           
+        this.pMap.on('mouseenter', layer, () => {
+          this.pMap.getCanvas().style.cursor = 'pointer';
+        });
+
           // Change it back to a pointer when it leaves.
-        this._map.on('mouseleave', layer, () => {
-          this._map.getCanvas().style.cursor = '';
+        this.pMap.on('mouseleave', layer, () => {
+          this.pMap.getCanvas().style.cursor = '';
         });
       }
     });
   }
 
   get map() {
-    return this._map;
+    return this.pMap;
   }
 
   set layer(value) {
-    this._layer = value;
-    for (const layer of this.LAYERS) {
+    this.pLayer = value;
+    for (const layer of this.cLAYERS) {
       if (value === layer || value === 'combined') {
         this.map.setLayoutProperty(layer, 'visibility', 'visible');
       }
     }
-    for (const layer of this.LAYERS) {
+    for (const layer of this.cLAYERS) {
       if (value !== layer && value !== 'combined') {
         this.map.setLayoutProperty(layer, 'visibility', 'none');
       }
@@ -103,7 +103,7 @@ export class DataRobotComponent implements OnInit {
   }
 
   get layer() {
-    return this._layer;
+    return this.pLayer;
   }
 
   handleState(state) {
@@ -119,7 +119,7 @@ export class DataRobotComponent implements OnInit {
       }
     }
     console.log('filter', filter);
-    for (const layer of this.LAYERS) {
+    for (const layer of this.cLAYERS) {
       this.map.setFilter(layer, filter);
     }
     filter.push(['!=', ['get', 'photo_lnk'], '']);
