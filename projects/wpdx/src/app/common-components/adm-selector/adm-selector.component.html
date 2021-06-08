@@ -3,7 +3,7 @@
     <mat-card-actions>
         <mat-label i18n>Country Name</mat-label>
         <mat-select [(value)]='country_name'>
-            <mat-option *ngFor="let option of country_name_options" [value]="option">
+            <mat-option *ngFor="let option of countryNameOptions" [value]="option">
             {{option.value}}
             </mat-option>
         </mat-select>

@@ -9,10 +9,10 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output }
 })
 export class MapLayerComponent implements OnChanges {
 
-  ACCESS_TOKEN = 'pk.eyJ1Ijoid3BkeCIsImEiOiJja2ptdDljN3kwbHpsMnpxcHJvdDlmbTF1In0.vXVq027cJzHuy7Xa_tAkWQ';
-
   @Input() style: string;
   @Output() map = new EventEmitter<mapboxgl.Map>();
+
+  ACCESS_TOKEN = 'pk.eyJ1Ijoid3BkeCIsImEiOiJja2ptdDljN3kwbHpsMnpxcHJvdDlmbTF1In0.vXVq027cJzHuy7Xa_tAkWQ';
 
   theMap: mapboxgl.Map;
   mapboxgl: any = mapboxgl;

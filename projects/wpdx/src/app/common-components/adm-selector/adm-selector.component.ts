@@ -11,8 +11,8 @@ export class AdmSelectorComponent implements OnInit {
   @Input() optionsUrl = '';
   @Output() state = new EventEmitter<any>();
 
-  _country_name: any = {};
-  country_name_options = [];
+  _countryName: any = {};
+  countryNameOptions = [];
   _adm1: any = {};
   adm1_options = [];
   _adm2: any = {};
@@ -26,19 +26,19 @@ export class AdmSelectorComponent implements OnInit {
     if (this.optionsUrl) {
       this.http.get(this.optionsUrl).subscribe((levels: any[]) => {
         console.log('RESULT', levels);
-        this.country_name_options = levels;
+        this.countryNameOptions = levels;
       });
     }
   }
 
   set country_name(value) {
-    this._country_name = value;
+    this._countryName = value;
     this.adm1 = {};
     this.adm1_options = value.items || [];
   }
 
   get country_name() {
-    return this._country_name;
+    return this._countryName;
   }
 
   set adm1(value) {

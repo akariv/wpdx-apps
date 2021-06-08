@@ -15,15 +15,15 @@ export class DataRobotComponent implements OnInit {
 
   @ViewChild('popup') popup: ElementRef;
 
-  cLAYERS = [
+  LAYERS = [
     'datarobot-slim-last-known',
     'datarobot-slim-year-0',
     'datarobot-slim-year-1',
     'datarobot-slim-year-3',
   ];
   marked = marked;
-  pLayer = '';
-  pMap: mapboxgl.Map;
+  _layer = '';
+  _map: mapboxgl.Map;
   panel = '';
 
   title = '';
@@ -49,13 +49,13 @@ export class DataRobotComponent implements OnInit {
   }
 
   set map(value) {
-    this.pMap = value;
-    this.pMap.on('style.load', () => {
-      this.layer = this.cLAYERS[0];
+    this._map = value;
+    this._map.on('style.load', () => {
+      this.layer = this.LAYERS[0];
       let offset = -18;
-      for (const layer of this.cLAYERS) {
+      for (const layer of this.LAYERS) {
         offset += 6;
-        this.pMap.on('click', layer, (e) => {
+        this._map.on('click', layer, (e) => {
           const coordinates = (e.features[0].geometry as any).coordinates.slice();
           this.popupProperties = e.features[0].properties;
           console.log('PROPERTIES', this.popupProperties);
@@ -68,33 +68,32 @@ export class DataRobotComponent implements OnInit {
             new mapboxgl.Popup({maxWidth: '1000px', offset: [-offset, 0]})
                         .setLngLat(coordinates)
                         .setHTML((this.popup.nativeElement as HTMLElement).innerHTML)
-                        .addTo(this.pMap);
+                        .addTo(this._map);
           });
         });
-        this.pMap.on('mouseenter', layer, () => {
-          this.pMap.getCanvas().style.cursor = 'pointer';
+        this._map.on('mouseenter', layer, () => {
+          this._map.getCanvas().style.cursor = 'pointer';
         });
-
-          // Change it back to a pointer when it leaves.
-        this.pMap.on('mouseleave', layer, () => {
-          this.pMap.getCanvas().style.cursor = '';
+        // Change it back to a pointer when it leaves.
+        this._map.on('mouseleave', layer, () => {
+          this._map.getCanvas().style.cursor = '';
         });
       }
     });
   }
 
   get map() {
-    return this.pMap;
+    return this._map;
   }
 
   set layer(value) {
-    this.pLayer = value;
-    for (const layer of this.cLAYERS) {
+    this._layer = value;
+    for (const layer of this.LAYERS) {
       if (value === layer || value === 'combined') {
         this.map.setLayoutProperty(layer, 'visibility', 'visible');
       }
     }
-    for (const layer of this.cLAYERS) {
+    for (const layer of this.LAYERS) {
       if (value !== layer && value !== 'combined') {
         this.map.setLayoutProperty(layer, 'visibility', 'none');
       }
@@ -103,7 +102,7 @@ export class DataRobotComponent implements OnInit {
   }
 
   get layer() {
-    return this.pLayer;
+    return this._layer;
   }
 
   handleState(state) {
@@ -119,7 +118,7 @@ export class DataRobotComponent implements OnInit {
       }
     }
     console.log('filter', filter);
-    for (const layer of this.cLAYERS) {
+    for (const layer of this.LAYERS) {
       this.map.setFilter(layer, filter);
     }
     filter.push(['!=', ['get', 'photo_lnk'], '']);

@@ -17,7 +17,7 @@ export class AirtableService {
 
   airtableFetch(base, table, view, record?, fields?) {
     const headers = {
-      'Authorization': `Bearer ${this.BASE_KEY}`
+      Authorization: `Bearer ${this.BASE_KEY}`
     };
     let url = `${this.AIRTABLE_BASE}/${base}/${table}`;
     let params: any = {};
