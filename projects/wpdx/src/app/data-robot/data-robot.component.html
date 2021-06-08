@@ -1,11 +1,11 @@
-<app-layout (info)='panel = "about"'>
-    <div class='title'>{{title}}</div>
-    <div class='content'>
-        <app-map-layer
-            [style]='"mapbox://styles/wpdx/ckl88cymr11bm17o2bj8rgiut"'
-            (map)='map = $event'
-        ></app-map-layer>
-
+<app-airtable-layout 
+    id='status-predictions'
+    mapStyle='mapbox://styles/wpdx/ckl88cymr11bm17o2bj8rgiut'
+    [interactionLayers]='LAYERS'
+    (map)='map = $event'
+    (mapPopup)='popupProperties = $event'
+>
+    <div class='workspace' ngProjectAs='.content'>
         <div class='controls'>
             <mat-expansion-panel [expanded]='true'>
                 <mat-expansion-panel-header>
@@ -44,62 +44,35 @@
                 </div>
             </mat-expansion-panel>
         </div>
-
-        <app-about-panel [open]='panel === "about"' logosKey='status-predictions' (closed)='panel = ""'>
-            <div [innerHtml]='marked(about)'></div>
-        </app-about-panel>
     </div>
-</app-layout>
-
-<div [style.display]='"none"' #popup>
-    <div class='popup-template'>
-        <div class='popup-info'>
-            <p>
-                <mat-icon>invert_colors</mat-icon>&nbsp;<label>Status:</label> 
-            </p>
-            <div class='popup-functionality'>
-                <div class='popup-functionality-single'>
-                    <div class='status-circle' [class.functional]='popupProperties.status_id === "Yes"'></div>
-                    <!-- <div class='status-text'>{{popupProperties.status_id}}</div> -->
-                    <div class='status-date'>Last Known<br/>{{popupProperties.report_date}}</div>    
-                </div>
-                <div class='popup-functionality-single'>
-                    <div class='status-circle' [class.functional]='popupProperties.status_0 === "YES"'></div>
-                    <!-- <div class='status-text'>{{popupProperties.status_id}}</div> -->
-                    <div class='status-date'>As of today</div>    
-                    <div class='status-prob'>p: {{popupProperties.status_0_prob * 100 | number:'1.0-0'}}%</div>    
-                </div>
-                <div class='popup-functionality-single'>
-                    <div class='status-circle' [class.functional]='popupProperties.status_1 === "YES"'></div>
-                    <!-- <div class='status-text'>{{popupProperties.status_1}}</div> -->
-                    <div class='status-date'>Today + 1</div>    
-                    <div class='status-prob'>p: {{popupProperties.status_1_prob * 100 | number:'1.0-0'}}%</div>    
-                </div>
-                <div class='popup-functionality-single'>
-                    <div class='status-circle' [class.functional]='popupProperties.status_3 === "YES"'></div>
-                    <!-- <div class='status-text'>{{popupProperties.status_3}}</div> -->
-                    <div class='status-date'>Today + 3</div>    
-                    <div class='status-prob'>p: {{popupProperties.status_3_prob * 100 | number:'1.0-0'}}%</div>    
-                </div>
+    <div class='map-popup'>
+        <p>
+            <mat-icon>invert_colors</mat-icon>&nbsp;<label>Status:</label> 
+        </p>
+        <div class='popup-functionality'>
+            <div class='popup-functionality-single'>
+                <div class='status-circle' [class.functional]='popupProperties.status_id === "Yes"'></div>
+                <!-- <div class='status-text'>{{popupProperties.status_id}}</div> -->
+                <div class='status-date'>Last Known<br/>{{popupProperties.report_date}}</div>    
             </div>
-            <p>
-                <label><mat-icon>place</mat-icon></label> 
-                {{popupProperties.country_name}} &gt; {{popupProperties.adm1}}  &gt; {{popupProperties.adm2}}  &gt; {{popupProperties.adm3}}
-                <a [href]='"https://www.google.com/maps/@" + popupProperties.lat + "," + popupProperties.lon + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
-            </p>
-            <p *ngIf='popupProperties.source'><label title='Data Source' i18n-title><mat-icon>wash</mat-icon></label> {{popupProperties.source}}</p>
-            <p *ngIf='popupProperties.management'><label title='Management' i18n-title><mat-icon>corporate_fare</mat-icon></label> {{popupProperties.management}}</p>
-            <p *ngIf='popupProperties.water_source'><label title='Water Source' i18n-title><mat-icon>water</mat-icon></label> {{popupProperties.water_source}}</p>
-            <p *ngIf='popupProperties.water_tech'><label title='Water Point Tech' i18n-title><mat-icon>settings</mat-icon></label> {{popupProperties.water_tech}}</p>
-            <p *ngIf='popupProperties.installer || popupProperties.install_year'>
-                <label title='Installation' i18n-title><mat-icon>construction</mat-icon></label>&nbsp;
-                <span>{{popupProperties.install_year}}</span>
-                <span *ngIf='popupProperties.installer && popupProperties.install_year' i18n> by </span>
-                <span>{{popupProperties.installer}}</span>
-            </p>
+            <div class='popup-functionality-single'>
+                <div class='status-circle' [class.functional]='popupProperties.status_0 === "YES"'></div>
+                <!-- <div class='status-text'>{{popupProperties.status_id}}</div> -->
+                <div class='status-date'>As of today</div>    
+                <div class='status-prob'>p: {{popupProperties.status_0_prob * 100 | number:'1.0-0'}}%</div>    
+            </div>
+            <div class='popup-functionality-single'>
+                <div class='status-circle' [class.functional]='popupProperties.status_1 === "YES"'></div>
+                <!-- <div class='status-text'>{{popupProperties.status_1}}</div> -->
+                <div class='status-date'>Today + 1</div>    
+                <div class='status-prob'>p: {{popupProperties.status_1_prob * 100 | number:'1.0-0'}}%</div>    
+            </div>
+            <div class='popup-functionality-single'>
+                <div class='status-circle' [class.functional]='popupProperties.status_3 === "YES"'></div>
+                <!-- <div class='status-text'>{{popupProperties.status_3}}</div> -->
+                <div class='status-date'>Today + 3</div>    
+                <div class='status-prob'>p: {{popupProperties.status_3_prob * 100 | number:'1.0-0'}}%</div>    
+            </div>
         </div>
-        <ng-container *ngIf='popupProperties.photo_lnk'>
-            <img [src]='popupProperties.photo_lnk' (error)='$event.target.style.display="none"'>
-        </ng-container>
     </div>
-</div>
+</app-airtable-layout>

@@ -1,0 +1,19 @@
+<app-layout (info)='panel = "about"'>
+    <div class='title'>{{title}}</div>
+    <ng-container ngProjectAs=".content">
+        <app-map-layer
+            [style]='mapStyle'
+            [interactionLayers]='interactionLayers'
+            (map)='map.next($event)'
+            (mapPopup)='mapPopup.next($event)'
+        >
+            <ng-container ngProjectAs='.map-popup'>
+                <ng-content select='.map-popup'></ng-content>
+            </ng-container>
+        </app-map-layer>
+        <ng-content select='.content'></ng-content>
+        <app-about-panel [open]='panel === "about"' [logosKey]='id' (closed)='panel = ""'>
+            <div [innerHtml]='marked(about)'></div>
+        </app-about-panel>
+    </ng-container>
+</app-layout>

@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { AboutPanelComponent } from './about-panel/about-panel.component';
 import { LogosBarComponent } from './logos-bar/logos-bar.component';
+import { AirtableLayoutComponent } from './airtable-layout/airtable-layout.component';
+import { AirtableService } from '../airtable.service';
 
 
 
@@ -19,7 +21,8 @@ import { LogosBarComponent } from './logos-bar/logos-bar.component';
     AdmSelectorComponent,
     SidePanelComponent,
     AboutPanelComponent,
-    LogosBarComponent
+    LogosBarComponent,
+    AirtableLayoutComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +35,8 @@ import { LogosBarComponent } from './logos-bar/logos-bar.component';
     MapLayerComponent,
     AdmSelectorComponent,
     SidePanelComponent,
-    AboutPanelComponent
+    AboutPanelComponent,
+    AirtableLayoutComponent
   ]
 })
 export class CommonComponentsModule { }

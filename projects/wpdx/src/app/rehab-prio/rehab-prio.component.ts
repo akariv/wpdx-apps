@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RehabPrioComponent implements OnInit {
 
+  map = null;
+
   constructor() { }
 
   ngOnInit(): void {
+    console.log('INIT?');
   }
 
 }

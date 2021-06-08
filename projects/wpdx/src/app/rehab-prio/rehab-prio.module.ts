@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonComponentsModule } from '../common-components/common-components.module';
 import { RehabPrioComponent } from './rehab-prio.component';
+import { RehabPrioRoutingModule } from './rehab-prio-routing.module';
 
 
 
@@ -15,6 +16,7 @@ import { RehabPrioComponent } from './rehab-prio.component';
   declarations: [RehabPrioComponent],
   imports: [
     CommonModule,
+    RehabPrioRoutingModule,
     CommonComponentsModule,
     FormsModule,
     MatButtonToggleModule,
@@ -22,6 +24,6 @@ import { RehabPrioComponent } from './rehab-prio.component';
     MatExpansionModule,
     MatIconModule,
     MatSelectModule,
-  ]
+  ],
 })
 export class RehabPrioModule { }

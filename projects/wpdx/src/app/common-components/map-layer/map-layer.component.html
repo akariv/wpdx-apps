@@ -1,0 +1,27 @@
+<div #map class='map'></div>
+
+<div [style.display]='"none"' #popup>
+    <div class='popup-template'>
+        <div class='popup-info'>
+            <ng-content selector='.map-popup'></ng-content>
+            <p>
+                <label><mat-icon>place</mat-icon></label> 
+                {{popupProperties.clean_country_name || popupProperties.country_name}} &gt; {{popupProperties.clean_adm1 || popupProperties.adm1}}  &gt; {{popupProperties.clean_adm2 || popupProperties.adm2}}  &gt; {{popupProperties.clean_adm3 || popupProperties.adm3}}
+                <a [href]='"https://www.google.com/maps/@" + popupProperties.lat + "," + popupProperties.lon + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
+            </p>
+            <p *ngIf='popupProperties.source'><label title='Data Source' i18n-title><mat-icon>wash</mat-icon></label> {{popupProperties.source}}</p>
+            <p *ngIf='popupProperties.management_clean || popupProperties.management'><label title='Management' i18n-title><mat-icon>corporate_fare</mat-icon></label>{{popupProperties.management_clean || popupProperties.management}}</p>
+            <p *ngIf='popupProperties.water_source_clean || popupProperties.water_source'><label title='Water Source' i18n-title><mat-icon>water</mat-icon></label> {{popupProperties.water_source_clean || popupProperties.water_source}}</p>
+            <p *ngIf='popupProperties.water_tech_clean || popupProperties.water_tech'><label title='Water Point Tech' i18n-title><mat-icon>settings</mat-icon></label> {{popupProperties.water_tech_clean || popupProperties.water_tech}}</p>
+            <p *ngIf='popupProperties.installer || popupProperties.install_year'>
+                <label title='Installation' i18n-title><mat-icon>construction</mat-icon></label>&nbsp;
+                <span>{{popupProperties.install_year}}</span>
+                <span *ngIf='popupProperties.installer && popupProperties.install_year' i18n> by </span>
+                <span>{{popupProperties.installer}}</span>
+            </p>
+        </div>
+        <ng-container *ngIf='popupProperties.photo_lnk'>
+            <img [src]='popupProperties.photo_lnk' (error)='$event.target.style.display="none"'>
+        </ng-container>
+    </div>
+</div>
