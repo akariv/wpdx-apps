@@ -1,0 +1,8 @@
+<mat-card>
+    <mat-card-title i18n>{{title}}</mat-card-title>
+    <mat-card-actions>
+        <mat-select [(value)]='_value'>
+            <mat-option *ngFor='let o of options' [value]='o.value'>{{o.display}}</mat-option>
+        </mat-select>                
+    </mat-card-actions>
+</mat-card>

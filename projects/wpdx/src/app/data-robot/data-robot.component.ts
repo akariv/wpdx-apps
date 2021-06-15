@@ -18,6 +18,13 @@ export class DataRobotComponent implements OnInit {
     'datarobot-slim-year-1',
     'datarobot-slim-year-3',
   ];
+  TIMEFRAME_OPTIONS = [
+    {value: 'datarobot-slim-last-known', display: 'Last Known'},
+    {value: 'datarobot-slim-year-0', display: 'As of Today'},
+    {value: 'datarobot-slim-year-1', display: 'Today + 1'},
+    {value: 'datarobot-slim-year-3', display: 'Today + 3'},
+    {value: 'combined', display: 'Combined View'},
+  ];
   _layer = '';
   _map: mapboxgl.Map;
 

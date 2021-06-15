@@ -21,11 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
     DataRobotRoutingModule,
     CommonComponentsModule,
     FormsModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatExpansionModule,
     MatIconModule,
-    MatSelectModule,
   ]
 })
 export class DataRobotModule { }

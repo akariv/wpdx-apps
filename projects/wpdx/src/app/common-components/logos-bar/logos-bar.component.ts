@@ -17,7 +17,6 @@ export class LogosBarComponent implements OnInit {
   ngOnInit(): void {
     if (this.logosKey) {
       this.airtable.fetchLogos(this.logosKey).subscribe((logos) => {
-        console.log('LGOSO', logos);
         this.logos = logos;
       });
     }

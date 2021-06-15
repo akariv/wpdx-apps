@@ -1,6 +1,17 @@
 <app-airtable-layout
     id='rehab-prio'
-    [interactionLayers]='["all-waterpoints"]'
+    [interactionLayers]='["all-waterpoints", "rehab-priority-circles", "rehab-priority-text"]'
     mapStyle='mapbox://styles/wpdx/ckjmvff0e1tng19o33klef59z'
     (map)='map = $event'>
+    <div class='workspace' ngProjectAs='.content'>
+        <app-controls>
+            <!-- <app-legend-control>
+                <p class='legend-row'><span class='status-circle functional'></span>&nbsp;Functional Water Point</p>
+                <p class='legend-row'><span class='status-circle'></span>&nbsp;Non-Functional Water Point</p>
+            </app-legend-control> -->
+            <app-filters-control>
+                <app-adm-selector optionsUrl='' (state)='navigateTo($event)'></app-adm-selector>
+            </app-filters-control>
+        </app-controls>
+    </div>
 </app-airtable-layout>

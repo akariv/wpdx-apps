@@ -1,0 +1,45 @@
+@import '../../common.less';
+
+.controls {
+    pointer-events: all;
+    position: absolute;
+    z-index: @zIndexFilters;
+    .desktop({
+        top: 16px;
+        left: 16px;    
+    });
+    .mobile({
+        top: 0;
+        left: 0;
+        width: 100%;
+    });
+    justify-content: space-between;
+    align-items: center;
+
+    ::ng-deep .mat-expansion-panel-header-description {
+        flex: 0 0 auto;
+    }
+
+    .mobile({
+        ::ng-deep {
+            .mat-card-title {
+                font-size: 18px;
+            }
+        }    
+    });
+    label {
+        .fontSans;
+        font-weight: 300;
+        margin-right: 24px;
+        margin-bottom: 16px;
+        font-size: 16px;
+    }
+    .legend-row {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        .status-circle {
+            margin-inline-end: 8px;
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DbService } from '../../db.service';
 
 @Component({
   selector: 'app-adm-selector',
@@ -20,15 +21,72 @@ export class AdmSelectorComponent implements OnInit {
   _adm3: any = {};
   adm3_options = [];
 
-  constructor(private http: HttpClient) { }
+  query = `
+    SELECT clean_country_name, clean_adm1, clean_adm2, coalesce(clean_adm3, '-') as clean_adm3,
+           max(lat_deg) as lat_max, max(lon_deg) as lon_max, min(lat_deg) as lat_min, min(lon_deg) as lon_min
+    FROM wpdx_plus
+    GROUP BY 1,2,3,4
+    ORDER BY 1,2,3,4
+  `;
+
+  constructor(private http: HttpClient, private db: DbService) { }
 
   ngOnInit(): void {
     if (this.optionsUrl) {
       this.http.get(this.optionsUrl).subscribe((levels: any[]) => {
-        console.log('RESULT', levels);
         this.countryNameOptions = levels;
       });
+    } else {
+      this.db.query(this.query).subscribe((results: any) => {
+        console.log(results);
+        this.processDBResults(results.rows);
+      });
     }
+  }
+
+  processDBResults(items) {
+    items = this.groupBy(items, ['clean_country_name', 'clean_adm1', 'clean_adm2'], 'clean_adm3');
+    items = this.groupBy(items, ['clean_country_name', 'clean_adm1'], 'clean_adm2');
+    items = this.groupBy(items, ['clean_country_name'], 'clean_adm1');
+    items.forEach((item) => item.value = item.clean_country_name);
+    this.countryNameOptions = items;
+  }
+
+  groupBy(items, keyFields, valueField) {
+    const ret = {};
+    for (const item of items) {
+      const key = keyFields.map((f) => item[f]).join('/');
+      if (!ret[key]) {
+        ret[key] = [];
+      }
+      item.value = item[valueField];
+      if (!item.bounds) {
+        item.bounds = [
+          item.lon_min,
+          item.lat_min,
+          item.lon_max,
+          item.lat_max,
+        ];
+      }
+      delete item[valueField];
+      ret[key].push(item);
+    }
+    const newItems = [];
+    Object.values(ret).forEach((_items) => {
+      const item: any = {};
+      item.items = _items;
+      for (const f of keyFields) {
+        item[f] = _items[0][f];
+      }
+      item.bounds = [
+        Math.min(...item.items.map(x => x.bounds[0])),
+        Math.min(...item.items.map(x => x.bounds[1])),
+        Math.max(...item.items.map(x => x.bounds[2])),
+        Math.max(...item.items.map(x => x.bounds[3])),
+      ];
+      newItems.push(item);
+    });
+    return newItems;
   }
 
   set country_name(value) {

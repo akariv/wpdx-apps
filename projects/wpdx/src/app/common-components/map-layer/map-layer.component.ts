@@ -66,6 +66,7 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
           this._map.on('style.load', () => {
             for (const layer of this.interactionLayers) {
               console.log('LAYER', layer);
+              this._map.setLayoutProperty(layer, 'visibility', 'visible');
               this._map.on('click', layer, (e) => {
                 const coordinates = (e.features[0].geometry as any).coordinates.slice();
                 this.popupProperties = e.features[0].properties;
@@ -90,6 +91,7 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               });
             }
             for (const country of this.COUNTRY_CODES) {
+              console.log('country', country);
               this._map.addSource(`wpdx.pop_${country}`, {
                 type: 'raster', url: `mapbox://wpdx.pop_${country}`
               });
