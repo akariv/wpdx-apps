@@ -2,7 +2,9 @@
     id='rehab-prio'
     [interactionLayers]='["all-waterpoints", "rehab-priority-circles", "rehab-priority-text"]'
     mapStyle='mapbox://styles/wpdx/ckjmvff0e1tng19o33klef59z'
-    (map)='map = $event'>
+    (map)='setMap($event)'
+    (mapPopup)='popupProperties = $event'
+>
     <div class='workspace' ngProjectAs='.content'>
         <app-controls>
             <!-- <app-legend-control>
@@ -12,6 +14,29 @@
             <app-filters-control>
                 <app-adm-selector optionsUrl='' (state)='navigateTo($event)'></app-adm-selector>
             </app-filters-control>
+            <app-legend-control *ngIf='top10 && top10.length' [title]='"Top " + top10.length + " water points"'>
+                <table>
+                    <thead>
+                        <th>#</th>
+                        <th>Source</th>
+                        <th>Tech</th>    
+                        <th>Affected Ppl.</th>    
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let row of top10; let rank = index;' (click)='gotoPoint(row)'>
+                            <td>{{rank + 1}}</td>
+                            <td>{{row.water_source_clean || 'Unknown' }}</td>
+                            <td>{{row.water_tech_clean || 'Unknown' }}</td>
+                            <td>{{row.rehab_priority | number:'1.0-0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </app-legend-control>
         </app-controls>
+    </div>
+    <div class='map-popup'>
+        <p *ngIf='popupProperties.rehab_priority > 0'>
+            <mat-icon>people</mat-icon>&nbsp;<label>Affected Population:</label> {{popupProperties.rehab_priority | number:'1.0-0'}} ppl
+        </p>
     </div>
 </app-airtable-layout>

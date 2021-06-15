@@ -7,7 +7,7 @@
             <p>
                 <label><mat-icon>place</mat-icon></label> 
                 {{popupProperties.clean_country_name || popupProperties.country_name}} &gt; {{popupProperties.clean_adm1 || popupProperties.adm1}}  &gt; {{popupProperties.clean_adm2 || popupProperties.adm2}}  &gt; {{popupProperties.clean_adm3 || popupProperties.adm3}}
-                <a [href]='"https://www.google.com/maps/@" + popupProperties.lat + "," + popupProperties.lon + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
+                <a [href]='"https://www.google.com/maps/@" + (popupProperties.lat || popupProperties.lat_deg) + "," + (popupProperties.lon || popupProperties.lon_deg) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
             </p>
             <p *ngIf='popupProperties.source'><label title='Data Source' i18n-title><mat-icon>wash</mat-icon></label> {{popupProperties.source}}</p>
             <p *ngIf='popupProperties.management_clean || popupProperties.management'><label title='Management' i18n-title><mat-icon>corporate_fare</mat-icon></label>{{popupProperties.management_clean || popupProperties.management}}</p>

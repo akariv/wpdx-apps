@@ -4,3 +4,22 @@
     position: relative;
     pointer-events: none;
 }
+
+table {
+    border-collapse: collapse;
+    td, th {
+        padding: 4px 8px;
+    }
+    tr {
+        cursor: pointer;
+        &:hover {
+            background-color: #eee;
+        }
+        &:nth-child(2n+1) {
+            background-color: #ddd;
+            &:hover {
+                background-color: #ccc;
+            }
+        }
+    }
+}
