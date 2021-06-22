@@ -108,6 +108,11 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               }, 'mapbox-satellite');
               console.log('ADD LAYER RES', country);
             }
+            const scale = new mapboxgl.ScaleControl({
+              maxWidth: 250,
+              unit: 'metric'
+            });
+            this._map.addControl(scale, 'top-right');
             this.map.next(this._map);
           });
         }
