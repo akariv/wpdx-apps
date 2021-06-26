@@ -35,8 +35,15 @@
         </app-controls>
     </div>
     <div class='map-popup'>
-        <p *ngIf='popupProperties.rehab_priority > 0'>
-            <mat-icon>people</mat-icon>&nbsp;<label>Affected Population:</label> {{popupProperties.rehab_priority | number:'1.0-0'}} ppl
+        <p *ngIf='popupProperties.local_population > 0'>
+            <mat-icon>people</mat-icon>&nbsp;<label>Population in 2km radius:</label> {{popupProperties.local_population | number:'1.0-0'}} ppl
         </p>
+        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "No"'>
+            <mat-icon>people</mat-icon>&nbsp;<label>Population served:</label> {{popupProperties.assigned_population | number:'1.0-0'}} ppl
+        </p>
+        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "No"'>
+            <mat-icon>people</mat-icon>&nbsp;<label>Population that would be served:</label> {{popupProperties.assigned_population | number:'1.0-0'}} ppl
+        </p>
+
     </div>
 </app-airtable-layout>
