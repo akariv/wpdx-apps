@@ -20,13 +20,15 @@
                         <th>#</th>
                         <th>Source</th>
                         <th>Tech</th>    
-                        <th>Affected Ppl.</th>    
+                        <th>Local Ppl.</th>
+                        <th>Affected Ppl.</th>
                     </thead>
                     <tbody>
                         <tr *ngFor='let row of top10; let rank = index;' (click)='gotoPoint(row)'>
                             <td>{{rank + 1}}</td>
                             <td>{{row.water_source_clean || 'Unknown' }}</td>
                             <td>{{row.water_tech_clean || 'Unknown' }}</td>
+                            <td>{{row.local_population | number:'1.0-0' }}</td>
                             <td>{{row.rehab_priority | number:'1.0-0' }}</td>
                         </tr>
                     </tbody>

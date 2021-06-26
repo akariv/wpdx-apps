@@ -22,7 +22,7 @@ export class RehabPrioComponent implements OnInit {
     this.bounds.pipe(
       debounceTime(2500),
       switchMap((bounds) => this.db.query(`
-        select lat_deg, lon_deg, rehab_priority, water_source_clean, water_tech_clean
+        select lat_deg, lon_deg, rehab_priority, local_population, water_source_clean, water_tech_clean
         from wpdx_plus
         where is_latest and wpdx_id is not null and rehab_priority > 0
         and lat_deg >= ${bounds.getSouth()}
