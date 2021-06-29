@@ -24,7 +24,7 @@ export class RehabPrioComponent implements OnInit {
       switchMap((bounds) => this.db.query(`
         select lat_deg, lon_deg, rehab_priority, local_population, water_source_clean, water_tech_clean
         from wpdx_plus
-        where is_latest and wpdx_id is not null and rehab_priority > 0
+        where is_latest and wpdx_id is not null and rehab_priority > 0 and not is_urban
         and lat_deg >= ${bounds.getSouth()}
         and lat_deg <= ${bounds.getNorth()}
         and lon_deg >= ${bounds.getWest()}
