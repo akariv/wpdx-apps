@@ -14,22 +14,27 @@
             <app-filters-control>
                 <app-adm-selector optionsUrl='' (state)='navigateTo($event)'></app-adm-selector>
             </app-filters-control>
-            <app-legend-control *ngIf='top10 && top10.length' [title]='"Top " + top10.length + " water points"'>
-                <table>
+            <app-legend-control [title]='"Top " + (top10 && top10.length ? top10.length : "" ) + " water points"'>
+                <mat-slide-toggle [(ngModel)]='all_waterpoints'>All waterpoints: {{all_waterpoints}}</mat-slide-toggle>
+                <table *ngIf='top10 && top10.length'>
                     <thead>
                         <th>#</th>
+                        <th>Functional?</th>
                         <th>Source</th>
                         <th>Tech</th>    
-                        <th>Local Ppl.</th>
-                        <th>Affected Ppl.</th>
+                        <th>Local Pop.</th>
+                        <th>Served Pop.</th>
+                        <th>Criticallity</th>
                     </thead>
                     <tbody>
                         <tr *ngFor='let row of top10; let rank = index;' (click)='gotoPoint(row)'>
                             <td>{{rank + 1}}</td>
+                            <td>{{row.status_id || 'Unknown' }}</td>
                             <td>{{row.water_source_clean || 'Unknown' }}</td>
                             <td>{{row.water_tech_clean || 'Unknown' }}</td>
                             <td>{{row.local_population | number:'1.0-0' }}</td>
-                            <td>{{row.rehab_priority | number:'1.0-0' }}</td>
+                            <td>{{row.assigned_population | number:'1.0-0' }}</td>
+                            <td>{{row.criticallity | number:'1.0-1' }}%</td>
                         </tr>
                     </tbody>
                 </table>

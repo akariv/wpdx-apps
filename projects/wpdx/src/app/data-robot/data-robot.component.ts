@@ -60,7 +60,6 @@ export class DataRobotComponent implements OnInit {
         this.map.setLayoutProperty(layer, 'visibility', 'none');
       }
     }
-    console.log(this.map);
   }
 
   get layer() {

@@ -7,6 +7,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CommonComponentsModule } from '../common-components/common-components.module';
 import { RehabPrioComponent } from './rehab-prio.component';
 import { RehabPrioRoutingModule } from './rehab-prio-routing.module';
@@ -26,6 +27,7 @@ import { RehabPrioRoutingModule } from './rehab-prio-routing.module';
     MatIconModule,
     MatSelectModule,
     MatTableModule,
+    MatSlideToggleModule,
   ],
 })
 export class RehabPrioModule { }

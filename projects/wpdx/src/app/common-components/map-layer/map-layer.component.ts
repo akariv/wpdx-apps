@@ -71,16 +71,18 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
                 const coordinates = (e.features[0].geometry as any).coordinates.slice();
                 this.popupProperties = e.features[0].properties;
                 this.mapPopup.next(this.popupProperties);
-                console.log('PROPERTIES', this.popupProperties);
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
                 setTimeout(() => {
-                  new mapboxgl.Popup({maxWidth: '1000px', offset: [0, 0]})
-                              .setLngLat(coordinates)
-                              .setHTML((this.popupEl.nativeElement as HTMLElement).innerHTML)
-                              .addTo(this._map);
-                });
+                  const popup = new mapboxgl.Popup({maxWidth: '1000px', offset: [0, 0]})
+                                            .setLngLat(coordinates)
+                                            .setHTML((this.popupEl.nativeElement as HTMLElement).innerHTML)
+                                            .addTo(this._map);
+                  popup.on('close', () => {
+                    this.mapPopup.next({});
+                  });
+                }, 100);
               });
               this._map.on('mouseenter', layer, () => {
                 this._map.getCanvas().style.cursor = 'pointer';
@@ -91,7 +93,6 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               });
             }
             for (const country of this.COUNTRY_CODES) {
-              console.log('country', country);
               this._map.addSource(`wpdx.pop_${country}`, {
                 type: 'raster', url: `mapbox://wpdx.pop_${country}`
               });
@@ -106,7 +107,6 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
                   'raster-saturation': 0.99
                 }
               }, 'mapbox-satellite');
-              console.log('ADD LAYER RES', country);
             }
             const scale = new mapboxgl.ScaleControl({
               maxWidth: 250,

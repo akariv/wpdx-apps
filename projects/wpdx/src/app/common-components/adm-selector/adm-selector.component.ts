@@ -38,7 +38,6 @@ export class AdmSelectorComponent implements OnInit {
       });
     } else {
       this.db.query(this.query).subscribe((results: any) => {
-        console.log(results);
         this.processDBResults(results.rows);
       });
     }

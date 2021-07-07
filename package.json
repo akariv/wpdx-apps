@@ -22,11 +22,14 @@
     "@angular/platform-browser": "~11.2.1",
     "@angular/platform-browser-dynamic": "~11.2.1",
     "@angular/router": "~11.2.1",
+    "@turf/turf": "^6.4.0",
     "@types/mapbox-gl": "^2.3.0",
+    "@types/turf": "^3.5.32",
     "mapbox-gl": "^2.1.1",
     "marked": "^2.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
+    "turf": "^3.0.14",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
