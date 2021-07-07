@@ -72,9 +72,19 @@ export class RehabPrioComponent implements OnInit {
   }
 
   navigateTo(state) {
-    console.log('STATE', state);
-    console.log(this.map.getFilter('rehab-priority-circles'));
     this.map.fitBounds(state.bounds, {padding: 30, maxZoom: 12});
+    const filter = this.map.getFilter('rehab-priority-circles').slice(0, 3);
+    for (const _f of ['country_name', 'adm1', 'adm2', 'adm3']) {
+      const f = 'clean_' + _f;
+      if (state[_f]) {
+        filter.push([
+          '==', ['get', f], ['literal', state[_f]]
+        ]);
+      }
+    }
+    for (const layer of ['rehab-priority-circles', 'rehab-priority-text', 'all-waterpoints']) {
+      this.map.setFilter(layer, filter);
+    }
   }
 
   gotoPoint(point) {
