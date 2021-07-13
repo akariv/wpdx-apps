@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
 
-import { Subject } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 import { DbService } from '../db.service';
 
 @Component({
@@ -15,33 +15,65 @@ export class RehabPrioComponent implements OnInit {
 
   map: mapboxgl.Map = null;
   _popupProperties: any = {};
-  bounds = new Subject<mapboxgl.LngLatBounds>();
+  bounds = new BehaviorSubject<mapboxgl.LngLatBounds>(null);
   top10: any[] = [];
   _all_waterpoints = false;
+  _show_urban = false;
   circle_visible = false;
+  sort_options = [
+    {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
+    {value: 'criticality desc', display: 'Sort by Criticality'},
+    {value: 'pressure desc', display: 'Sort by Pressure'},
+  ];
+  _sort_by = this.sort_options[0].value;
 
   constructor(private db: DbService) { }
 
   ngOnInit(): void {
     this.bounds.pipe(
       debounceTime(2500),
+      filter(b => b !== null),
       switchMap((bounds) => this.db.query(`
-        select lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean,
-               case when local_population > 0 then 100 * assigned_population / local_population  else null end as criticallity
+        select lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
+               criticality, pressure
         from wpdx_plus
-        where is_latest and wpdx_id is not null and (rehab_priority > 0 or ${this.all_waterpoints? 'TRUE' : 'FALSE'}) 
-        and not is_urban
+        where is_latest and wpdx_id is not null 
+        and (rehab_priority > 0 or ${this.all_waterpoints? 'TRUE' : 'FALSE'}) 
+        and ${this.show_urban ? 'TRUE' : 'not is_urban'}
         and lat_deg >= ${bounds.getSouth()}
         and lat_deg <= ${bounds.getNorth()}
         and lon_deg >= ${bounds.getWest()}
         and lon_deg <= ${bounds.getEast()}
-        order by assigned_population desc
+        order by ${this._sort_by} nulls last
         limit 10
       `)),
       map((results: any) => results.rows)
     ).subscribe((results) => {
       this.top10 = results;
     });
+  }
+
+  downloadUrl() {
+    const bounds = this.bounds.getValue();
+    const fields = [
+      'lat_deg', 'lon_deg', 'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
+      'status_id', 'assigned_population', 'local_population', 'water_source_clean', 'water_tech_clean', 
+      'criticality', 'pressure', 'usage_cap', 'water_tech_clean', 'water_source_clean'
+    ];
+    return this.db.download(
+      `select ${fields.join(',')}
+       from wpdx_plus
+       where is_latest and wpdx_id is not null 
+       and (rehab_priority > 0 or ${this.all_waterpoints? 'TRUE' : 'FALSE'}) 
+        and ${this.show_urban ? 'TRUE' : 'not is_urban'}
+        and lat_deg >= ${bounds.getSouth()}
+        and lat_deg <= ${bounds.getNorth()}
+        and lon_deg >= ${bounds.getWest()}
+        and lon_deg <= ${bounds.getEast()}
+        order by ${this._sort_by} nulls last
+        limit 1000
+        `, 'xlsx', 'wpdx-rehab-prio-results', fields
+    );
   }
 
   set popupProperties(value) {
@@ -63,8 +95,28 @@ export class RehabPrioComponent implements OnInit {
     return this._all_waterpoints;
   }
 
+  set show_urban(value) {
+    this._show_urban = value;
+    this.top10 = [];
+    this.bounds.next(this.map.getBounds());
+  }
+
+  get show_urban() {
+    return this._show_urban;
+  }
+
+  set sort_by(value) {
+    this._sort_by = value;
+    this.bounds.next(this.map.getBounds());
+  }
+
+  get sort_by() {
+    return this._sort_by;
+  }
+
   setMap(_map: mapboxgl.Map) {
     this.map = _map;
+    this.map.setLayoutProperty('rehab-priority-criticallity-heatmap', 'visibility', 'visible');
     this.map.on('moveend', () => {
       this.onMove();
     });

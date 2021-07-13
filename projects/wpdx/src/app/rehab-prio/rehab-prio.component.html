@@ -15,7 +15,15 @@
                 <app-adm-selector optionsUrl='' (state)='navigateTo($event)'></app-adm-selector>
             </app-filters-control>
             <app-legend-control [title]='"Top " + (top10 && top10.length ? top10.length : "" ) + " water points"'>
-                <mat-slide-toggle [(ngModel)]='all_waterpoints'>All waterpoints: {{all_waterpoints}}</mat-slide-toggle>
+                <div class='toggles'>
+                    <mat-slide-toggle [(ngModel)]='all_waterpoints'>Show functional points</mat-slide-toggle>
+                    <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
+                    <mat-select [(value)]='sort_by'>
+                        <mat-option *ngFor="let option of sort_options" [value]="option.value">
+                        {{option.display}}
+                        </mat-option>
+                    </mat-select>            
+                </div>
                 <table *ngIf='top10 && top10.length'>
                     <thead>
                         <th>#</th>
@@ -24,7 +32,8 @@
                         <th>Tech</th>    
                         <th>Local Pop.</th>
                         <th>Served Pop.</th>
-                        <th>Criticallity</th>
+                        <th>Criticality</th>
+                        <th>Pressure</th>
                     </thead>
                     <tbody>
                         <tr *ngFor='let row of top10; let rank = index;' (click)='gotoPoint(row)'>
@@ -34,10 +43,14 @@
                             <td>{{row.water_tech_clean || 'Unknown' }}</td>
                             <td>{{row.local_population | number:'1.0-0' }}</td>
                             <td>{{row.assigned_population | number:'1.0-0' }}</td>
-                            <td>{{row.criticallity | number:'1.0-1' }}%</td>
+                            <td>{{row.criticality * 100 | number:'1.0-1' }}%</td>
+                            <td>{{row.pressure * 100 | number:'1.0-1' }}</td>
                         </tr>
                     </tbody>
                 </table>
+                <a class='download' *ngIf='top10 && top10.length' target="_blank" [href]='downloadUrl()'>
+                    <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+                </a>
             </app-legend-control>
         </app-controls>
     </div>
