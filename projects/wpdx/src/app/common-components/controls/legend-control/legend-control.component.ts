@@ -8,7 +8,8 @@ import { Component, Input, OnInit } from '@angular/core';
 export class LegendControlComponent implements OnInit {
 
   @Input() title = 'Legend';
-  
+  @Input() expanded = true;
+
   constructor() { }
 
   ngOnInit(): void {

@@ -19,6 +19,7 @@ export class RehabPrioComponent implements OnInit {
   top10: any[] = [];
   _all_waterpoints = false;
   _show_urban = false;
+  _show_point_counts = true;
   circle_visible = false;
   sort_options = [
     {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
@@ -34,7 +35,7 @@ export class RehabPrioComponent implements OnInit {
       debounceTime(2500),
       filter(b => b !== null),
       switchMap((bounds) => this.db.query(`
-        select lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
+        select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
                criticality, pressure
         from wpdx_plus
         where is_latest and wpdx_id is not null 
@@ -112,6 +113,20 @@ export class RehabPrioComponent implements OnInit {
 
   get sort_by() {
     return this._sort_by;
+  }
+
+  set show_point_counts(value) {
+    this._show_point_counts = value;
+    console.log('show_point_counts', value);
+    if (value) {
+      this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
+    } else {
+      this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
+    }
+  }
+
+  get show_point_counts() {
+    return this._show_point_counts;
   }
 
   setMap(_map: mapboxgl.Map) {

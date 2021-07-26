@@ -7,10 +7,9 @@
 >
     <div class='workspace' ngProjectAs='.content'>
         <app-controls>
-            <!-- <app-legend-control>
-                <p class='legend-row'><span class='status-circle functional'></span>&nbsp;Functional Water Point</p>
-                <p class='legend-row'><span class='status-circle'></span>&nbsp;Non-Functional Water Point</p>
-            </app-legend-control> -->
+            <app-legend-control [expanded]='false'>
+                <img src='/assets/img/rehab-prio-legend.svg'/>
+            </app-legend-control>
             <app-filters-control>
                 <app-adm-selector optionsUrl='' (state)='navigateTo($event)'></app-adm-selector>
             </app-filters-control>
@@ -52,6 +51,11 @@
                     <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
                 </a>
             </app-legend-control>
+            <app-legend-control [title]='"Settings"' [expanded]='false'>
+                <div class='toggles'>
+                    <mat-slide-toggle [(ngModel)]='show_point_counts'>Show point counts</mat-slide-toggle>
+                </div>
+            </app-legend-control>
         </app-controls>
     </div>
     <div class='map-popup'>
@@ -63,6 +67,9 @@
         </p>
         <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "No"'>
             <mat-icon>people</mat-icon>&nbsp;<label>Population that would be served:</label> {{popupProperties.assigned_population | number:'1.0-0'}} ppl
+        </p>
+        <p *ngIf='popupProperties.usage_cap > 0'>
+            <mat-icon>open_in_full</mat-icon>&nbsp;<label>Usage Capacity for this Point:</label> {{popupProperties.usage_cap | number:'1.0-0'}} ppl
         </p>
 
     </div>
