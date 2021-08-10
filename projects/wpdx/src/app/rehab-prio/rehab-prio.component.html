@@ -48,9 +48,14 @@
                 </a>
             </ng-container>
             <div class='toggles' *ngIf='nav === "settings"'>
+                <mat-label>Point Selection</mat-label>
                 <mat-slide-toggle [(ngModel)]='all_waterpoints'>Show functional points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
+
+                <mat-label>Map Layers</mat-label>
                 <mat-slide-toggle [(ngModel)]='show_point_counts'>Show point counts</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_heatmap_criticality'>Show point criticality heatmap</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show population served heatmap</mat-slide-toggle>
             </div>
         </app-controls>
     </div>

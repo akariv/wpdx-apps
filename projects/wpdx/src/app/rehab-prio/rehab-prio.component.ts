@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
 
-import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { DbService } from '../db.service';
+import { StateService } from '../common-components/common-components.module';
 
 @Component({
   selector: 'app-rehab-prio',
@@ -14,12 +15,17 @@ import { DbService } from '../db.service';
 export class RehabPrioComponent implements OnInit {
 
   map: mapboxgl.Map = null;
+  mapFilters = {
+    'all-waterpoints': []
+  };
   _popupProperties: any = {};
-  bounds = new BehaviorSubject<mapboxgl.LngLatBounds>(null);
+  // bounds = new BehaviorSubject<mapboxgl.LngLatBounds>(null);
   top10: any[] = [];
-  _all_waterpoints = false;
-  _show_urban = false;
-  _show_point_counts = true;
+  // _all_waterpoints = false;
+  // _show_urban = false;
+  // _show_point_counts = true;
+  // _show_heatmap_criticality = true;
+  // _show_heatmap_population = false;
   circle_visible = false;
   sort_options = [
     {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
@@ -35,12 +41,13 @@ export class RehabPrioComponent implements OnInit {
   ];
   nav = '';
 
-  constructor(private db: DbService) { }
+  constructor(private db: DbService, private state: StateService) { }
 
   ngOnInit(): void {
-    this.bounds.pipe(
+    this.state.changed.pipe(
       debounceTime(2500),
-      filter(b => b !== null),
+      map((s) => s.bounds),
+      filter(b => !!b),
       switchMap((bounds) => this.db.query(`
         select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
                criticality, pressure
@@ -62,7 +69,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   downloadUrl() {
-    const bounds = this.bounds.getValue();
+    const bounds = this.state.bounds;
     const fields = [
       'lat_deg', 'lon_deg', 'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
       'status_id', 'assigned_population', 'local_population', 'water_source_clean', 'water_tech_clean',
@@ -86,7 +93,7 @@ export class RehabPrioComponent implements OnInit {
 
   set popupProperties(value) {
     this._popupProperties = value;
-    console.log('_popupProperties', value);
+    console.log('popup properties', value);
     this.addCircle(value);
   }
 
@@ -95,71 +102,140 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set all_waterpoints(value) {
-    this._all_waterpoints = value;
     this.top10 = [];
-    this.bounds.next(this.map.getBounds());
+    this.state.setProp('all_waterpoints', value);
   }
 
   get all_waterpoints() {
-    return this._all_waterpoints;
+    return this.state.getProp('all_waterpoints');
   }
 
   set show_urban(value) {
-    this._show_urban = value;
     this.top10 = [];
-    this.bounds.next(this.map.getBounds());
+    this.state.setProp('show_urban', value);
   }
 
   get show_urban() {
-    return this._show_urban;
+    return this.state.getProp('show_urban');
   }
 
   set sort_by(value) {
-    this._sort_by = value;
-    this.bounds.next(this.map.getBounds());
+    this.state.setProp('sort_by', value);
   }
 
   get sort_by() {
-    return this._sort_by;
+    return this.state.getProp('sort_by');
   }
 
   set show_point_counts(value) {
-    this._show_point_counts = value;
-    console.log('show_point_counts', value);
+    this.state.setProp('show_point_counts', value);
+  }
+
+  get show_point_counts() {
+    return this.state.getProp('show_point_counts');
+  }
+
+  update_heatmaps(props) {
+    this.map.setLayoutProperty('rehab-priority-popuplation-served', 'visibility', props.show_heatmap_population ? 'visible' : 'none');
+    this.map.setLayoutProperty('rehab-priority-criticallity-heatmap', 'visibility', props.show_heatmap_criticality ? 'visible' : 'none');
+  }
+
+  set show_heatmap_criticality(value) {
+    this.state.setProp('show_heatmap_criticality', value);
     if (value) {
+      this.state.setProp('show_heatmap_population', false);
+    }
+  }
+
+  get show_heatmap_criticality() {
+    return this.state.getProp('show_heatmap_criticality');
+  }
+
+  set show_heatmap_population(value) {
+    this.state.setProp('show_heatmap_population', value);
+    if (value) {
+      this.state.setProp('show_heatmap_criticality', false);
+    }
+  }
+
+  get show_heatmap_population() {
+    return this.state.getProp('show_heatmap_population');
+  }
+
+
+  setMap(_map: mapboxgl.Map) {
+    this.map = _map;
+    this.map.on('moveend', (e) => {
+      this.onMove(e);
+    });
+    for (const layer of [
+      'rehab-priority-circles', 'rehab-priority-text', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap'
+    ]) {
+      const filt = this.map.getFilter(layer);
+      if (filt[0] === 'all') {
+        this.mapFilters[layer] = filt.slice(1);
+      } else {
+        this.mapFilters[layer] = [filt];
+      }
+    }
+    this.state.changed.pipe(
+      debounceTime(500),
+    ).subscribe((s) => {
+      this.updateState(s.props, s.bounds, s.userBounds);
+    });
+    if (this.state.bounds === null) {
+      this.state.setBounds(this.map.getBounds(), true);
+    }
+  }
+
+  navigateTo(state) {
+    for (const f of ['country_name', 'adm1', 'adm2', 'adm3']) {
+      this.state.setProp(f, state[f]);
+    }
+    this.state.setBounds(new mapboxgl.LngLatBounds(state.bounds));
+  }
+
+  updateState(props, bounds, userBounds) {
+    if (bounds && !userBounds) {
+      this.map.fitBounds(bounds, {padding: 30, maxZoom: 12});
+    }
+    const filt = [];
+    for (const _f of ['country_name', 'adm1', 'adm2', 'adm3']) {
+      const f = 'clean_' + _f;
+      if (props[_f]) {
+        filt.push([
+          '==', ['get', f], ['literal', props[_f]]
+        ]);
+      }
+    }
+    if (!props.show_urban) {
+      filt.push(
+        ['!', ['get', 'is_urban']]
+      );
+    }
+    if (!props.all_waterpoints) {
+      filt.push(
+        ['==', ['get', 'status_id'], ['literal', 'No']]
+      );
+    }
+    if (props.show_point_counts) {
       this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
     } else {
       this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
     }
-  }
-
-  get show_point_counts() {
-    return this._show_point_counts;
-  }
-
-  setMap(_map: mapboxgl.Map) {
-    this.map = _map;
-    this.map.setLayoutProperty('rehab-priority-criticallity-heatmap', 'visibility', 'visible');
-    this.map.on('moveend', () => {
-      this.onMove();
-    });
-    this.bounds.next(this.map.getBounds());
-    this.show_point_counts = false;
-  }
-
-  navigateTo(state) {
-    this.map.fitBounds(state.bounds, {padding: 30, maxZoom: 12});
-    const filt = this.map.getFilter('rehab-priority-circles').slice(0, 3);
-    for (const _f of ['country_name', 'adm1', 'adm2', 'adm3']) {
-      const f = 'clean_' + _f;
-      if (state[_f]) {
-        filt.push([
-          '==', ['get', f], ['literal', state[_f]]
-        ]);
+    this.update_heatmaps(props);
+    for (const layer of [
+      'rehab-priority-circles',
+      'rehab-priority-text',
+      'rehab-priority-popuplation-served',
+      'rehab-priority-criticallity-heatmap',
+      'all-waterpoints'
+    ]) {
+      const baseFilt = this.mapFilters[layer];
+      const fullFilt = ['all', ...baseFilt, ...filt];
+      if (JSON.stringify(this.map.getFilter(layer)) !== JSON.stringify(fullFilt)) {
+        this.map.setFilter(layer, fullFilt);
       }
-    }
-    for (const layer of ['rehab-priority-circles', 'rehab-priority-text', 'all-waterpoints']) {
-      this.map.setFilter(layer, filt);
     }
   }
 
@@ -173,7 +249,7 @@ export class RehabPrioComponent implements OnInit {
 
   addCircle(point) {
     this.removeCircle();
-    if (!point.lon_deg || point.lat_deg) {
+    if (!point.lon_deg || !point.lat_deg) {
       return;
     }
     const _center = turf.point([point.lon_deg, point.lat_deg]);
@@ -202,9 +278,11 @@ export class RehabPrioComponent implements OnInit {
     }
   }
 
-  onMove() {
+  onMove(ev) {
     const bounds = this.map.getBounds();
-    this.bounds.next(bounds);
+    if (ev.originalEvent) {
+      this.state.setBounds(bounds, true);
+    }
   }
 
 }

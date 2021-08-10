@@ -19,6 +19,7 @@ import { FiltersControlComponent } from './controls/filters-control/filters-cont
 import { ControlsComponent } from './controls/controls/controls.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
+export { StateService } from './state.service';
 
 
 @NgModule({
@@ -54,7 +55,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     LegendControlComponent,
     CustomSelectorComponent,
     FiltersControlComponent,
-    ControlsComponent
+    ControlsComponent,
   ]
 })
 export class CommonComponentsModule { }

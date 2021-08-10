@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DbService } from '../../db.service';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-adm-selector',
@@ -29,7 +30,8 @@ export class AdmSelectorComponent implements OnInit {
     ORDER BY 1,2,3,4
   `;
 
-  constructor(private http: HttpClient, private db: DbService) { }
+  constructor(private http: HttpClient, private db: DbService, private stateSvc: StateService) {
+  }
 
   ngOnInit(): void {
     if (this.optionsUrl) {
@@ -37,7 +39,7 @@ export class AdmSelectorComponent implements OnInit {
         this.countryNameOptions = levels;
       });
     } else {
-      this.db.query(this.query).subscribe((results: any) => {
+      this.db.query(this.query, true).subscribe((results: any) => {
         this.processDBResults(results.rows);
       });
     }
@@ -49,6 +51,29 @@ export class AdmSelectorComponent implements OnInit {
     items = this.groupBy(items, ['clean_country_name'], 'clean_adm1');
     items.forEach((item) => item.value = item.clean_country_name);
     this.countryNameOptions = items;
+    for (const l1 of this.countryNameOptions) {
+      if (l1.value === this.stateSvc.props.country_name) {
+        this._countryName = l1;
+        this.adm1_options = l1.items || [];
+        for (const l2 of this.adm1_options) {
+          if (l2.value === this.stateSvc.props.adm1) {
+            this._adm1 = l2;
+            this.adm2_options = l2.items;
+            for (const l3 of this.adm2_options) {
+              if (l3.value === this.stateSvc.props.adm2) {
+                this._adm2 = l3;
+                this.adm3_options = l3.items;
+                for (const l4 of this.adm3_options) {
+                  if (l4.value === this.stateSvc.props.adm3) {
+                    this._adm3 = l4;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   groupBy(items, keyFields, valueField) {
@@ -138,8 +163,15 @@ export class AdmSelectorComponent implements OnInit {
     this.state.next(state);
   }
 
+  nonempty(x) {
+    return x !== undefined && x !== null && Object.keys(x).length > 0;
+  }
+
   clearVisible() {
-    return this.country_name || this.adm1 || this.adm2 || this.adm3;
+    return this.nonempty(this.country_name) ||
+    this.nonempty(this.adm1) ||
+    this.nonempty(this.adm2.length) ||
+    this.nonempty(this.adm3.length);
   }
 
   clear() {
