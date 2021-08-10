@@ -48,20 +48,7 @@ export class RehabPrioComponent implements OnInit {
       debounceTime(2500),
       map((s) => s.bounds),
       filter(b => !!b),
-      switchMap((bounds) => this.db.query(`
-        select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
-               criticality, pressure
-        from wpdx_plus
-        where is_latest and wpdx_id is not null 
-        and (rehab_priority > 0 or ${this.all_waterpoints? 'TRUE' : 'FALSE'}) 
-        and ${this.show_urban ? 'TRUE' : 'not is_urban'}
-        and lat_deg >= ${bounds.getSouth()}
-        and lat_deg <= ${bounds.getNorth()}
-        and lon_deg >= ${bounds.getWest()}
-        and lon_deg <= ${bounds.getEast()}
-        order by ${this._sort_by} nulls last
-        limit 10
-      `)),
+      switchMap((bounds) => this.db.query(this.queryUI(bounds))),
       map((results: any) => results.rows)
     ).subscribe((results) => {
       this.top10 = results;
@@ -71,24 +58,68 @@ export class RehabPrioComponent implements OnInit {
   downloadUrl() {
     const bounds = this.state.bounds;
     const fields = [
-      'lat_deg', 'lon_deg', 'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
-      'status_id', 'assigned_population', 'local_population', 'water_source_clean', 'water_tech_clean',
-      'criticality', 'pressure', 'usage_cap', 'water_tech_clean', 'water_source_clean'
+      'report_date', 'wpdx_id', 'lat_deg', 'lon_deg', 'status_id', 'source', 'activity_id',
+      'install_year', 'installer', 'rehab_year', 'rehabilitator', 'management_clean', 'facility_type',
+      'pay', 'status', 'orig_lnk', 'photo_lnk', 'data_lnk',
+      'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'subjective_quality', 'scheme_id', 'notes',
+      'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
+      'status_id', 'assigned_population', 'local_population', 'rehab_priority',
+      'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
+      'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
+      'criticality', 'pressure', 'usage_cap',
     ];
-    return this.db.download(
-      `select ${fields.join(',')}
-       from wpdx_plus
-       where is_latest and wpdx_id is not null 
-       and (rehab_priority > 0 or ${this.all_waterpoints? 'TRUE' : 'FALSE'}) 
-        and ${this.show_urban ? 'TRUE' : 'not is_urban'}
-        and lat_deg >= ${bounds.getSouth()}
-        and lat_deg <= ${bounds.getNorth()}
-        and lon_deg >= ${bounds.getWest()}
-        and lon_deg <= ${bounds.getEast()}
-        order by ${this._sort_by} nulls last
-        limit 1000
-        `, 'xlsx', 'wpdx-rehab-prio-results', fields
-    );
+    return this.db.download(this.queryDL(bounds, fields), 'xlsx', 'wpdx-rehab-prio-results', fields);
+  }
+
+  queryUI(bounds) {
+    const sql = `
+      select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
+            criticality, pressure
+      from wpdx_plus
+      where ${this.queryWhere(bounds)}
+      order by ${this._sort_by} nulls last
+      limit 10
+    `;
+    return sql;
+  }
+
+  queryDL(bounds, fields) {
+    return `
+      select ${fields.join(',')}
+      from wpdx_plus
+      where ${this.queryWhere(bounds)}
+      order by ${this._sort_by} nulls last
+      limit 1000
+    `;
+  }
+
+  queryWhere(bounds) {
+    const terms = [
+      'is_latest', 'wpdx_id is not null',
+      'lat_deg >= ' + bounds.getSouth(),
+      'lat_deg <= ' + bounds.getNorth(),
+      'lon_deg >= ' + bounds.getWest(),
+      'lon_deg <= ' + bounds.getEast(),
+    ];
+    if (!this.all_waterpoints) {
+      terms.push('rehab_priority > 0');
+    }
+    if (!this.show_urban) {
+      terms.push('not is_urban');
+    }
+    if (this.state.props.country_name) {
+      terms.push(`clean_country_name = '${this.state.props.country_name}'`);
+    }
+    if (this.state.props.adm1) {
+      terms.push(`clean_adm1 = '${this.state.props.adm1}'`);
+    }
+    if (this.state.props.adm2) {
+      terms.push(`clean_adm2 = '${this.state.props.adm2}'`);
+    }
+    if (this.state.props.adm1) {
+      terms.push(`clean_adm3 = '${this.state.props.adm3}'`);
+    }
+    return terms.join(' and ');
   }
 
   set popupProperties(value) {
