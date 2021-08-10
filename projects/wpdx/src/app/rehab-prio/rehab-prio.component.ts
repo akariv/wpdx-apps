@@ -27,6 +27,13 @@ export class RehabPrioComponent implements OnInit {
     {value: 'pressure desc', display: 'Sort by Pressure'},
   ];
   _sort_by = this.sort_options[0].value;
+  filterConfiguration = [
+    {id: 'legend', title: 'Legend', icon: 'menu_book'},
+    {id: 'adm', title: 'Filter By Region', icon: 'travel_explore'},
+    {id: 'data-table', title: 'Top Waterpoints', icon: 'format_list_numbered'},
+    {id: 'settings', title: 'View Settings', icon: 'settings'},
+  ];
+  nav = '';
 
   constructor(private db: DbService) { }
 
@@ -58,7 +65,7 @@ export class RehabPrioComponent implements OnInit {
     const bounds = this.bounds.getValue();
     const fields = [
       'lat_deg', 'lon_deg', 'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
-      'status_id', 'assigned_population', 'local_population', 'water_source_clean', 'water_tech_clean', 
+      'status_id', 'assigned_population', 'local_population', 'water_source_clean', 'water_tech_clean',
       'criticality', 'pressure', 'usage_cap', 'water_tech_clean', 'water_source_clean'
     ];
     return this.db.download(
@@ -79,6 +86,7 @@ export class RehabPrioComponent implements OnInit {
 
   set popupProperties(value) {
     this._popupProperties = value;
+    console.log('_popupProperties', value);
     this.addCircle(value);
   }
 
@@ -136,21 +144,22 @@ export class RehabPrioComponent implements OnInit {
       this.onMove();
     });
     this.bounds.next(this.map.getBounds());
+    this.show_point_counts = false;
   }
 
   navigateTo(state) {
     this.map.fitBounds(state.bounds, {padding: 30, maxZoom: 12});
-    const filter = this.map.getFilter('rehab-priority-circles').slice(0, 3);
+    const filt = this.map.getFilter('rehab-priority-circles').slice(0, 3);
     for (const _f of ['country_name', 'adm1', 'adm2', 'adm3']) {
       const f = 'clean_' + _f;
       if (state[_f]) {
-        filter.push([
+        filt.push([
           '==', ['get', f], ['literal', state[_f]]
         ]);
       }
     }
     for (const layer of ['rehab-priority-circles', 'rehab-priority-text', 'all-waterpoints']) {
-      this.map.setFilter(layer, filter);
+      this.map.setFilter(layer, filt);
     }
   }
 
@@ -164,6 +173,9 @@ export class RehabPrioComponent implements OnInit {
 
   addCircle(point) {
     this.removeCircle();
+    if (!point.lon_deg || point.lat_deg) {
+      return;
+    }
     const _center = turf.point([point.lon_deg, point.lat_deg]);
     const _circle = turf.circle(_center, 2, {steps: 80, units: 'kilometers'});
     this.circle_visible = true;

@@ -1,22 +1,18 @@
 <app-airtable-layout
     id='rehab-prio'
-    [interactionLayers]='["all-waterpoints", "rehab-priority-circles", "rehab-priority-text"]'
-    mapStyle='mapbox://styles/wpdx/ckjmvff0e1tng19o33klef59z'
+    [interactionLayers]='["rehab-priority-circles", "rehab-priority-text"]'
+    [filters]='filterConfiguration'
+    mapStyle='mapbox://styles/wpdx/ckjmvff0e1tng19o33klef59z/draft'
     (map)='setMap($event)'
     (mapPopup)='popupProperties = $event'
+    (filterSelected)='nav = $event'
 >
     <div class='workspace' ngProjectAs='.content'>
-        <app-controls>
-            <app-legend-control [expanded]='false'>
-                <img src='/assets/img/rehab-prio-legend.svg'/>
-            </app-legend-control>
-            <app-filters-control>
-                <app-adm-selector optionsUrl='' (state)='navigateTo($event)'></app-adm-selector>
-            </app-filters-control>
-            <app-legend-control [title]='"Top " + (top10 && top10.length ? top10.length : "" ) + " water points"'>
+        <app-controls>        
+            <img src='/assets/img/rehab-prio-legend.svg' *ngIf='nav === "legend"'/>
+            <app-adm-selector optionsUrl='' (state)='navigateTo($event)' *ngIf='nav === "adm"'></app-adm-selector>
+            <ng-container *ngIf='nav === "data-table"'>
                 <div class='toggles'>
-                    <mat-slide-toggle [(ngModel)]='all_waterpoints'>Show functional points</mat-slide-toggle>
-                    <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
                     <mat-select [(value)]='sort_by'>
                         <mat-option *ngFor="let option of sort_options" [value]="option.value">
                         {{option.display}}
@@ -50,12 +46,12 @@
                 <a class='download' *ngIf='top10 && top10.length' target="_blank" [href]='downloadUrl()'>
                     <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
                 </a>
-            </app-legend-control>
-            <app-legend-control [title]='"Settings"' [expanded]='false'>
-                <div class='toggles'>
-                    <mat-slide-toggle [(ngModel)]='show_point_counts'>Show point counts</mat-slide-toggle>
-                </div>
-            </app-legend-control>
+            </ng-container>
+            <div class='toggles' *ngIf='nav === "settings"'>
+                <mat-slide-toggle [(ngModel)]='all_waterpoints'>Show functional points</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_point_counts'>Show point counts</mat-slide-toggle>
+            </div>
         </app-controls>
     </div>
     <div class='map-popup'>

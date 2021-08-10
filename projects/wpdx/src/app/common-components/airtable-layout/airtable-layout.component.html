@@ -1,17 +1,34 @@
 <app-layout (info)='panel = "about"'>
     <div class='title'>{{title}}</div>
     <ng-container ngProjectAs=".content">
-        <app-map-layer
-            [style]='mapStyle'
-            [interactionLayers]='interactionLayers'
-            (map)='map.next($event)'
-            (mapPopup)='mapPopup.next($event)'
-        >
-            <ng-container ngProjectAs='.map-popup'>
-                <ng-content select='.map-popup'></ng-content>
-            </ng-container>
-        </app-map-layer>
-        <ng-content select='.content'></ng-content>
+        <mat-drawer-container>
+            <mat-drawer mode="side" opened>
+                 <!-- [opened]='selectedFilter===null'> -->
+                <div class='nav-icon' *ngFor='let filter of filters' (click)='selectFilter(filter.id)'>
+                    <mat-icon [icon]="filter.icon" aria-hidden="false" [aria-label]="filter.title">{{filter.icon}}</mat-icon>
+                    <label>{{filter.title}}</label>
+                </div>
+            </mat-drawer>
+            <mat-drawer-content>
+                <mat-drawer-container [autosize]='true'>
+                    <mat-drawer mode="over" class='drawer-content' #drawer (closed)='selectedFilter = null'>
+                        <ng-content select='.content'></ng-content>
+                    </mat-drawer>
+                    <mat-drawer-content>
+                        <app-map-layer
+                            [style]='mapStyle'
+                            [interactionLayers]='interactionLayers'
+                            (map)='map.next($event)'
+                            (mapPopup)='mapPopup.next($event)'
+                        >
+                            <ng-container ngProjectAs='.map-popup'>
+                                <ng-content select='.map-popup'></ng-content>
+                            </ng-container>
+                        </app-map-layer>
+                    </mat-drawer-content>
+                </mat-drawer-container>
+            </mat-drawer-content>
+        </mat-drawer-container>
         <app-about-panel [open]='panel === "about"' [logosKey]='id' (closed)='panel = ""'>
             <div [innerHtml]='marked(about)'></div>
         </app-about-panel>

@@ -17,6 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { CustomSelectorComponent } from './controls/custom-selector/custom-selector.component';
 import { FiltersControlComponent } from './controls/filters-control/filters-control.component';
 import { ControlsComponent } from './controls/controls/controls.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 
@@ -41,6 +42,7 @@ import { ControlsComponent } from './controls/controls/controls.component';
     MatIconModule,
     MatButtonToggleModule,
     MatExpansionModule,
+    MatSidenavModule,
   ],
   exports: [
     AppLayoutComponent,

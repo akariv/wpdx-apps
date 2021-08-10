@@ -137,4 +137,15 @@ export class AdmSelectorComponent implements OnInit {
     };
     this.state.next(state);
   }
+
+  clearVisible() {
+    return this.country_name || this.adm1 || this.adm2 || this.adm3;
+  }
+
+  clear() {
+    this.adm3 = {};
+    this.adm2 = {};
+    this.adm1 = {};
+    this.country_name = {};
+  }
 }
