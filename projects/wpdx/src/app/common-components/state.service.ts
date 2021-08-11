@@ -24,7 +24,7 @@ export class StateService {
         this.bounds = new mapboxgl.LngLatBounds(parsed);
       }
     });
-    console.log('INIT', this.props, this.bounds);
+    // console.log('INIT', this.props, this.bounds);
     this.changed.next({props: this.props, bounds: this.bounds, userBounds: this.userBounds});
   }
 
