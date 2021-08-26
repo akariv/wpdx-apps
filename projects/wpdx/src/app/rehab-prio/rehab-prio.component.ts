@@ -284,7 +284,7 @@ export class RehabPrioComponent implements OnInit {
       return;
     }
     const _center = turf.point([point.lon_deg, point.lat_deg]);
-    const _circle = turf.circle(_center, 2, {steps: 80, units: 'kilometers'});
+    const _circle = turf.circle(_center, 1, {steps: 80, units: 'kilometers'});
     this.circle_visible = true;
     this.map.addSource('circleData', {
       type: 'geojson',

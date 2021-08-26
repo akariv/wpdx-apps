@@ -61,7 +61,7 @@
     </div>
     <div class='map-popup'>
         <p *ngIf='popupProperties.local_population > 0'>
-            <mat-icon>people</mat-icon>&nbsp;<label>Population in 2km radius:</label> {{popupProperties.local_population | number:'1.0-0'}} ppl
+            <mat-icon>people</mat-icon>&nbsp;<label>Population in 1km radius:</label> {{popupProperties.local_population | number:'1.0-0'}} ppl
         </p>
         <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "No"'>
             <mat-icon>people</mat-icon>&nbsp;<label>Population served:</label> {{popupProperties.assigned_population | number:'1.0-0'}} ppl
