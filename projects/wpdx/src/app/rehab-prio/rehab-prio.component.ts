@@ -228,7 +228,7 @@ export class RehabPrioComponent implements OnInit {
 
   updateState(props, bounds, userBounds) {
     if (bounds && !userBounds) {
-      this.map.fitBounds(bounds, {padding: 30, maxZoom: 12});
+      this.map.fitBounds(bounds, {padding: 30, maxZoom: 18});
     }
     const filt = [];
     for (const _f of ['country_name', 'adm1', 'adm2', 'adm3']) {
