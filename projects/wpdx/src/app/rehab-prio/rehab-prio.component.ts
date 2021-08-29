@@ -28,20 +28,23 @@ export class RehabPrioComponent implements OnInit {
   // _show_heatmap_population = false;
   circle_visible = false;
   sort_options = [
+    {value: 'local_population desc', display: 'Sort by Local Pop.'},
     {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
-    {value: 'criticality desc', display: 'Sort by Criticality'},
+    {value: 'criticality desc', display: 'Sort by Crucialness'},
     {value: 'pressure desc', display: 'Sort by Pressure'},
   ];
-  _sort_by = this.sort_options[0].value;
   filterConfiguration = [
-    {id: 'legend', title: 'Legend', icon: 'menu_book'},
     {id: 'adm', title: 'Filter By Region', icon: 'travel_explore'},
-    {id: 'data-table', title: 'Top Waterpoints', icon: 'format_list_numbered'},
+    {id: 'data-table', title: 'Top Water Points', icon: 'format_list_numbered'},
     {id: 'settings', title: 'View Settings', icon: 'settings'},
+    {id: 'legend', title: 'Legend', icon: 'menu_book'},
+    {id: 'download', title: 'Download Data', icon: 'file_download'},
   ];
   nav = '';
 
-  constructor(private db: DbService, private state: StateService) { }
+  constructor(private db: DbService, private state: StateService) {
+    this.db.fetchAdmLevels().subscribe();
+  }
 
   ngOnInit(): void {
     this.state.changed.pipe(
@@ -52,7 +55,20 @@ export class RehabPrioComponent implements OnInit {
       map((results: any) => results.rows)
     ).subscribe((results) => {
       this.top10 = results;
+      if (this.map) {
+        this.map.setFilter('rehab-priority-highlights', [
+          'all',
+          [
+            'match',
+            ['get', 'wpdx_id'],
+            [...new Set(this.top10.map(r => r.wpdx_id))],
+            true,
+            false
+          ]
+        ]);
+      }
     });
+    this.state.defaultValue('all_waterpoints', true);
   }
 
   downloadUrl() {
@@ -77,8 +93,8 @@ export class RehabPrioComponent implements OnInit {
             criticality, pressure
       from wpdx_plus
       where ${this.queryWhere(bounds)}
-      order by ${this._sort_by} nulls last
-      limit 10
+      order by ${this.sort_by} nulls last
+      limit 15
     `;
     return sql;
   }
@@ -88,8 +104,7 @@ export class RehabPrioComponent implements OnInit {
       select ${fields.join(',')}
       from wpdx_plus
       where ${this.queryWhere(bounds)}
-      order by ${this._sort_by} nulls last
-      limit 1000
+      order by ${this.sort_by} nulls last
     `;
   }
 
@@ -116,7 +131,7 @@ export class RehabPrioComponent implements OnInit {
     if (this.state.props.adm2) {
       terms.push(`clean_adm2 = '${this.state.props.adm2}'`);
     }
-    if (this.state.props.adm1) {
+    if (this.state.props.adm3) {
       terms.push(`clean_adm3 = '${this.state.props.adm3}'`);
     }
     return terms.join(' and ');
@@ -124,7 +139,6 @@ export class RehabPrioComponent implements OnInit {
 
   set popupProperties(value) {
     this._popupProperties = value;
-    console.log('popup properties', value);
     this.addCircle(value);
   }
 
@@ -151,11 +165,12 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set sort_by(value) {
+    this.top10 = [];
     this.state.setProp('sort_by', value);
   }
 
   get sort_by() {
-    return this.state.getProp('sort_by');
+    return this.state.getProp('sort_by') || this.sort_options[0].value;
   }
 
   set show_point_counts(value) {
@@ -200,7 +215,8 @@ export class RehabPrioComponent implements OnInit {
       this.onMove(e);
     });
     for (const layer of [
-      'rehab-priority-circles', 'rehab-priority-text', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap'
+      'rehab-priority-circles', 'rehab-priority-text',
+      'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap',
     ]) {
       const filt = this.map.getFilter(layer);
       if (filt[0] === 'all') {
@@ -221,9 +237,15 @@ export class RehabPrioComponent implements OnInit {
 
   navigateTo(state) {
     for (const f of ['country_name', 'adm1', 'adm2', 'adm3']) {
-      this.state.setProp(f, state[f]);
+      if (state[f]) {
+        this.state.setProp(f, state[f]);
+      } else {
+        this.state.removeProp(f);
+      }
     }
-    this.state.setBounds(new mapboxgl.LngLatBounds(state.bounds));
+    if (state.bounds) {
+      this.state.setBounds(new mapboxgl.LngLatBounds(state.bounds));
+    }
   }
 
   updateState(props, bounds, userBounds) {

@@ -21,13 +21,42 @@
                             (map)='map.next($event)'
                             (mapPopup)='mapPopup.next($event)'
                         >
-                            <ng-container ngProjectAs='.map-popup'>
-                                <ng-content select='.map-popup'></ng-content>
-                            </ng-container>
                         </app-map-layer>
                     </mat-drawer-content>
                 </mat-drawer-container>
             </mat-drawer-content>
+            <mat-drawer mode="side" [opened]='!!popupProperties.wpdx_id' position='end' #popup>
+                <div class='popup-container'>
+                    <a class='close' (click)='mapPopup.next({})'>Close</a>
+                    <div class='popup-info' *ngIf='popupProperties.wpdx_id'>
+                        <p *ngIf='popupProperties.wpdx_id'><label title='WPDX Id' i18n-title><mat-icon>tag</mat-icon></label> {{popupProperties.wpdx_id}}</p>
+                        <p>
+                            <label><mat-icon>place</mat-icon></label> 
+                            {{popupProperties.clean_country_name || popupProperties.country_name}} &gt; {{popupProperties.clean_adm1 || popupProperties.adm1}}  &gt; {{popupProperties.clean_adm2 || popupProperties.adm2}}  &gt; {{popupProperties.clean_adm3 || popupProperties.adm3}}
+                            <a [href]='"https://www.google.com/maps/@" + (popupProperties.lat || popupProperties.lat_deg) + "," + (popupProperties.lon || popupProperties.lon_deg) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
+                        </p>
+                        <p *ngIf='popupProperties.water_source_clean || popupProperties.water_source'><label title='Water Source' i18n-title><mat-icon>water</mat-icon></label> {{popupProperties.water_source_clean || popupProperties.water_source}}</p>
+                        <p *ngIf='popupProperties.water_tech_clean || popupProperties.water_tech'><label title='Water Point Tech' i18n-title><mat-icon>settings</mat-icon></label> {{popupProperties.water_tech_clean || popupProperties.water_tech}}</p>
+                        <ng-content selector='.map-popup'></ng-content>
+                        <p *ngIf='popupProperties.source'><label title='Data Source' i18n-title><mat-icon>wash</mat-icon></label> {{popupProperties.source}}</p>
+                        <p *ngIf='popupProperties.management_clean || popupProperties.management'><label title='Management' i18n-title><mat-icon>corporate_fare</mat-icon></label>{{popupProperties.management_clean || popupProperties.management}}</p>
+                        <p *ngIf='popupProperties.installer || popupProperties.install_year'>
+                            <label title='Installation' i18n-title><mat-icon>construction</mat-icon></label>&nbsp;
+                            <span>{{popupProperties.install_year}}</span>
+                            <span *ngIf='popupProperties.installer && popupProperties.install_year' i18n>&nbsp;by&nbsp;</span>
+                            <span>{{popupProperties.installer}}</span>
+                        </p>
+                        <p *ngIf='popupProperties.report_date'>
+                            <label title='Report Date' i18n-title><mat-icon>edit_calendar</mat-icon></label>&nbsp;
+                            <span>Reported at</span>&nbsp;
+                            <span>{{popupProperties.report_date}}</span>
+                        </p>
+                    </div>
+                    <ng-container *ngIf='popupProperties.photo_lnk'>
+                        <img [src]='popupProperties.photo_lnk' (error)='$event.target.style.display="none"'>
+                    </ng-container>
+                </div>
+            </mat-drawer>
         </mat-drawer-container>
         <app-about-panel [open]='panel === "about"' [logosKey]='id' (closed)='panel = ""'>
             <div [innerHtml]='marked(about)'></div>

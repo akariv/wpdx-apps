@@ -22,14 +22,6 @@ export class AdmSelectorComponent implements OnInit {
   _adm3: any = {};
   adm3_options = [];
 
-  query = `
-    SELECT clean_country_name, clean_adm1, clean_adm2, coalesce(clean_adm3, '-') as clean_adm3,
-           max(lat_deg) as lat_max, max(lon_deg) as lon_max, min(lat_deg) as lat_min, min(lon_deg) as lon_min
-    FROM wpdx_plus
-    GROUP BY 1,2,3,4
-    ORDER BY 1,2,3,4
-  `;
-
   constructor(private http: HttpClient, private db: DbService, private stateSvc: StateService) {
   }
 
@@ -39,7 +31,7 @@ export class AdmSelectorComponent implements OnInit {
         this.countryNameOptions = levels;
       });
     } else {
-      this.db.query(this.query, true).subscribe((results: any) => {
+      this.db.fetchAdmLevels().subscribe((results: any) => {
         this.processDBResults(results.rows);
       });
     }
@@ -154,11 +146,11 @@ export class AdmSelectorComponent implements OnInit {
 
   sendState() {
     const state = {
-      country_name: this.country_name.value,
+      country_name: this.country_name?.value,
       adm1: this.adm1?.value,
       adm2: this.adm2?.value,
       adm3: this.adm3?.value,
-      bounds: this.adm3.bounds || this.adm2.bounds || this.adm1.bounds || this.country_name.bounds
+      bounds: this.adm3.bounds || this.adm2.bounds || this.adm1.bounds || this.country_name.bounds,
     };
     this.state.next(state);
   }
@@ -175,9 +167,6 @@ export class AdmSelectorComponent implements OnInit {
   }
 
   clear() {
-    this.adm3 = {};
-    this.adm2 = {};
-    this.adm1 = {};
     this.country_name = {};
   }
 }

@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import { ReplaySubject } from 'rxjs';
+import { fromEvent, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,16 @@ export class StateService {
   public changed = new ReplaySubject<{props: any; bounds: mapboxgl.LngLatBounds; userBounds: boolean}>(1);
 
   constructor(private loc: Location) {
+    fromEvent(window, 'popstate').subscribe(() => {
+      this.loadFromUrl();
+    });
+    this.loadFromUrl();
+    // console.log('INIT', this.props, this.bounds);
+  }
+
+  loadFromUrl() {
     const params = new URLSearchParams(location.search);
     params.forEach((value, key) => {
-      console.log(key, value);
       const parsed: any = JSON.parse(value);
       if (key !== 'bounds') {
         this.props[key] = parsed;
@@ -24,7 +31,6 @@ export class StateService {
         this.bounds = new mapboxgl.LngLatBounds(parsed);
       }
     });
-    // console.log('INIT', this.props, this.bounds);
     this.changed.next({props: this.props, bounds: this.bounds, userBounds: this.userBounds});
   }
 
@@ -34,8 +40,23 @@ export class StateService {
     this.bump();
   }
 
+  defaultValue(key, value) {
+    if (!this.hasProp(key)) {
+      this.setProp(key, value);
+    }
+  }
+
+  hasProp(key) {
+    return this.props.hasOwnProperty(key);
+  }
+
   setProp(key, value) {
     this.props[key] = value;
+    this.bump();
+  }
+
+  removeProp(key) {
+    delete this.props[key];
     this.bump();
   }
 
@@ -52,7 +73,8 @@ export class StateService {
       }
     }
     const params = new URLSearchParams(state);
-    this.loc.replaceState(location.pathname, params.toString());
+    // this.loc.replaceState(location.pathname, params.toString());
+    history.pushState(null, null, location.pathname + '?' + params.toString());
     this.changed.next({props: this.props, bounds: this.bounds, userBounds: this.userBounds});
   }
 }

@@ -17,6 +17,7 @@ export class AirtableLayoutComponent implements OnInit {
   @Input() mapStyle: string;
   @Input() interactionLayers: string[] = [];
   @Input() filters: {id: string; title: string; icon: string}[] = [];
+  @Input() popupProperties: any = {};
   @Output() map = new EventEmitter<any>();
   @Output() mapPopup = new EventEmitter<any>();
   @Output() filterSelected = new EventEmitter<string>();

@@ -20,8 +20,12 @@
         margin-bottom: 20px;
     }
     .download {
-        float: right;
+        display:flex;
+        flex-flow: row;
+        align-items: center;
         margin-top: 8px;
+        text-decoration: none;
+        color: inherit;
     }
 }
 
@@ -29,6 +33,15 @@ table {
     border-collapse: collapse;
     td, th {
         padding: 4px 8px;
+        mat-icon {
+            font-size: 25px;
+            display: inline;
+            line-height: 0.8;
+            vertical-align: top;
+        }
+        &.clickable {
+            cursor: pointer;
+        }
     }
     tr {
         cursor: pointer;

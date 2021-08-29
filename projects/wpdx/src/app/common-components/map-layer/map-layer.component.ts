@@ -17,7 +17,6 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
   @Output() mapPopup = new EventEmitter<any>();
 
   @ViewChild('map') mapEl: ElementRef;
-  @ViewChild('popup') popupEl: ElementRef;
 
   created = new ReplaySubject<HTMLElement>(1);
 
@@ -65,24 +64,10 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
           });
           this._map.on('style.load', () => {
             for (const layer of this.interactionLayers) {
-              console.log('LAYER', layer);
               this._map.setLayoutProperty(layer, 'visibility', 'visible');
               this._map.on('click', layer, (e) => {
-                const coordinates = (e.features[0].geometry as any).coordinates.slice();
                 this.popupProperties = e.features[0].properties;
                 this.mapPopup.next(this.popupProperties);
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                setTimeout(() => {
-                  const popup = new mapboxgl.Popup({maxWidth: '1000px', offset: [0, 0]})
-                                            .setLngLat(coordinates)
-                                            .setHTML((this.popupEl.nativeElement as HTMLElement).innerHTML)
-                                            .addTo(this._map);
-                  popup.on('close', () => {
-                    this.mapPopup.next({});
-                  });
-                }, 100);
               });
               this._map.on('mouseenter', layer, () => {
                 this._map.getCanvas().style.cursor = 'pointer';
@@ -100,19 +85,20 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
                 id: `population_${country}`,
                 type: 'raster',
                 source: `wpdx.pop_${country}`,
-                minzoom: 10,
+                minzoom: 7,
                 maxzoom: 22,
                 paint: {
                   'raster-opacity': 0.3,
                   'raster-saturation': 0.99
                 }
-              }, 'mapbox-satellite');
+              }, 'land-structure-polygon');
             }
             const scale = new mapboxgl.ScaleControl({
               maxWidth: 250,
               unit: 'metric'
             });
             this._map.addControl(scale, 'top-right');
+            this._map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-right');
             this.map.next(this._map);
           });
         }
