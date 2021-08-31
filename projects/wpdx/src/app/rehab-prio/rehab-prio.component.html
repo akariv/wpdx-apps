@@ -49,9 +49,9 @@
                 <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
 
                 <mat-label>Map Layers</mat-label>
-                <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Likely Users</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Potential Users</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='show_heatmap_criticality'>Show Point Crucialness heatmap</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show likely users heatmap</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show Potential Users heatmap</mat-slide-toggle>
             </div>
         </app-controls>
     </div>
@@ -66,7 +66,7 @@
             <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
         </p>
         <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "No"'>
-            <mat-icon>people</mat-icon><label>Likely Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+            <mat-icon>people</mat-icon><label>Potential Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
         </p>
         <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "No"'>
             <mat-icon>people</mat-icon><label>Population that could gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
