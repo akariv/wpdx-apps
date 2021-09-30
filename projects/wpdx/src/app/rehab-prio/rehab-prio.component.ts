@@ -150,6 +150,15 @@ export class RehabPrioComponent implements OnInit {
     if (this.state.props.adm3) {
       terms.push(`clean_adm3 = '${this.state.props.adm3}'`);
     }
+    if (this.state.props.source) {
+      terms.push(`water_source_category in ('${this.state.props.source.join('\',\'')}')`);
+    }
+    if (this.state.props.tech) {
+      terms.push(`water_tech_category in ('${this.state.props.tech.join('\',\'')}')`);
+    }
+    if (this.state.props.management) {
+      terms.push(`management_clean in ('${this.state.props.management.join('\',\'')}')`);
+    }
     return terms.join(' and ');
   }
 
@@ -321,19 +330,19 @@ export class RehabPrioComponent implements OnInit {
       );
     }
     if (props.source) {
-      filt.push(
-        ['==', ['get', 'water_source_category'], ['literal', props.source]]
-      );
+      filt.push(['any', ...props.source.map((value) =>
+        ['==', ['get', 'water_source_category'], ['literal', value]]
+      )]);
     }
     if (props.tech) {
-      filt.push(
-        ['==', ['get', 'water_tech_category'], ['literal', props.tech]]
-      );
+      filt.push(['any', ...props.tech.map((value) =>
+        ['==', ['get', 'water_tech_category'], ['literal', value]]
+      )]);
     }
     if (props.management) {
-      filt.push(
-        ['==', ['get', 'management_clean'], ['literal', props.management]]
-      );
+      filt.push(['any', ...props.management.map((value) =>
+        ['==', ['get', 'management_clean'], ['literal', value]]
+      )]);
     }
     if (props.show_point_counts) {
       this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');

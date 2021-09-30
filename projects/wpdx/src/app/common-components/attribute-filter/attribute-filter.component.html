@@ -2,7 +2,7 @@
     <mat-card-title i18n>Region</mat-card-title>
     <mat-card-actions>
         <mat-label i18n>Water Point Source</mat-label>
-        <mat-select [(value)]='source'>
+        <mat-select [(value)]='source' multiple>
             <mat-option *ngFor="let option of sourceOptions" [value]="option">
             {{option}}
             </mat-option>
@@ -10,7 +10,7 @@
     </mat-card-actions>
     <mat-card-actions>
         <mat-label i18n>Water Point Tech</mat-label>
-        <mat-select [(value)]='tech'>
+        <mat-select [(value)]='tech' multiple>
             <mat-option *ngFor="let option of techOptions" [value]="option">
             {{option}}
             </mat-option>
@@ -18,7 +18,7 @@
     </mat-card-actions>
     <mat-card-actions>
         <mat-label i18n>Management</mat-label>
-        <mat-select [(value)]='management'>
+        <mat-select [(value)]='management' multiple>
             <mat-option *ngFor="let option of managementOptions" [value]="option">
             {{option}}
             </mat-option>
