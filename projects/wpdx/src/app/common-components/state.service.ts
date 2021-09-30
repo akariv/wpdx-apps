@@ -11,6 +11,8 @@ export class StateService {
   props: any = {};
   bounds: mapboxgl.LngLatBounds = null;
   userBounds = false;
+  populationLayers: string[] = [];
+
   public changed = new ReplaySubject<{props: any; bounds: mapboxgl.LngLatBounds; userBounds: boolean}>(1);
 
   constructor(private loc: Location) {

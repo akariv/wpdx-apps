@@ -35,6 +35,7 @@ export class RehabPrioComponent implements OnInit {
   ];
   filterConfiguration = [
     {id: 'adm', title: 'Filter By Region', icon: 'travel_explore'},
+    {id: 'attributes', title: 'Filter By Attributes', icon: 'filter_alt'},
     {id: 'data-table', title: 'Top Water Points', icon: 'format_list_numbered'},
     {id: 'settings', title: 'View Settings', icon: 'settings'},
     {id: 'legend', title: 'Legend', icon: 'menu_book'},
@@ -69,6 +70,8 @@ export class RehabPrioComponent implements OnInit {
       }
     });
     this.state.defaultValue('all_waterpoints', true);
+    this.state.defaultValue('show_population_density', true);
+    this.state.defaultValue('show_landcover', true);
   }
 
   downloadUrl() {
@@ -201,6 +204,7 @@ export class RehabPrioComponent implements OnInit {
     this.state.setProp('show_heatmap_population', value);
     if (value) {
       this.state.setProp('show_heatmap_criticality', false);
+      this.all_waterpoints = true;
     }
   }
 
@@ -208,6 +212,29 @@ export class RehabPrioComponent implements OnInit {
     return this.state.getProp('show_heatmap_population');
   }
 
+  set show_population_density(value) {
+    this.state.setProp('show_population_density', value);
+    for (const layer of this.state.populationLayers) {
+      this.map.setLayoutProperty(layer, 'visibility', value ? 'visible' : 'none');
+    }
+  }
+
+  get show_population_density() {
+    return this.state.getProp('show_population_density');
+  }
+
+  set show_landcover(value) {
+    this.state.setProp('show_landcover', value);
+    this.map.getStyle().layers.forEach((layer) => {
+      if (layer.id.indexOf('road-') === 0 || layer.id.indexOf('building') === 0) {
+        this.map.setLayoutProperty(layer.id, 'visibility', value ? 'visible' : 'none');
+      }
+    });
+  }
+
+  get show_landcover() {
+    return this.state.getProp('show_landcover');
+  }
 
   setMap(_map: mapboxgl.Map) {
     this.map = _map;
@@ -215,8 +242,7 @@ export class RehabPrioComponent implements OnInit {
       this.onMove(e);
     });
     for (const layer of [
-      'rehab-priority-circles', 'rehab-priority-text',
-      'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap',
+      'rehab-priority-text', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap',
     ]) {
       const filt = this.map.getFilter(layer);
       if (filt[0] === 'all') {
@@ -278,7 +304,6 @@ export class RehabPrioComponent implements OnInit {
     }
     this.update_heatmaps(props);
     for (const layer of [
-      'rehab-priority-circles',
       'rehab-priority-text',
       'rehab-priority-popuplation-served',
       'rehab-priority-criticallity-heatmap',

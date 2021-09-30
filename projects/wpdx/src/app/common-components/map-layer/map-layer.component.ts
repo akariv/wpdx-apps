@@ -3,6 +3,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-map-layer',
@@ -45,7 +46,7 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
   mapboxgl: any = mapboxgl;
   popupProperties: any = {};
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private state: StateService) {
   }
 
   ngAfterViewInit() {
@@ -77,12 +78,14 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
                 this._map.getCanvas().style.cursor = '';
               });
             }
+            const populationLayers: string[] = [];
             for (const country of this.COUNTRY_CODES) {
               this._map.addSource(`wpdx.pop_${country}`, {
                 type: 'raster', url: `mapbox://wpdx.pop_${country}`
               });
+              const layerName = `population_${country}`;
               this._map.addLayer({
-                id: `population_${country}`,
+                id: layerName,
                 type: 'raster',
                 source: `wpdx.pop_${country}`,
                 minzoom: 7,
@@ -92,7 +95,9 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
                   'raster-saturation': 0.99
                 }
               }, 'land-structure-polygon');
+              populationLayers.push(layerName);
             }
+            this.state.populationLayers = populationLayers;
             const scale = new mapboxgl.ScaleControl({
               maxWidth: 250,
               unit: 'metric'
