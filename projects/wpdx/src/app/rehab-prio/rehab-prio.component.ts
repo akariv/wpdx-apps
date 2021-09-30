@@ -57,16 +57,29 @@ export class RehabPrioComponent implements OnInit {
     ).subscribe((results) => {
       this.top10 = results;
       if (this.map) {
-        this.map.setFilter('rehab-priority-highlights', [
-          'all',
-          [
-            'match',
-            ['get', 'wpdx_id'],
-            [...new Set(this.top10.map(r => r.wpdx_id))],
-            true,
-            false
-          ]
-        ]);
+        if (results.length) {
+          this.map.setFilter('rehab-priority-highlights', [
+            'all',
+            [
+              'match',
+              ['get', 'wpdx_id'],
+              [...new Set(this.top10.map(r => r.wpdx_id))],
+              true,
+              false
+            ]
+          ]);
+        } else {
+          this.map.setFilter('rehab-priority-highlights', [
+            'all',
+            [
+              'match',
+              ['get', 'wpdx_id'],
+              [''],
+              true,
+              false
+            ]
+          ]);
+        }
       }
     });
     this.state.defaultValue('all_waterpoints', true);
@@ -261,7 +274,7 @@ export class RehabPrioComponent implements OnInit {
     }
   }
 
-  navigateTo(state) {
+  navigateToAdm(state) {
     for (const f of ['country_name', 'adm1', 'adm2', 'adm3']) {
       if (state[f]) {
         this.state.setProp(f, state[f]);
@@ -271,6 +284,16 @@ export class RehabPrioComponent implements OnInit {
     }
     if (state.bounds) {
       this.state.setBounds(new mapboxgl.LngLatBounds(state.bounds));
+    }
+  }
+
+  navigateToAttrib(state) {
+    for (const f of ['source', 'tech', 'management']) {
+      if (state[f]) {
+        this.state.setProp(f, state[f]);
+      } else {
+        this.state.removeProp(f);
+      }
     }
   }
 
@@ -295,6 +318,21 @@ export class RehabPrioComponent implements OnInit {
     if (!props.all_waterpoints) {
       filt.push(
         ['==', ['get', 'status_id'], ['literal', 'No']]
+      );
+    }
+    if (props.source) {
+      filt.push(
+        ['==', ['get', 'water_source_category'], ['literal', props.source]]
+      );
+    }
+    if (props.tech) {
+      filt.push(
+        ['==', ['get', 'water_tech_category'], ['literal', props.tech]]
+      );
+    }
+    if (props.management) {
+      filt.push(
+        ['==', ['get', 'management_clean'], ['literal', props.management]]
       );
     }
     if (props.show_point_counts) {

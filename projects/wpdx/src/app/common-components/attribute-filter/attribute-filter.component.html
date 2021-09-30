@@ -1,0 +1,28 @@
+<mat-card>
+    <mat-card-title i18n>Region</mat-card-title>
+    <mat-card-actions>
+        <mat-label i18n>Water Point Source</mat-label>
+        <mat-select [(value)]='source'>
+            <mat-option *ngFor="let option of sourceOptions" [value]="option">
+            {{option}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+    <mat-card-actions>
+        <mat-label i18n>Water Point Tech</mat-label>
+        <mat-select [(value)]='tech'>
+            <mat-option *ngFor="let option of techOptions" [value]="option">
+            {{option}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+    <mat-card-actions>
+        <mat-label i18n>Management</mat-label>
+        <mat-select [(value)]='management'>
+            <mat-option *ngFor="let option of managementOptions" [value]="option">
+            {{option}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
+    <div class='clear' (click)='clear()' [class.visible]='clearVisible()'><mat-icon>clear</mat-icon>Clear</div>
+</mat-card>

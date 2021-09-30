@@ -1,0 +1,25 @@
+:host {
+    display: block;
+    min-width: 300px;
+}
+
+mat-label {
+    font-weight: 500;
+}
+
+.clear {
+    display: none;
+
+    &.visible {
+        display: flex;
+    }
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+    margin: 8px 0;
+
+    mat-icon {
+        margin: 0 8px;
+    }
+}

@@ -161,9 +161,9 @@ export class AdmSelectorComponent implements OnInit {
 
   clearVisible() {
     return this.nonempty(this.country_name) ||
-    this.nonempty(this.adm1) ||
-    this.nonempty(this.adm2.length) ||
-    this.nonempty(this.adm3.length);
+            this.nonempty(this.adm1) ||
+            this.nonempty(this.adm2) ||
+            this.nonempty(this.adm3);
   }
 
   clear() {

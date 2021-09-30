@@ -18,6 +18,7 @@ import { CustomSelectorComponent } from './controls/custom-selector/custom-selec
 import { FiltersControlComponent } from './controls/filters-control/filters-control.component';
 import { ControlsComponent } from './controls/controls/controls.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { AttributeFilterComponent } from './attribute-filter/attribute-filter.component';
 
 export { StateService } from './state.service';
 
@@ -35,6 +36,7 @@ export { StateService } from './state.service';
     CustomSelectorComponent,
     FiltersControlComponent,
     ControlsComponent,
+    AttributeFilterComponent,
   ],
   imports: [
     CommonModule,
@@ -49,6 +51,7 @@ export { StateService } from './state.service';
     AppLayoutComponent,
     MapLayerComponent,
     AdmSelectorComponent,
+    AttributeFilterComponent,
     SidePanelComponent,
     AboutPanelComponent,
     AirtableLayoutComponent,

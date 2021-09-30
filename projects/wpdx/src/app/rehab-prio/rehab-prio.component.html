@@ -11,8 +11,8 @@
     <div class='workspace' ngProjectAs='.content'>
         <app-controls>        
             <img src='/assets/img/rehab-prio-legend.svg' *ngIf='nav === "legend"'/>
-            <app-adm-selector optionsUrl='' (state)='navigateTo($event)' *ngIf='nav === "adm"'></app-adm-selector>
-            <app-attribute-filter (state)='navigateTo($event)' *ngIf='nav === "attributes"'></app-attribute-filter>
+            <app-adm-selector optionsUrl='' (state)='navigateToAdm($event)' *ngIf='nav === "adm"'></app-adm-selector>
+            <app-attribute-filter (changed)='navigateToAttrib($event)' *ngIf='nav === "attributes"'></app-attribute-filter>
             <ng-container *ngIf='nav === "data-table"'>
                 <table>
                     <thead>
