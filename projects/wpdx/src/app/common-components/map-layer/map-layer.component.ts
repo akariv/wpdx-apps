@@ -102,8 +102,8 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               maxWidth: 250,
               unit: 'metric'
             });
-            this._map.addControl(scale, 'top-right');
-            this._map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-right');
+            this._map.addControl(scale, 'bottom-right');
+            this._map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-right');
             this.map.next(this._map);
           });
         }

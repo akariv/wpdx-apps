@@ -1,3 +1,5 @@
+@import '../common-components/common.less';
+
 .workspace {
     height: 100%;
     width: 100%;
@@ -60,4 +62,20 @@ table {
 mat-label {
     font-weight: 500;
     margin-top: 16px;
+}
+
+.top-bar {
+    padding: 8px 16px;
+    display: flex;
+    flex-flow: row;
+    gap: 16px;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+    .nice-shadow;
+
+    > * {
+        color: white;
+        pointer-events: all;
+    }
 }

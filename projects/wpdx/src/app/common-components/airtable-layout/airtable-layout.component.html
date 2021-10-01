@@ -21,6 +21,7 @@
                             (map)='map.next($event)'
                             (mapPopup)='mapPopup.next($event)'
                         >
+                            <ng-content select='.top-bar'></ng-content>
                         </app-map-layer>
                     </mat-drawer-content>
                 </mat-drawer-container>

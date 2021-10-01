@@ -79,4 +79,11 @@
         </p>
 
     </div>
+    <div class='top-bar'>
+        <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Potential Users</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='show_heatmap_criticality'>Show Point Crucialness heatmap</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show Potential Users heatmap</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='show_population_density'>Show Population Density</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='show_landcover'>Show Roads & Buildings</mat-slide-toggle>
+    </div>
 </app-airtable-layout>
