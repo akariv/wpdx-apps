@@ -25,9 +25,35 @@
         display:flex;
         flex-flow: row;
         align-items: center;
-        margin-top: 8px;
+        margin-top: 20px;
         text-decoration: none;
         color: inherit;
+    }
+    .legend {
+        display: flex;
+        flex-flow: column;
+        background: #eae9e6;
+        padding: 16px;
+        .legend-row {
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            gap: 8px;
+
+            .legend-label {
+                display: flex; 
+                flex-flow: column;
+                max-width: 300px;
+
+                > span {
+                    display: flex;
+                    flex-flow: row;
+                    align-items: flex-start;    
+                    gap: 8px;
+                    .fontSans;    
+                }
+            }
+        }
     }
 }
 
