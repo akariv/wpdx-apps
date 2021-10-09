@@ -15,7 +15,7 @@
                     <img src='assets/img/functional.png'>
                     <div class='legend-label'>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Potential Users Heatmap</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Likely Current Users Heatmap</span></span>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                     <div class='legend-label'>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>High Crucialness Heatmap</span></span>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Population that could gain access<br/>by this Point if rehabilitated</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
                     </div>
                 </div>
                 <div class='legend-row'>
@@ -74,9 +74,9 @@
                 <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
 
                 <mat-label>Map Layers</mat-label>
-                <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Potential Users</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Likely Current Users</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='show_heatmap_criticality'>Show Point Crucialness heatmap</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show Potential Users heatmap</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show Likely Current Users heatmap</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='show_population_density'>Show Population Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='show_landcover'>Show Roads & Buildings</mat-slide-toggle>
             </div>
@@ -93,10 +93,10 @@
             <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
         </p>
         <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "No"'>
-            <mat-icon>people</mat-icon><label>Potential Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+            <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
         </p>
         <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "No"'>
-            <mat-icon>people</mat-icon><label>Population that could gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+            <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
         </p>
         <p *ngIf='popupProperties.usage_cap > 0'>
             <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
@@ -104,10 +104,8 @@
 
     </div>
     <div class='top-bar'>
-        <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Potential Users</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]='show_heatmap_criticality'>Show Point Crucialness heatmap</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show Potential Users heatmap</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]='show_population_density'>Show Population Density</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]='show_landcover'>Show Roads & Buildings</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='all_waterpoints'>Functional Points</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='show_population_density'>Pop. Density</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='show_landcover'>Land Cover</mat-slide-toggle>
     </div>
 </app-airtable-layout>
