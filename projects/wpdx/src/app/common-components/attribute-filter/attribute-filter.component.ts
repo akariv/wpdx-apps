@@ -25,7 +25,6 @@ export class AttributeFilterComponent implements OnInit {
     'Mechanized Pump',
     'Tapstand',
     'Rope and Bucket',
-    'Hydram',
   ];
   managementOptions = [
     'Community Management',

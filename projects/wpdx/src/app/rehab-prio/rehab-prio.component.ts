@@ -28,8 +28,8 @@ export class RehabPrioComponent implements OnInit {
   // _show_heatmap_population = false;
   circle_visible = false;
   sort_options = [
-    {value: 'local_population desc', display: 'Sort by Local Pop.'},
     {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
+    {value: 'local_population desc', display: 'Sort by Local Pop.'},
     {value: 'criticality desc', display: 'Sort by Crucialness'},
     {value: 'pressure desc', display: 'Sort by Pressure'},
   ];
