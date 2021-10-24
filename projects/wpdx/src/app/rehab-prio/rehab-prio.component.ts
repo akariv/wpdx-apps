@@ -87,21 +87,25 @@ export class RehabPrioComponent implements OnInit {
     this.state.defaultValue('show_landcover', true);
   }
 
-  downloadUrl() {
-    const bounds = this.state.bounds;
-    const fields = [
+  downloadFields(query=false) {
+    return [
       'report_date', 'wpdx_id', 'lat_deg', 'lon_deg', 'status_id', 'source', 'activity_id',
       'install_year', 'installer', 'rehab_year', 'rehabilitator', 'management_clean', 'facility_type',
       'pay', 'status', 'orig_lnk', 'photo_lnk', 'data_lnk',
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'subjective_quality', 'scheme_id', 'notes',
       'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
       'status_id', 'assigned_population', 'local_population',
-      'case when rehab_priority is null then NULL else RANK() OVER (order by rehab_priority desc nulls last end as rehab_priority',
+      query ? 'rehab_priority' :
+        'case when rehab_priority is null then NULL else RANK() OVER (order by rehab_priority desc nulls last end as rehab_priority',
       'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
       'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
       'criticality', 'pressure', 'usage_cap',
     ];
-    return this.db.download(this.queryDL(bounds, fields), 'xlsx', 'wpdx-rehab-prio-results', fields);
+  }
+
+  downloadUrl() {
+    const bounds = this.state.bounds;
+    return this.db.download(this.queryDL(bounds, this.downloadFields(true)), 'xlsx', 'wpdx-rehab-prio-results', this.downloadFields());
   }
 
   queryUI(bounds) {
