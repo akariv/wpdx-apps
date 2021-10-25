@@ -29,14 +29,14 @@ export class AttributeFilterComponent implements OnInit {
   managementOptions = [
     'Community Management',
     'Direct Government Operation',
-    'School Management',
-    'Private Person',
+    'Health Care Facility',
+    'No Management',
     'Other Institutional Management',
     'Private Operator/Delegated Management',
-    'No Management',
-    'Health Care Facility',
+    'Private Person',
+    'Religious Institution',
+    'School Management',
     'Unknown',
-    'Religious Institution'
   ];
 
 
