@@ -92,10 +92,10 @@
         <p *ngIf='popupProperties.pressure > 0'>
             <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
         </p>
-        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "No"'>
+        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "Yes"'>
             <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
         </p>
-        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "No"'>
+        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "Yes"'>
             <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
         </p>
         <p *ngIf='popupProperties.usage_cap > 0'>

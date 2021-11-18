@@ -332,7 +332,7 @@ export class RehabPrioComponent implements OnInit {
     }
     if (!props.all_waterpoints) {
       filt.push(
-        ['==', ['get', 'status_id'], ['literal', 'No']]
+        ['!=', ['get', 'status_id'], ['literal', 'Yes']]
       );
     }
     if (props.source) {
