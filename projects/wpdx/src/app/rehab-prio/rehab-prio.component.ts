@@ -144,6 +144,9 @@ export class RehabPrioComponent implements OnInit {
     if (!this.show_urban) {
       terms.push('not is_urban');
     }
+    if (this.source_filter) {
+      terms.push(`source='${this.source_filter}'`);
+    }
     if (this.state.props.country_name) {
       terms.push(`clean_country_name = '${this.state.props.country_name}'`);
     }
@@ -191,6 +194,10 @@ export class RehabPrioComponent implements OnInit {
 
   get all_waterpoints() {
     return this.state.getProp('all_waterpoints');
+  }
+
+  get source_filter() {
+    return this.state.getProp('source_filter');
   }
 
   set show_urban(value) {
@@ -346,6 +353,11 @@ export class RehabPrioComponent implements OnInit {
       filt.push(['any', ...props.source.map((value) =>
         ['==', ['get', 'water_source_category'], ['literal', value]]
       )]);
+    }
+    if (props.source_filter) {
+      filt.push(
+        ['==', ['get', 'source'], ['literal', props.source_filter]]
+      );
     }
     if (props.tech) {
       filt.push(['any', ...props.tech.map((value) =>
