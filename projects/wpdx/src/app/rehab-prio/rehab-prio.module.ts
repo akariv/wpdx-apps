@@ -12,11 +12,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CommonComponentsModule } from '../common-components/common-components.module';
 import { RehabPrioComponent } from './rehab-prio.component';
 import { RehabPrioRoutingModule } from './rehab-prio-routing.module';
+import { RehabPrioPreviewComponent } from './rehab-prio-preview/rehab-prio-preview.component';
 
 
 
 @NgModule({
-  declarations: [RehabPrioComponent],
+  declarations: [RehabPrioComponent, RehabPrioPreviewComponent],
   imports: [
     CommonModule,
     RehabPrioRoutingModule,

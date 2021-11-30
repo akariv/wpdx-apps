@@ -169,8 +169,15 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
+    const query = `select * from wpdx_plus where wpdx_id='${value.wpdx_id}' and is_latest`;
     this._popupProperties = value;
-    this.addCircle(value);
+    this.db.query(query).subscribe((results) => {
+      if (results.rows && results.rows.length) {
+        this._popupProperties = results.rows[0];
+        console.log('POPUP PROPERTIES', value);
+        this.addCircle(value);
+      }
+    });
   }
 
   get popupProperties() {
