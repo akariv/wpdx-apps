@@ -181,6 +181,10 @@ export class RehabPrioComponent implements OnInit {
     return terms.join(' and ');
   }
 
+  fq(s) {
+    return s.split(`'`).join(`''`);
+  }
+
   set popupProperties(value) {
     if (this.preview) {
       if (!value.wpdx_id) {
@@ -194,17 +198,17 @@ export class RehabPrioComponent implements OnInit {
         const queries: string[] = [];
         if (value.NAME_2) {
           queries.push(`${baseQuery}
-            where "NAME_0"='${value.NAME_0}' and "NAME_1"='${value.NAME_1}'`);
+            where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
         }
         if (value.NAME_3) {
           queries.push(`${baseQuery}
-            where "NAME_0"='${value.NAME_0}' and "NAME_1"='${value.NAME_1}' and 
-                  "NAME_2"='${value.NAME_2}'`);
+            where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+                  "NAME_2"='${this.fq(value.NAME_2)}'`);
         }
         if (value.NAME_4) {
           queries.push(`${baseQuery}
-            where "NAME_0"='${value.NAME_0}' and "NAME_1"='${value.NAME_1}' and 
-                  "NAME_2"='${value.NAME_2}' and "NAME_3"='${value.NAME_3}'`);
+            where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+                  "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
         }
         console.log('VALVAL', value, queries.length);
         forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
