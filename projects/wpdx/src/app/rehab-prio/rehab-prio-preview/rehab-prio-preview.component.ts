@@ -12,5 +12,6 @@ export class RehabPrioPreviewComponent extends RehabPrioComponent {
 
   constructor(private db_: DbService, private state_: StateService) {
     super(db_, state_);
+    this.preview = true;
   }
 }

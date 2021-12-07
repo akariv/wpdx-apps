@@ -1,4 +1,5 @@
 @import '../common-components/common.less';
+@import '../common-components/popup-contents.less';
 
 .workspace {
     height: 100%;
@@ -103,5 +104,34 @@ mat-label {
     > * {
         color: white;
         pointer-events: all;
+    }
+
+    .mat-select {
+        margin: 0 8px;
+        flex: 0 1 auto;
+        width: 250px;
+        background-color: rgba(255, 255, 255, 0.15);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    ::ng-deep {
+        .mat-select-value {
+            color: white;
+        }
+    }
+}
+
+.map-popup {
+    .popup-styling;
+    .indent {
+        padding-left: 16px;
+    }
+    h3 {
+        margin: 32px 0 0 0;
+        font-weight: 600;
+        &:first-child {
+            margin-top: 0;
+        }
     }
 }

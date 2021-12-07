@@ -19,6 +19,7 @@ import { FiltersControlComponent } from './controls/filters-control/filters-cont
 import { ControlsComponent } from './controls/controls/controls.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AttributeFilterComponent } from './attribute-filter/attribute-filter.component';
+import { BaseWaterpointPopupComponent } from './base-waterpoint-popup/base-waterpoint-popup.component';
 
 export { StateService } from './state.service';
 
@@ -37,6 +38,7 @@ export { StateService } from './state.service';
     FiltersControlComponent,
     ControlsComponent,
     AttributeFilterComponent,
+    BaseWaterpointPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -59,6 +61,7 @@ export { StateService } from './state.service';
     CustomSelectorComponent,
     FiltersControlComponent,
     ControlsComponent,
+    BaseWaterpointPopupComponent
   ]
 })
 export class CommonComponentsModule { }

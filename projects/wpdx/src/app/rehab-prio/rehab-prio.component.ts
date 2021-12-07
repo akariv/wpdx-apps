@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
+import { Point } from 'geojson';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 import { debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { DbService } from '../db.service';
 import { StateService } from '../common-components/common-components.module';
@@ -42,6 +43,12 @@ export class RehabPrioComponent implements OnInit {
     {id: 'download', title: 'Download Data', icon: 'file_download'},
   ];
   nav = '';
+
+  // Preview:
+  preview = false;
+  markers: any = {};
+  markersOnScreen: any = {};
+  admPopupSections: any[] = [];
 
   constructor(private db: DbService, private state: StateService) {
     this.db.fetchAdmLevels().subscribe();
@@ -85,6 +92,9 @@ export class RehabPrioComponent implements OnInit {
     this.state.defaultValue('all_waterpoints', true);
     this.state.defaultValue('show_population_density', true);
     this.state.defaultValue('show_landcover', true);
+    if (this.preview) {
+      this.state.defaultValue('adman_view', 'unserved');
+    }
   }
 
   downloadFields(query=false) {
@@ -172,6 +182,57 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
+    if (this.preview) {
+      if (!value.wpdx_id) {
+        const baseQuery = `select
+          sum(total_pop) as total_pop,
+          sum(rural_pop) as rural_pop,
+          sum(unserved_pop) as unserved_pop,
+          sum(uncharted_pop) as uncharted_pop
+          from adm_analysis
+        `;
+        const queries: string[] = [];
+        if (value.NAME_2) {
+          queries.push(`${baseQuery}
+            where "NAME_0"='${value.NAME_0}' and "NAME_1"='${value.NAME_1}'`);
+        }
+        if (value.NAME_3) {
+          queries.push(`${baseQuery}
+            where "NAME_0"='${value.NAME_0}' and "NAME_1"='${value.NAME_1}' and 
+                  "NAME_2"='${value.NAME_2}'`);
+        }
+        if (value.NAME_4) {
+          queries.push(`${baseQuery}
+            where "NAME_0"='${value.NAME_0}' and "NAME_1"='${value.NAME_1}' and 
+                  "NAME_2"='${value.NAME_2}' and "NAME_3"='${value.NAME_3}'`);
+        }
+        console.log('VALVAL', value, queries.length);
+        forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
+          console.log('QUEQUE RESULTS', results);
+          this.admPopupSections = [value];
+          if (queries.length > 2) {
+            // value.level3 = results[2].rows[0];
+            this.admPopupSections.push(
+              Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[2].rows[0])
+            );
+          }
+          if (queries.length > 1) {
+            // value.level2 = results[1].rows[0];
+            this.admPopupSections.push(
+              Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[1].rows[0])
+            );
+          }
+          if (queries.length > 0) {
+            // value.level1 = results[0].rows[0];
+            this.admPopupSections.push(
+              Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[0].rows[0])
+            );
+          }
+        });
+        this._popupProperties = value;
+        return;
+      }
+    }
     const query = `select * from wpdx_plus where wpdx_id='${value.wpdx_id}' and is_latest`;
     this._popupProperties = value;
     this.db.query(query).subscribe((results) => {
@@ -278,6 +339,14 @@ export class RehabPrioComponent implements OnInit {
     return this.state.getProp('show_landcover');
   }
 
+  set adman_view(value) {
+    this.state.setProp('adman_view', value);
+  }
+
+  get adman_view() {
+    return this.state.getProp('adman_view');
+  }
+
   setMap(_map: mapboxgl.Map) {
     this.map = _map;
     this.map.on('moveend', (e) => {
@@ -301,6 +370,103 @@ export class RehabPrioComponent implements OnInit {
     if (this.state.bounds === null) {
       this.state.setBounds(this.map.getBounds(), true);
     }
+    if (this.preview) {
+      console.log('SORUCES', (this.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
+      this.map.on('render', () => {
+        const newMarkers: any = {};
+        const features = this.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']});
+        for (const feature of features) {
+          const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
+          const props: any = feature.properties;
+          const id = props.NAME_0 + props.NAME_1 + props.NAME_2 + props.NAME_3 + props.NAME_4;
+
+          let marker = this.markers[id];
+          if (!marker) {
+            console.log('ADDING MARKER', id);
+            const el = this.createDonutChart(props);
+            el.addEventListener('click', (ev) => {
+              this.popupProperties = props;
+              ev.stopPropagation();
+            });
+            marker = this.markers[id] = new mapboxgl.Marker({
+              element: el
+            }).setLngLat(coords).setOffset([0, -30])
+            .addTo(this.map);
+          }
+          newMarkers[id] = marker;
+          if (!this.markersOnScreen[id]) {
+            marker.addTo(this.map);
+          }
+        }
+        // for every marker we've added previously, remove those that are no longer visible
+        for (const id in this.markersOnScreen) {
+          if (!newMarkers[id]) {
+            this.markersOnScreen[id].remove();
+          }
+        }
+        this.markersOnScreen = newMarkers;
+      });
+    }
+  }
+
+  createDonutChart(props: any): HTMLElement {
+    const offsets = [];
+    const counts = ['pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'].map((k) => props[k] || 0);
+    const clusterColors = ['#828282', '#185caf', '#8a0000', '#333333'];
+
+    let total = 0;
+    for (const count of counts) {
+      offsets.push(total);
+      total += count;
+    }
+    const fontSize = 16;
+    const r = 20;
+    const r0 = Math.round(r * 0.3);
+    const w = r * 2;
+
+    let html = `<div>
+    <svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" 
+         style="font: ${fontSize}px sans-serif; display: block; cursor:pointer">`;
+
+    for (let i = 0; i < counts.length; i++) {
+      if (counts[i]) {
+        html += this.donutSegment(
+          offsets[i] / total,
+          (offsets[i] + counts[i]) / total,
+          r,
+          r0,
+          clusterColors[i]
+        );
+      }
+    }
+    html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
+      </svg>
+      </div>`;
+    const el = document.createElement('div');
+    el.innerHTML = html;
+    return el.firstChild as HTMLElement;
+  }
+
+  donutSegment(start: number, end: number, r: number, r0: number, color: string) {
+    if (end - start === 1) {
+      end -= 0.00001;
+    }
+    const a0 = 2 * Math.PI * (start - 0.25);
+    const a1 = 2 * Math.PI * (end - 0.25);
+    const x0 = Math.cos(a0);
+    const y0 = Math.sin(a0);
+    const x1 = Math.cos(a1);
+    const y1 = Math.sin(a1);
+    const largeArc = end - start > 0.5 ? 1 : 0;
+
+    // draw an SVG path
+    return `<path d="M ${r + r0 * x0} ${r + r0 * y0} L ${r + r * x0} ${
+      r + r * y0
+      } A ${r} ${r} 0 ${largeArc} 1 ${r + r * x1} ${r + r * y1} L ${
+      r + r0 * x1
+      } ${r + r0 * y1} A ${r0} ${r0} 0 ${largeArc} 0 ${r + r0 * x0} ${
+      r + r0 * y0
+      }" fill="${color}" />`;
   }
 
   navigateToAdm(state) {
@@ -374,6 +540,28 @@ export class RehabPrioComponent implements OnInit {
     } else {
       this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
     }
+    if (this.preview) {
+      const admanView = props.adman_view;
+      this.map.setLayoutProperty('adm-analysis', 'visibility', 'visible');
+      let prop: any = [];
+      let visibility = 'visible';
+      if (admanView === 'served') {
+        prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
+      } else if (admanView === 'unserved') {
+        prop = ['get', 'pct_unserved'];
+      } else if (admanView === 'uncharted') {
+        prop = ['get', 'pct_uncharted'];
+      } else {
+        prop = null;
+        visibility = 'none';
+      }
+      if (prop) {
+        const interpolate = ['interpolate', ['linear'], prop, 0, 0, 1, 0.5];
+        this.map.setPaintProperty('adm-analysis', 'fill-opacity', interpolate);
+      }
+      this.map.setLayoutProperty('adm-analysis-labels', 'visibility', visibility);
+      this.map.setLayoutProperty('adm-analysis', 'visibility', visibility);
+    }
     this.update_heatmaps(props);
     for (const layer of [
       'rehab-priority-text',
@@ -403,7 +591,7 @@ export class RehabPrioComponent implements OnInit {
       return;
     }
     const _center = turf.point([point.lon_deg, point.lat_deg]);
-    const _circle = turf.circle(_center, 1, {steps: 80, units: 'kilometers'});
+    const _circle = turf.circle(_center, 1, {steps: 80, units: 'kilometers'} as any);
     this.circle_visible = true;
     this.map.addSource('circleData', {
       type: 'geojson',

@@ -83,29 +83,60 @@
         </app-controls>
     </div>
     <div class='map-popup'>
-        <p *ngIf='popupProperties.local_population > 0'>
-            <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
-        </p>
-        <p *ngIf='popupProperties.criticality > 0'>
-            <mat-icon>warning</mat-icon><label>Crucialness:</label>&nbsp;{{popupProperties.criticality * 100 | number:'1.0-0'}}%
-        </p>
-        <p *ngIf='popupProperties.pressure > 0'>
-            <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
-        </p>
-        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "Yes"'>
-            <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
-        </p>
-        <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "Yes"'>
-            <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
-        </p>
-        <p *ngIf='popupProperties.usage_cap > 0'>
-            <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
-        </p>
-
+        <app-base-waterpoint-popup [popupProperties]='popupProperties' *ngIf='popupProperties.wpdx_id'>
+            <p *ngIf='popupProperties.local_population > 0'>
+                <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
+            </p>
+            <p *ngIf='popupProperties.criticality > 0'>
+                <mat-icon>warning</mat-icon><label>Crucialness:</label>&nbsp;{{popupProperties.criticality * 100 | number:'1.0-0'}}%
+            </p>
+            <p *ngIf='popupProperties.pressure > 0'>
+                <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
+            </p>
+            <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "Yes"'>
+                <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+            </p>
+            <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "Yes"'>
+                <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+            </p>
+            <p *ngIf='popupProperties.usage_cap > 0'>
+                <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
+            </p>
+        </app-base-waterpoint-popup>
+        <ng-container *ngIf='!popupProperties.wpdx_id'>
+            <ng-container *ngFor='let section of admPopupSections'>
+                <h3>{{section.title}}</h3>
+                <p>
+                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{section.rural_pop | number:'1.0-0'}} ppl, of which
+                </p>
+                <div class='indent'>
+                    <p>
+                        <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.rural_pop - section.unserved_pop - section.uncharted_pop) | number:'1.0-0'}} ppl
+                    </p>
+                    <p>
+                        <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{section.unserved_pop | number:'1.0-0'}} ppl    
+                    </p>
+                    <p>
+                        <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl    
+                    </p>
+                </div>
+            </ng-container>
+        </ng-container>
     </div>
     <div class='top-bar'>
         <mat-slide-toggle [(ngModel)]='all_waterpoints'>Functional Points</mat-slide-toggle>
         <mat-slide-toggle [(ngModel)]='show_population_density'>Pop. Density</mat-slide-toggle>
         <mat-slide-toggle [(ngModel)]='show_landcover'>Roads & Buildings</mat-slide-toggle>
+        <ng-container *ngIf='preview'>
+            <mat-select [(value)]='adman_view'>
+                <mat-option value="">No Adm. Regions</mat-option>
+                <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
+                <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
+                <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
+            </mat-select>    
+        </ng-container>
     </div>
 </app-airtable-layout>
