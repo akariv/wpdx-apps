@@ -210,9 +210,7 @@ export class RehabPrioComponent implements OnInit {
             where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
                   "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
         }
-        console.log('VALVAL', value, queries.length);
         forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
-          console.log('QUEQUE RESULTS', results);
           this.admPopupSections = [value];
           if (queries.length > 2) {
             // value.level3 = results[2].rows[0];
@@ -549,12 +547,16 @@ export class RehabPrioComponent implements OnInit {
       this.map.setLayoutProperty('adm-analysis', 'visibility', 'visible');
       let prop: any = [];
       let visibility = 'visible';
+      let color = '';
       if (admanView === 'served') {
         prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
+        color = '#185caf';
       } else if (admanView === 'unserved') {
         prop = ['get', 'pct_unserved'];
+        color = '#8a0000';
       } else if (admanView === 'uncharted') {
         prop = ['get', 'pct_uncharted'];
+        color = '#333333';
       } else {
         prop = null;
         visibility = 'none';
@@ -562,6 +564,7 @@ export class RehabPrioComponent implements OnInit {
       if (prop) {
         const interpolate = ['interpolate', ['linear'], prop, 0, 0, 1, 0.5];
         this.map.setPaintProperty('adm-analysis', 'fill-opacity', interpolate);
+        this.map.setPaintProperty('adm-analysis', 'fill-color', color);
       }
       this.map.setLayoutProperty('adm-analysis-labels', 'visibility', visibility);
       this.map.setLayoutProperty('adm-analysis', 'visibility', visibility);
