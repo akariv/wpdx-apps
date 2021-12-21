@@ -127,16 +127,27 @@
         </ng-container>
     </div>
     <div class='top-bar'>
-        <mat-slide-toggle [(ngModel)]='all_waterpoints'>Functional Points</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]='show_population_density'>Pop. Density</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]='show_landcover'>Roads & Buildings</mat-slide-toggle>
-        <ng-container *ngIf='preview'>
-            <mat-select [(value)]='adman_view'>
-                <mat-option value="">No Adm. Regions</mat-option>
-                <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
-                <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
-                <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
-            </mat-select>    
-        </ng-container>
+        <div class='controls'>
+            <mat-slide-toggle [(ngModel)]='all_waterpoints'>Functional Points</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]='show_population_density'>Pop. Density</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]='show_landcover'>Roads & Buildings</mat-slide-toggle>
+            <ng-container *ngIf='preview'>
+                <mat-select [(value)]='adman_view'>
+                    <mat-option value="">No Adm. Regions</mat-option>
+                    <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
+                    <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
+                    <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
+                </mat-select>
+                <mat-slide-toggle *ngIf='adman_view !== ""' [(ngModel)]='show_adman_pies'>Pie Charts</mat-slide-toggle>
+            </ng-container>
+        </div>
+        <div class='legend' *ngIf='preview && adman_view_name.length'>
+            <strong [innerHtml]='adman_view_name'></strong>
+            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.1'></span><span>20%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.2'></span><span>40%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.3'></span><span>60%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.4'></span><span>80%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.5'></span><span>100%</span></div>
+        </div>
     </div>
 </app-airtable-layout>

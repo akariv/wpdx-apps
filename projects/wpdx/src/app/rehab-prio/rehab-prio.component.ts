@@ -94,6 +94,7 @@ export class RehabPrioComponent implements OnInit {
     this.state.defaultValue('show_landcover', true);
     if (this.preview) {
       this.state.defaultValue('adman_view', 'unserved');
+      this.state.defaultValue('show_adman_pies', true);
     }
   }
 
@@ -349,6 +350,28 @@ export class RehabPrioComponent implements OnInit {
     return this.state.getProp('adman_view');
   }
 
+  get adman_view_name() {
+    const av = this.adman_view;
+    if (av === 'served') {
+      return '% of pop served or<br/>in urban areas';
+    }
+    if (av === 'unserved') {
+      return '% of pop without access<br/>to func. water points';
+    }
+    if (av === 'uncharted') {
+      return '% of pop with unknown access';
+    }
+    return '';
+  }
+
+  set show_adman_pies(value) {
+    this.state.setProp('show_adman_pies', value);
+  }
+
+  get show_adman_pies() {
+    return this.state.getProp('show_adman_pies');
+  }
+
   setMap(_map: mapboxgl.Map) {
     this.map = _map;
     this.map.on('moveend', (e) => {
@@ -376,7 +399,7 @@ export class RehabPrioComponent implements OnInit {
       console.log('SORUCES', (this.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
       this.map.on('render', () => {
         const newMarkers: any = {};
-        const features = this.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']});
+        const features = this.show_adman_pies ? this.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']}) : [];
         for (const feature of features) {
           const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
           const props: any = feature.properties;
@@ -565,9 +588,12 @@ export class RehabPrioComponent implements OnInit {
         const interpolate = ['interpolate', ['linear'], prop, 0, 0, 1, 0.5];
         this.map.setPaintProperty('adm-analysis', 'fill-opacity', interpolate);
         this.map.setPaintProperty('adm-analysis', 'fill-color', color);
+        this.map.setPaintProperty('adm-analysis-borders', 'line-color', color);
+        this.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
       }
       this.map.setLayoutProperty('adm-analysis-labels', 'visibility', visibility);
       this.map.setLayoutProperty('adm-analysis', 'visibility', visibility);
+      this.map.setLayoutProperty('adm-analysis-borders', 'visibility', visibility);
     }
     this.update_heatmaps(props);
     for (const layer of [

@@ -92,32 +92,68 @@ mat-label {
 }
 
 .top-bar {
-    padding: 8px 16px;
     display: flex;
-    flex-flow: row;
-    gap: 16px;
-    pointer-events: none;
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(5px);
-    .nice-shadow;
+    flex-flow: column;
+    align-items: center;
 
-    > * {
-        color: white;
-        pointer-events: all;
-    }
-
-    .mat-select {
-        margin: 0 8px;
-        flex: 0 1 auto;
-        width: 250px;
-        background-color: rgba(255, 255, 255, 0.15);
-        padding: 2px 8px;
-        border-radius: 4px;
-    }
-
-    ::ng-deep {
-        .mat-select-value {
+    .controls {
+        padding: 8px 16px;
+        display: flex;
+        flex-flow: row;
+        gap: 16px;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(5px);
+        .nice-shadow;
+        align-self: stretch;
+    
+        > * {
             color: white;
+            pointer-events: all;
+        }
+    
+        .mat-select {
+            margin: 0 8px;
+            flex: 0 1 auto;
+            width: 250px;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    
+        ::ng-deep {
+            .mat-select-value {
+                color: white;
+            }
+        }
+    }
+    .legend {
+        display: flex;
+        flex-flow: column;
+        align-items: stretch;
+        align-self: flex-end;
+        padding: 8px;
+        gap: 4px;
+        
+        background-color: rgba(255, 255, 255, 0.85);        
+        backdrop-filter: blur(5px);
+        .nice-shadow;
+        margin-top: 8px;
+        margin-right: 8px;
+
+        .legend-item {
+            display: flex;
+            flex-flow: row;
+            gap: 12px;
+            justify-content: flex-start;
+            align-items: center;
+
+            .legend-color {
+                display: block;
+                width: 16px;
+                height: 12px;
+                border: 1px solid #333333;
+            }
         }
     }
 }
