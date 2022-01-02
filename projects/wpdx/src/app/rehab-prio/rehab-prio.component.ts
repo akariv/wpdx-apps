@@ -104,7 +104,7 @@ export class RehabPrioComponent implements OnInit {
       'install_year', 'installer', 'rehab_year', 'rehabilitator', 'management_clean', 'facility_type',
       'pay', 'status', 'orig_lnk', 'photo_lnk', 'data_lnk',
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'subjective_quality', 'scheme_id', 'notes',
-      'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3',
+      'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
       'status_id', 'assigned_population', 'local_population',
       query ?
         'case when rehab_priority is null then NULL else RANK() OVER (order by rehab_priority desc nulls last) end as rehab_priority'
@@ -169,6 +169,9 @@ export class RehabPrioComponent implements OnInit {
     }
     if (this.state.props.adm3) {
       terms.push(`clean_adm3 = '${this.state.props.adm3}'`);
+    }
+    if (this.state.props.adm4) {
+      terms.push(`clean_adm4 = '${this.state.props.adm4}'`);
     }
     if (this.state.props.source) {
       terms.push(`water_source_category in ('${this.state.props.source.join('\',\'')}')`);
@@ -495,7 +498,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   navigateToAdm(state) {
-    for (const f of ['country_name', 'adm1', 'adm2', 'adm3']) {
+    for (const f of ['country_name', 'adm1', 'adm2', 'adm3', 'adm4']) {
       if (state[f]) {
         this.state.setProp(f, state[f]);
       } else {
@@ -522,7 +525,7 @@ export class RehabPrioComponent implements OnInit {
       this.map.fitBounds(bounds, {padding: 30, maxZoom: 18});
     }
     const filt = [];
-    for (const _f of ['country_name', 'adm1', 'adm2', 'adm3']) {
+    for (const _f of ['country_name', 'adm1', 'adm2', 'adm3', 'adm4']) {
       const f = 'clean_' + _f;
       if (props[_f]) {
         filt.push([

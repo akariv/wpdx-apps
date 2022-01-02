@@ -71,7 +71,7 @@ export class DataRobotComponent implements OnInit {
     const filter: any[] = [
       'all'
     ];
-    for (const f of ['country_name', 'adm1', 'adm2', 'adm3']) {
+    for (const f of ['country_name', 'adm1', 'adm2', 'adm3', 'adm4']) {
       if (state[f]) {
         filter.push([
           '==', ['get', f], ['literal', state[f]]

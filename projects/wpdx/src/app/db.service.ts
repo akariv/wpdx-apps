@@ -37,7 +37,7 @@ export class DbService {
 
   fetchAdmLevels() {
     const query = `
-      SELECT clean_country_name, clean_adm1, clean_adm2, coalesce(clean_adm3, '-') as clean_adm3,
+      SELECT clean_country_name, clean_adm1, clean_adm2, coalesce(clean_adm3, '-') as clean_adm3, coalesce(clean_adm4, '-') as clean_adm4,
             max(lat_deg) as lat_max, max(lon_deg) as lon_max, min(lat_deg) as lat_min, min(lon_deg) as lon_min
       FROM wpdx_plus
       GROUP BY 1,2,3,4

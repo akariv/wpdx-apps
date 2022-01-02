@@ -21,6 +21,8 @@ export class AdmSelectorComponent implements OnInit {
   adm2_options = [];
   _adm3: any = {};
   adm3_options = [];
+  _adm4: any = {};
+  adm4_options = [];
 
   constructor(private http: HttpClient, private db: DbService, private stateSvc: StateService) {
   }
@@ -38,6 +40,7 @@ export class AdmSelectorComponent implements OnInit {
   }
 
   processDBResults(items) {
+    items = this.groupBy(items, ['clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3'], 'clean_adm4');
     items = this.groupBy(items, ['clean_country_name', 'clean_adm1', 'clean_adm2'], 'clean_adm3');
     items = this.groupBy(items, ['clean_country_name', 'clean_adm1'], 'clean_adm2');
     items = this.groupBy(items, ['clean_country_name'], 'clean_adm1');
@@ -58,6 +61,12 @@ export class AdmSelectorComponent implements OnInit {
                 for (const l4 of this.adm3_options) {
                   if (l4.value === this.stateSvc.props.adm3) {
                     this._adm3 = l4;
+                    this.adm4_options = l4.items;
+                    for (const l5 of this.adm4_options) {
+                      if (l5.value === this.stateSvc.props.adm4) {
+                        this._adm4 = l5;
+                      }
+                    }
                   }
                 }
               }
@@ -137,11 +146,21 @@ export class AdmSelectorComponent implements OnInit {
 
   set adm3(value) {
     this._adm3 = value;
-    this.sendState();
+    this.adm4 = {};
+    this.adm4_options = value.items || [];
   }
 
   get adm3() {
     return this._adm3;
+  }
+
+  set adm4(value) {
+    this._adm4 = value;
+    this.sendState();
+  }
+
+  get adm4() {
+    return this._adm4;
   }
 
   sendState() {
@@ -150,7 +169,8 @@ export class AdmSelectorComponent implements OnInit {
       adm1: this.adm1?.value,
       adm2: this.adm2?.value,
       adm3: this.adm3?.value,
-      bounds: this.adm3.bounds || this.adm2.bounds || this.adm1.bounds || this.country_name.bounds,
+      adm4: this.adm4?.value,
+      bounds: this.adm4.bounds || this.adm3.bounds || this.adm2.bounds || this.adm1.bounds || this.country_name.bounds,
     };
     this.state.next(state);
   }
@@ -163,7 +183,8 @@ export class AdmSelectorComponent implements OnInit {
     return this.nonempty(this.country_name) ||
             this.nonempty(this.adm1) ||
             this.nonempty(this.adm2) ||
-            this.nonempty(this.adm3);
+            this.nonempty(this.adm3) ||
+            this.nonempty(this.adm4);
   }
 
   clear() {

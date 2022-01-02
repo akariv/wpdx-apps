@@ -32,5 +32,13 @@
             </mat-option>
         </mat-select>
     </mat-card-actions>
+    <mat-card-actions *ngIf='adm4_options && adm4_options.length'>
+        <mat-label i18n>Adm Level 4</mat-label>
+        <mat-select [(value)]='adm4'>
+            <mat-option *ngFor="let option of adm4_options" [value]="option">
+            {{option.value}}
+            </mat-option>
+        </mat-select>
+    </mat-card-actions>
     <div class='clear' (click)='clear()' [class.visible]='clearVisible()'><mat-icon>clear</mat-icon>Clear</div>
 </mat-card>
