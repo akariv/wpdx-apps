@@ -8,35 +8,28 @@
     (mapPopup)='popupProperties = $event'
     (filterSelected)='nav = $event'
 >
+    <ng-container ngProjectAs='.menu'>
+        <button mat-menu-item (click)='openAttributeFilterDialog()'>
+            <mat-icon>filter_alt</mat-icon>
+            <span>Filter by Attributes</span>
+        </button>
+        <button mat-menu-item (click)='openRegionFilterDialog()'>
+            <mat-icon>travel_explore</mat-icon>
+            <span>Filter by Region</span>
+        </button>
+        <button mat-menu-item (click)='openSettingsDialog()'>
+            <mat-icon>settings</mat-icon>
+            <span>View Settings</span>
+        </button>
+        <button mat-menu-item (click)='downloadData()'>
+            <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+            <span>Download Data</span>
+        </button>
+    </ng-container>
     <div class='workspace' ngProjectAs='.content'>
         <app-controls>
-            <div class='legend' *ngIf='nav === "legend"'>
-                <div class='legend-row'>
-                    <img src='assets/img/functional.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Likely Current Users Heatmap</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
-                    </div>
-                </div>
-                <div class='legend-row'>
-                    <img src='assets/img/non-functional.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>High Crucialness Heatmap</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
-                    </div>
-                </div>
-                <div class='legend-row'>
-                    <img src='assets/img/selected.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Currently appearing in the Data Table</span></span>
-                    </div>
-                </div>
-            </div>
-            <app-adm-selector optionsUrl='' (state)='navigateToAdm($event)' *ngIf='nav === "adm"'></app-adm-selector>
-            <app-attribute-filter (changed)='navigateToAttrib($event)' *ngIf='nav === "attributes"'></app-attribute-filter>
+            <!-- <app-adm-selector optionsUrl='' (state)='navigateToAdm($event)' *ngIf='nav === "adm"'></app-adm-selector> -->
+            <!-- <app-attribute-filter (changed)='navigateToAttrib($event)' *ngIf='nav === "attributes"'></app-attribute-filter> -->
             <ng-container *ngIf='nav === "data-table"'>
                 <table>
                     <thead>
@@ -44,13 +37,13 @@
                         <th>Functional?</th>
                         <th>Source</th>
                         <th>Tech</th>    
-                        <th class='clickable' (click)='sort_by = sort_options[0].value'>Local Pop.<mat-icon *ngIf='sort_by === sort_options[0].value'>arrow_drop_down</mat-icon></th>
-                        <th class='clickable' (click)='sort_by = sort_options[1].value'>Served Pop.<mat-icon *ngIf='sort_by === sort_options[1].value'>arrow_drop_down</mat-icon></th>
-                        <th class='clickable' (click)='sort_by = sort_options[2].value'>Crucialness<mat-icon *ngIf='sort_by === sort_options[2].value'>arrow_drop_down</mat-icon></th>
-                        <th class='clickable' (click)='sort_by = sort_options[3].value'>Pressure<mat-icon *ngIf='sort_by === sort_options[3].value'>arrow_drop_down</mat-icon></th>
+                        <th class='clickable' (click)='sort_by = rpState.sort_options[0].value'>Local Pop.<mat-icon *ngIf='sort_by === rpState.sort_options[0].value'>arrow_drop_down</mat-icon></th>
+                        <th class='clickable' (click)='sort_by = rpState.sort_options[1].value'>Served Pop.<mat-icon *ngIf='sort_by === rpState.sort_options[1].value'>arrow_drop_down</mat-icon></th>
+                        <th class='clickable' (click)='sort_by = rpState.sort_options[2].value'>Crucialness<mat-icon *ngIf='sort_by === rpState.sort_options[2].value'>arrow_drop_down</mat-icon></th>
+                        <th class='clickable' (click)='sort_by = rpState.sort_options[3].value'>Pressure<mat-icon *ngIf='sort_by === rpState.sort_options[3].value'>arrow_drop_down</mat-icon></th>
                     </thead>
-                    <tbody *ngIf='top10 && top10.length'>
-                        <tr *ngFor='let row of top10; let rank = index;' (click)='gotoPoint(row)'>
+                    <tbody *ngIf='rpState.top10 && rpState.top10.length'>
+                        <tr *ngFor='let row of rpState.top10; let rank = index;' (click)='gotoPoint(row)'>
                             <td>{{rank + 1}}</td>
                             <td>{{row.status_id || 'Unknown' }}</td>
                             <td>{{row.water_source_clean || 'Unknown' }}</td>
@@ -68,18 +61,6 @@
                     <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>&nbsp;Download all visible points as an Excel file
                 </a>
             </ng-container>
-            <div class='toggles' *ngIf='nav === "settings"'>
-                <mat-label>Point Selection</mat-label>
-                <mat-slide-toggle [(ngModel)]='all_waterpoints'>Show functional points</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_urban'>Show points in urban areas</mat-slide-toggle>
-
-                <mat-label>Map Layers</mat-label>
-                <mat-slide-toggle [(ngModel)]='show_point_counts'>Show Likely Current Users</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_heatmap_criticality'>Show Point Crucialness heatmap</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_heatmap_population'>Show Likely Current Users heatmap</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_population_density'>Show Population Density</mat-slide-toggle>
-                <mat-slide-toggle [(ngModel)]='show_landcover'>Show Roads & Buildings</mat-slide-toggle>
-            </div>
         </app-controls>
     </div>
     <div class='map-popup'>
@@ -128,26 +109,56 @@
     </div>
     <div class='top-bar'>
         <div class='controls'>
-            <mat-slide-toggle [(ngModel)]='all_waterpoints'>Functional Points</mat-slide-toggle>
-            <mat-slide-toggle [(ngModel)]='show_population_density'>Pop. Density</mat-slide-toggle>
-            <mat-slide-toggle [(ngModel)]='show_landcover'>Roads & Buildings</mat-slide-toggle>
-            <ng-container *ngIf='preview'>
-                <mat-select [(value)]='adman_view'>
-                    <mat-option value="">No Adm. Regions</mat-option>
+            <mat-select [(value)]='rpState.mode'>
+                <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
+                <mat-option value="adman">Adm Region Analysis</mat-option>
+            </mat-select>
+            <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
+            <ng-container *ngIf='rpState.mode === "rehab-prio"'>
+                <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "adman"'>
+                <mat-select [(value)]='rpState.adman_view'>
                     <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
                     <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
                     <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
                 </mat-select>
-                <mat-slide-toggle *ngIf='adman_view !== ""' [(ngModel)]='show_adman_pies'>Pie Charts</mat-slide-toggle>
+                <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>Pie Charts</mat-slide-toggle>
             </ng-container>
         </div>
-        <div class='legend' *ngIf='preview && adman_view_name.length'>
+        <div class='legend' *ngIf='rpState.adman_view_name.length && rpState.mode === "adman"'>
             <strong [innerHtml]='adman_view_name'></strong>
-            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.1'></span><span>20%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.2'></span><span>40%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.3'></span><span>60%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.4'></span><span>80%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + adman_view' [style.opacity]='0.5'></span><span>100%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.1'></span><span>20%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.2'></span><span>40%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.3'></span><span>60%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.4'></span><span>80%</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.5'></span><span>100%</span></div>
+        </div>
+        <div class='legend' *ngIf='rpState.mode === "rehab-prio"'>
+            <div class='legend-item'>
+                <img src='assets/img/functional.png'>
+                <div class='legend-label'>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Likely Current Users Heatmap</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
+                </div>
+            </div>
+            <div class='legend-item'>
+                <img src='assets/img/non-functional.png'>
+                <div class='legend-label'>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>High Crucialness Heatmap</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
+                </div>
+            </div>
+            <div class='legend-item'>
+                <img src='assets/img/selected.png'>
+                <div class='legend-label'>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Currently appearing in the Data Table</span></span>
+                </div>
+            </div>
         </div>
     </div>
 </app-airtable-layout>

@@ -30,32 +30,6 @@
         text-decoration: none;
         color: inherit;
     }
-    .legend {
-        display: flex;
-        flex-flow: column;
-        background: #eae9e6;
-        padding: 16px;
-        .legend-row {
-            display: flex;
-            flex-flow: row;
-            align-items: center;
-            gap: 8px;
-
-            .legend-label {
-                display: flex; 
-                flex-flow: column;
-                max-width: 300px;
-
-                > span {
-                    display: flex;
-                    flex-flow: row;
-                    align-items: flex-start;    
-                    gap: 8px;
-                    .fontSans;    
-                }
-            }
-        }
-    }
 }
 
 table {
@@ -116,14 +90,15 @@ mat-label {
             margin: 0 8px;
             flex: 0 1 auto;
             width: 250px;
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgba(224, 224, 224, 0.8);
             padding: 2px 8px;
             border-radius: 4px;
         }
     
         ::ng-deep {
             .mat-select-value {
-                color: white;
+                color: #333333;
+                font-weight: bolder;
             }
         }
     }
@@ -148,12 +123,33 @@ mat-label {
             justify-content: flex-start;
             align-items: center;
 
+            img {
+                display: block;;
+                height: 60px;
+            }
+
             .legend-color {
                 display: block;
                 width: 16px;
                 height: 12px;
                 border: 1px solid #333333;
             }
+
+            .legend-label {
+                display: flex; 
+                flex-flow: column;
+                max-width: 300px;
+
+                > span {
+                    display: flex;
+                    flex-flow: row;
+                    align-items: flex-start;    
+                    gap: 8px;
+                    .fontSans;
+                    line-height: 16px;
+                }
+            }
+
         }
     }
 }

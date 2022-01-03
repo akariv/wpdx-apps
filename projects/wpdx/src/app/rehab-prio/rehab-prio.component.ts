@@ -4,9 +4,14 @@ import * as turf from '@turf/turf';
 import { Point } from 'geojson';
 
 import { BehaviorSubject, forkJoin } from 'rxjs';
-import { debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, filter, map, switchMap, tap, windowWhen } from 'rxjs/operators';
 import { DbService } from '../db.service';
 import { StateService } from '../common-components/common-components.module';
+import { RpStateService } from './rp-state.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
+import { RegionFilterDialogComponent } from './region-filter-dialog/region-filter-dialog.component';
+import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 
 @Component({
   selector: 'app-rehab-prio',
@@ -15,32 +20,17 @@ import { StateService } from '../common-components/common-components.module';
 })
 export class RehabPrioComponent implements OnInit {
 
-  map: mapboxgl.Map = null;
   mapFilters = {
     'all-waterpoints': []
   };
   _popupProperties: any = {};
-  // bounds = new BehaviorSubject<mapboxgl.LngLatBounds>(null);
-  top10: any[] = [];
-  // _all_waterpoints = false;
-  // _show_urban = false;
-  // _show_point_counts = true;
-  // _show_heatmap_criticality = true;
-  // _show_heatmap_population = false;
   circle_visible = false;
-  sort_options = [
-    {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
-    {value: 'local_population desc', display: 'Sort by Local Pop.'},
-    {value: 'criticality desc', display: 'Sort by Crucialness'},
-    {value: 'pressure desc', display: 'Sort by Pressure'},
-  ];
   filterConfiguration = [
-    {id: 'adm', title: 'Filter By Region', icon: 'travel_explore'},
-    {id: 'attributes', title: 'Filter By Attributes', icon: 'filter_alt'},
-    {id: 'data-table', title: 'Top Water Points', icon: 'format_list_numbered'},
-    {id: 'settings', title: 'View Settings', icon: 'settings'},
-    {id: 'legend', title: 'Legend', icon: 'menu_book'},
-    {id: 'download', title: 'Download Data', icon: 'file_download'},
+    // {id: 'adm', title: 'Filter By Region', icon: 'travel_explore'},
+    // {id: 'attributes', title: 'Filter By Attributes', icon: 'filter_alt'},
+    // {id: 'data-table', title: 'Top Water Points', icon: 'format_list_numbered'},
+    // {id: 'settings', title: 'View Settings', icon: 'settings'},
+    // {id: 'legend', title: 'Legend', icon: 'menu_book'},
   ];
   nav = '';
 
@@ -50,7 +40,7 @@ export class RehabPrioComponent implements OnInit {
   markersOnScreen: any = {};
   admPopupSections: any[] = [];
 
-  constructor(private db: DbService, private state: StateService) {
+  constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
   }
 
@@ -62,21 +52,21 @@ export class RehabPrioComponent implements OnInit {
       switchMap((bounds) => this.db.query(this.queryUI(bounds))),
       map((results: any) => results.rows)
     ).subscribe((results) => {
-      this.top10 = results;
-      if (this.map) {
+      this.rpState.top10 = results;
+      if (this.rpState.map) {
         if (results.length) {
-          this.map.setFilter('rehab-priority-highlights', [
+          this.rpState.map.setFilter('rehab-priority-highlights', [
             'all',
             [
               'match',
               ['get', 'wpdx_id'],
-              [...new Set(this.top10.map(r => r.wpdx_id))],
+              [...new Set(this.rpState.top10.map(r => r.wpdx_id))],
               true,
               false
             ]
           ]);
         } else {
-          this.map.setFilter('rehab-priority-highlights', [
+          this.rpState.map.setFilter('rehab-priority-highlights', [
             'all',
             [
               'match',
@@ -89,13 +79,6 @@ export class RehabPrioComponent implements OnInit {
         }
       }
     });
-    this.state.defaultValue('all_waterpoints', true);
-    this.state.defaultValue('show_population_density', true);
-    this.state.defaultValue('show_landcover', true);
-    if (this.preview) {
-      this.state.defaultValue('adman_view', 'unserved');
-      this.state.defaultValue('show_adman_pies', true);
-    }
   }
 
   downloadFields(query=false) {
@@ -117,7 +100,11 @@ export class RehabPrioComponent implements OnInit {
 
   downloadUrl() {
     const bounds = this.state.bounds;
-    return this.db.download(this.queryDL(bounds, this.downloadFields(true)), 'xlsx', 'wpdx-rehab-prio-results', this.downloadFields());
+    return this.db.download(this.queryDL(bounds, this.downloadFields(true)), 'xlsx', 'wpdx-visible-points', this.downloadFields());
+  }
+
+  downloadData() {
+    window.open(this.downloadUrl(), '_blank');
   }
 
   queryUI(bounds) {
@@ -126,7 +113,7 @@ export class RehabPrioComponent implements OnInit {
             criticality, pressure
       from wpdx_plus
       where ${this.queryWhere(bounds)}
-      order by ${this.sort_by} nulls last
+      order by ${this.rpState.sort_by} nulls last
       limit 15
     `;
     return sql;
@@ -137,7 +124,7 @@ export class RehabPrioComponent implements OnInit {
       select ${fields.join(',')}
       from wpdx_plus
       where ${this.queryWhere(bounds)}
-      order by ${this.sort_by} nulls last
+      order by ${this.rpState.sort_by} nulls last
     `;
   }
 
@@ -149,14 +136,14 @@ export class RehabPrioComponent implements OnInit {
       'lon_deg >= ' + bounds.getWest(),
       'lon_deg <= ' + bounds.getEast(),
     ];
-    if (!this.all_waterpoints) {
+    if (!this.rpState.all_waterpoints) {
       terms.push('rehab_priority > 0');
     }
-    if (!this.show_urban) {
+    if (!this.rpState.show_urban) {
       terms.push('not is_urban');
     }
-    if (this.source_filter) {
-      terms.push(`source='${this.source_filter}'`);
+    if (this.rpState.source_filter) {
+      terms.push(`source='${this.rpState.source_filter}'`);
     }
     if (this.state.props.country_name) {
       terms.push(`clean_country_name = '${this.state.props.country_name}'`);
@@ -190,54 +177,52 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
-    if (this.preview) {
-      if (!value.wpdx_id) {
-        const baseQuery = `select
-          sum(total_pop) as total_pop,
-          sum(rural_pop) as rural_pop,
-          sum(unserved_pop) as unserved_pop,
-          sum(uncharted_pop) as uncharted_pop
-          from adm_analysis
-        `;
-        const queries: string[] = [];
-        if (value.NAME_2) {
-          queries.push(`${baseQuery}
-            where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
-        }
-        if (value.NAME_3) {
-          queries.push(`${baseQuery}
-            where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
-                  "NAME_2"='${this.fq(value.NAME_2)}'`);
-        }
-        if (value.NAME_4) {
-          queries.push(`${baseQuery}
-            where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
-                  "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
-        }
-        forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
-          this.admPopupSections = [value];
-          if (queries.length > 2) {
-            // value.level3 = results[2].rows[0];
-            this.admPopupSections.push(
-              Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[2].rows[0])
-            );
-          }
-          if (queries.length > 1) {
-            // value.level2 = results[1].rows[0];
-            this.admPopupSections.push(
-              Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[1].rows[0])
-            );
-          }
-          if (queries.length > 0) {
-            // value.level1 = results[0].rows[0];
-            this.admPopupSections.push(
-              Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[0].rows[0])
-            );
-          }
-        });
-        this._popupProperties = value;
-        return;
+    if (!value.wpdx_id) {
+      const baseQuery = `select
+        sum(total_pop) as total_pop,
+        sum(rural_pop) as rural_pop,
+        sum(unserved_pop) as unserved_pop,
+        sum(uncharted_pop) as uncharted_pop
+        from adm_analysis
+      `;
+      const queries: string[] = [];
+      if (value.NAME_2) {
+        queries.push(`${baseQuery}
+          where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
       }
+      if (value.NAME_3) {
+        queries.push(`${baseQuery}
+          where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+                "NAME_2"='${this.fq(value.NAME_2)}'`);
+      }
+      if (value.NAME_4) {
+        queries.push(`${baseQuery}
+          where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+                "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
+      }
+      forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
+        this.admPopupSections = [value];
+        if (queries.length > 2) {
+          // value.level3 = results[2].rows[0];
+          this.admPopupSections.push(
+            Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[2].rows[0])
+          );
+        }
+        if (queries.length > 1) {
+          // value.level2 = results[1].rows[0];
+          this.admPopupSections.push(
+            Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[1].rows[0])
+          );
+        }
+        if (queries.length > 0) {
+          // value.level1 = results[0].rows[0];
+          this.admPopupSections.push(
+            Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[0].rows[0])
+          );
+        }
+      });
+      this._popupProperties = value;
+      return;
     }
     const query = `select * from wpdx_plus where wpdx_id='${value.wpdx_id}' and is_latest`;
     this._popupProperties = value;
@@ -254,136 +239,26 @@ export class RehabPrioComponent implements OnInit {
     return this._popupProperties;
   }
 
-  set all_waterpoints(value) {
-    this.top10 = [];
-    this.state.setProp('all_waterpoints', value);
-  }
-
-  get all_waterpoints() {
-    return this.state.getProp('all_waterpoints');
-  }
-
-  get source_filter() {
-    return this.state.getProp('source_filter');
-  }
-
-  set show_urban(value) {
-    this.top10 = [];
-    this.state.setProp('show_urban', value);
-  }
-
-  get show_urban() {
-    return this.state.getProp('show_urban');
-  }
-
-  set sort_by(value) {
-    this.top10 = [];
-    this.state.setProp('sort_by', value);
-  }
-
-  get sort_by() {
-    return this.state.getProp('sort_by') || this.sort_options[0].value;
-  }
-
-  set show_point_counts(value) {
-    this.state.setProp('show_point_counts', value);
-  }
-
-  get show_point_counts() {
-    return this.state.getProp('show_point_counts');
-  }
-
   update_heatmaps(props) {
-    this.map.setLayoutProperty('rehab-priority-popuplation-served', 'visibility', props.show_heatmap_population ? 'visible' : 'none');
-    this.map.setLayoutProperty('rehab-priority-criticallity-heatmap', 'visibility', props.show_heatmap_criticality ? 'visible' : 'none');
-  }
-
-  set show_heatmap_criticality(value) {
-    this.state.setProp('show_heatmap_criticality', value);
-    if (value) {
-      this.state.setProp('show_heatmap_population', false);
-    }
-  }
-
-  get show_heatmap_criticality() {
-    return this.state.getProp('show_heatmap_criticality');
-  }
-
-  set show_heatmap_population(value) {
-    this.state.setProp('show_heatmap_population', value);
-    if (value) {
-      this.state.setProp('show_heatmap_criticality', false);
-      this.all_waterpoints = true;
-    }
-  }
-
-  get show_heatmap_population() {
-    return this.state.getProp('show_heatmap_population');
-  }
-
-  set show_population_density(value) {
-    this.state.setProp('show_population_density', value);
-    for (const layer of this.state.populationLayers) {
-      this.map.setLayoutProperty(layer, 'visibility', value ? 'visible' : 'none');
-    }
-  }
-
-  get show_population_density() {
-    return this.state.getProp('show_population_density');
-  }
-
-  set show_landcover(value) {
-    this.state.setProp('show_landcover', value);
-    this.map.getStyle().layers.forEach((layer) => {
-      if (layer.id.indexOf('road-') === 0 || layer.id.indexOf('building') === 0) {
-        this.map.setLayoutProperty(layer.id, 'visibility', value ? 'visible' : 'none');
-      }
-    });
-  }
-
-  get show_landcover() {
-    return this.state.getProp('show_landcover');
-  }
-
-  set adman_view(value) {
-    this.state.setProp('adman_view', value);
-  }
-
-  get adman_view() {
-    return this.state.getProp('adman_view');
-  }
-
-  get adman_view_name() {
-    const av = this.adman_view;
-    if (av === 'served') {
-      return '% of pop served or<br/>in urban areas';
-    }
-    if (av === 'unserved') {
-      return '% of pop without access<br/>to func. water points';
-    }
-    if (av === 'uncharted') {
-      return '% of pop with unknown access';
-    }
-    return '';
-  }
-
-  set show_adman_pies(value) {
-    this.state.setProp('show_adman_pies', value);
-  }
-
-  get show_adman_pies() {
-    return this.state.getProp('show_adman_pies');
+    this.rpState.map.setLayoutProperty(
+      'rehab-priority-popuplation-served', 'visibility',
+      props.show_heatmap_population ? 'visible' : 'none'
+    );
+    this.rpState.map.setLayoutProperty(
+      'rehab-priority-criticallity-heatmap', 'visibility',
+      props.show_heatmap_criticality ? 'visible' : 'none'
+    );
   }
 
   setMap(_map: mapboxgl.Map) {
-    this.map = _map;
-    this.map.on('moveend', (e) => {
+    this.rpState.map = _map;
+    this.rpState.map.on('moveend', (e) => {
       this.onMove(e);
     });
     for (const layer of [
       'rehab-priority-text', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap',
     ]) {
-      const filt = this.map.getFilter(layer);
+      const filt = this.rpState.map.getFilter(layer);
       if (filt[0] === 'all') {
         this.mapFilters[layer] = filt.slice(1);
       } else {
@@ -396,45 +271,45 @@ export class RehabPrioComponent implements OnInit {
       this.updateState(s.props, s.bounds, s.userBounds);
     });
     if (this.state.bounds === null) {
-      this.state.setBounds(this.map.getBounds(), true);
+      this.state.setBounds(this.rpState.map.getBounds(), true);
     }
-    if (this.preview) {
-      console.log('SORUCES', (this.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
-      this.map.on('render', () => {
-        const newMarkers: any = {};
-        const features = this.show_adman_pies ? this.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']}) : [];
-        for (const feature of features) {
-          const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
-          const props: any = feature.properties;
-          const id = props.NAME_0 + props.NAME_1 + props.NAME_2 + props.NAME_3 + props.NAME_4;
+    console.log('SORUCES', (this.rpState.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
+    this.rpState.map.on('render', () => {
+      const newMarkers: any = {};
+      const features = this.rpState.show_adman_pies ?
+          this.rpState.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']})
+          : [];
+      for (const feature of features) {
+        const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
+        const props: any = feature.properties;
+        const id = props.NAME_0 + props.NAME_1 + props.NAME_2 + props.NAME_3 + props.NAME_4;
 
-          let marker = this.markers[id];
-          if (!marker) {
-            console.log('ADDING MARKER', id);
-            const el = this.createDonutChart(props);
-            el.addEventListener('click', (ev) => {
-              this.popupProperties = props;
-              ev.stopPropagation();
-            });
-            marker = this.markers[id] = new mapboxgl.Marker({
-              element: el
-            }).setLngLat(coords).setOffset([0, -30])
-            .addTo(this.map);
-          }
-          newMarkers[id] = marker;
-          if (!this.markersOnScreen[id]) {
-            marker.addTo(this.map);
-          }
+        let marker = this.markers[id];
+        if (!marker) {
+          console.log('ADDING MARKER', id);
+          const el = this.createDonutChart(props);
+          el.addEventListener('click', (ev) => {
+            this.popupProperties = props;
+            ev.stopPropagation();
+          });
+          marker = this.markers[id] = new mapboxgl.Marker({
+            element: el
+          }).setLngLat(coords).setOffset([0, -30])
+          .addTo(this.rpState.map);
         }
-        // for every marker we've added previously, remove those that are no longer visible
-        for (const id in this.markersOnScreen) {
-          if (!newMarkers[id]) {
-            this.markersOnScreen[id].remove();
-          }
+        newMarkers[id] = marker;
+        if (!this.markersOnScreen[id]) {
+          marker.addTo(this.rpState.map);
         }
-        this.markersOnScreen = newMarkers;
-      });
-    }
+      }
+      // for every marker we've added previously, remove those that are no longer visible
+      for (const id in this.markersOnScreen) {
+        if (!newMarkers[id]) {
+          this.markersOnScreen[id].remove();
+        }
+      }
+      this.markersOnScreen = newMarkers;
+    });
   }
 
   createDonutChart(props: any): HTMLElement {
@@ -497,32 +372,9 @@ export class RehabPrioComponent implements OnInit {
       }" fill="${color}" />`;
   }
 
-  navigateToAdm(state) {
-    for (const f of ['country_name', 'adm1', 'adm2', 'adm3', 'adm4']) {
-      if (state[f]) {
-        this.state.setProp(f, state[f]);
-      } else {
-        this.state.removeProp(f);
-      }
-    }
-    if (state.bounds) {
-      this.state.setBounds(new mapboxgl.LngLatBounds(state.bounds));
-    }
-  }
-
-  navigateToAttrib(state) {
-    for (const f of ['source', 'tech', 'management']) {
-      if (state[f]) {
-        this.state.setProp(f, state[f]);
-      } else {
-        this.state.removeProp(f);
-      }
-    }
-  }
-
   updateState(props, bounds, userBounds) {
     if (bounds && !userBounds) {
-      this.map.fitBounds(bounds, {padding: 30, maxZoom: 18});
+      this.rpState.map.fitBounds(bounds, {padding: 30, maxZoom: 18});
     }
     const filt = [];
     for (const _f of ['country_name', 'adm1', 'adm2', 'adm3', 'adm4']) {
@@ -564,40 +416,38 @@ export class RehabPrioComponent implements OnInit {
       )]);
     }
     if (props.show_point_counts) {
-      this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
+      this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
     } else {
-      this.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
+      this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
     }
-    if (this.preview) {
-      const admanView = props.adman_view;
-      this.map.setLayoutProperty('adm-analysis', 'visibility', 'visible');
-      let prop: any = [];
-      let visibility = 'visible';
-      let color = '';
-      if (admanView === 'served') {
-        prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
-        color = '#185caf';
-      } else if (admanView === 'unserved') {
-        prop = ['get', 'pct_unserved'];
-        color = '#8a0000';
-      } else if (admanView === 'uncharted') {
-        prop = ['get', 'pct_uncharted'];
-        color = '#333333';
-      } else {
-        prop = null;
-        visibility = 'none';
-      }
-      if (prop) {
-        const interpolate = ['interpolate', ['linear'], prop, 0, 0, 1, 0.5];
-        this.map.setPaintProperty('adm-analysis', 'fill-opacity', interpolate);
-        this.map.setPaintProperty('adm-analysis', 'fill-color', color);
-        this.map.setPaintProperty('adm-analysis-borders', 'line-color', color);
-        this.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
-      }
-      this.map.setLayoutProperty('adm-analysis-labels', 'visibility', visibility);
-      this.map.setLayoutProperty('adm-analysis', 'visibility', visibility);
-      this.map.setLayoutProperty('adm-analysis-borders', 'visibility', visibility);
+    const admanView = props.mode === 'adman' ? props.adman_view : '';
+    this.rpState.map.setLayoutProperty('adm-analysis', 'visibility', 'visible');
+    let prop: any = [];
+    let visibility = 'visible';
+    let color = '';
+    if (admanView === 'served') {
+      prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
+      color = '#185caf';
+    } else if (admanView === 'unserved') {
+      prop = ['get', 'pct_unserved'];
+      color = '#8a0000';
+    } else if (admanView === 'uncharted') {
+      prop = ['get', 'pct_uncharted'];
+      color = '#333333';
+    } else {
+      prop = null;
+      visibility = 'none';
     }
+    if (prop) {
+      const interpolate = ['interpolate', ['linear'], prop, 0, 0, 1, 0.5];
+      this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', interpolate);
+      this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', color);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', color);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
+    }
+    this.rpState.map.setLayoutProperty('adm-analysis-labels', 'visibility', visibility);
+    this.rpState.map.setLayoutProperty('adm-analysis', 'visibility', visibility);
+    this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', visibility);
     this.update_heatmaps(props);
     for (const layer of [
       'rehab-priority-text',
@@ -607,15 +457,15 @@ export class RehabPrioComponent implements OnInit {
     ]) {
       const baseFilt = this.mapFilters[layer];
       const fullFilt = ['all', ...baseFilt, ...filt];
-      if (JSON.stringify(this.map.getFilter(layer)) !== JSON.stringify(fullFilt)) {
-        this.map.setFilter(layer, fullFilt);
+      if (JSON.stringify(this.rpState.map.getFilter(layer)) !== JSON.stringify(fullFilt)) {
+        this.rpState.map.setFilter(layer, fullFilt);
       }
     }
   }
 
   gotoPoint(point) {
     this.addCircle(point);
-    this.map.flyTo({
+    this.rpState.map.flyTo({
       center: [point.lon_deg, point.lat_deg],
       zoom: 14
     });
@@ -629,11 +479,11 @@ export class RehabPrioComponent implements OnInit {
     const _center = turf.point([point.lon_deg, point.lat_deg]);
     const _circle = turf.circle(_center, 1, {steps: 80, units: 'kilometers'} as any);
     this.circle_visible = true;
-    this.map.addSource('circleData', {
+    this.rpState.map.addSource('circleData', {
       type: 'geojson',
       data: _circle,
     });
-    this.map.addLayer({
+    this.rpState.map.addLayer({
       id: 'circle-fill',
       type: 'fill',
       source: 'circleData',
@@ -646,17 +496,28 @@ export class RehabPrioComponent implements OnInit {
 
   removeCircle() {
     if (this.circle_visible) {
-      this.map.removeLayer('circle-fill');
-      this.map.removeSource('circleData');
+      this.rpState.map.removeLayer('circle-fill');
+      this.rpState.map.removeSource('circleData');
       this.circle_visible = false;
     }
   }
 
   onMove(ev) {
-    const bounds = this.map.getBounds();
+    const bounds = this.rpState.map.getBounds();
     if (ev.originalEvent) {
       this.state.setBounds(bounds, true);
     }
   }
 
+  openSettingsDialog() {
+    this.dialog.open(SettingsDialogComponent);
+  }
+
+  openRegionFilterDialog() {
+    this.dialog.open(RegionFilterDialogComponent);
+  }
+
+  openAttributeFilterDialog() {
+    this.dialog.open(AttributeFilterDialogComponent);
+  }
 }

@@ -6,14 +6,16 @@ import { AdmSelectorComponent } from './adm-selector/adm-selector.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { AboutPanelComponent } from './about-panel/about-panel.component';
 import { LogosBarComponent } from './logos-bar/logos-bar.component';
 import { AirtableLayoutComponent } from './airtable-layout/airtable-layout.component';
 import { AirtableService } from '../airtable.service';
 import { LegendControlComponent } from './controls/legend-control/legend-control.component';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { CustomSelectorComponent } from './controls/custom-selector/custom-selector.component';
 import { FiltersControlComponent } from './controls/filters-control/filters-control.component';
 import { ControlsComponent } from './controls/controls/controls.component';
@@ -48,6 +50,8 @@ export { StateService } from './state.service';
     MatButtonToggleModule,
     MatExpansionModule,
     MatSidenavModule,
+    MatMenuModule,
+    MatButtonModule,
   ],
   exports: [
     AppLayoutComponent,

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { StateService } from '../../common-components/state.service';
 import { DbService } from '../../db.service';
 import { RehabPrioComponent } from '../rehab-prio.component';
+import { RpStateService } from '../rp-state.service';
 
 @Component({
   selector: 'app-rehab-prio-preview',
@@ -10,8 +12,8 @@ import { RehabPrioComponent } from '../rehab-prio.component';
 })
 export class RehabPrioPreviewComponent extends RehabPrioComponent {
 
-  constructor(private db_: DbService, private state_: StateService) {
-    super(db_, state_);
+  constructor(private db_: DbService, private state_: StateService, private rpState_: RpStateService, public dialog: MatDialog) {
+    super(db_, state_, rpState_, dialog);
     this.preview = true;
   }
 }

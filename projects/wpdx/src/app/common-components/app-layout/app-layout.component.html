@@ -1,5 +1,11 @@
 <div class='app'>
     <div class='header'>
+        <button mat-fab color="primary" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <ng-content select=".menu"></ng-content>
+        </mat-menu>    
         <img class='logo' src='assets/img/logo.png'>
         <h1><ng-content select='.title'></ng-content></h1>
         <div class='info' (click)='info.emit()'>

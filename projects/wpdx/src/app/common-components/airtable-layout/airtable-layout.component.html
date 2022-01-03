@@ -1,5 +1,8 @@
 <app-layout (info)='panel = "about"'>
     <div class='title'>{{title}}</div>
+    <ng-container ngProjectAs=".menu">
+        <ng-content select=".menu"></ng-content>
+    </ng-container>
     <ng-container ngProjectAs=".content">
         <mat-drawer-container>
             <mat-drawer mode="side" opened>

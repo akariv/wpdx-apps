@@ -9,15 +9,27 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { CommonComponentsModule } from '../common-components/common-components.module';
 import { RehabPrioComponent } from './rehab-prio.component';
 import { RehabPrioRoutingModule } from './rehab-prio-routing.module';
 import { RehabPrioPreviewComponent } from './rehab-prio-preview/rehab-prio-preview.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
+import { RegionFilterDialogComponent } from './region-filter-dialog/region-filter-dialog.component';
+import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 
 
 
 @NgModule({
-  declarations: [RehabPrioComponent, RehabPrioPreviewComponent],
+  declarations: [
+    RehabPrioComponent,
+    RehabPrioPreviewComponent,
+    SettingsDialogComponent,
+    RegionFilterDialogComponent,
+    AttributeFilterDialogComponent
+  ],
   imports: [
     CommonModule,
     RehabPrioRoutingModule,
@@ -31,6 +43,9 @@ import { RehabPrioPreviewComponent } from './rehab-prio-preview/rehab-prio-previ
     MatTableModule,
     MatSlideToggleModule,
     MatSidenavModule,
-  ],
+    MatMenuModule,
+    MatDialogModule,
+    MatButtonModule,
+  ]
 })
 export class RehabPrioModule { }

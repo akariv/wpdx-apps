@@ -67,7 +67,7 @@ export class StateService {
   }
 
   bump() {
-    const _state = Object.assign({}, this.props, {bounds: this.bounds.toArray()});
+    const _state = Object.assign({}, this.props, {bounds: this.bounds?.toArray()});
     const state = {};
     for (const key of Object.keys(_state)) {
       if (_state[key] !== undefined) {
