@@ -276,7 +276,7 @@ export class RehabPrioComponent implements OnInit {
     console.log('SORUCES', (this.rpState.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
     this.rpState.map.on('render', () => {
       const newMarkers: any = {};
-      const features = this.rpState.show_adman_pies ?
+      const features = this.rpState.show_adman_pies && this.rpState.mode === 'adman' ?
           this.rpState.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']})
           : [];
       for (const feature of features) {
@@ -422,7 +422,7 @@ export class RehabPrioComponent implements OnInit {
     }
 
     // ADM Analysis Layer
-    const admanView = props.mode === 'adman' ? props.adman_view : '';
+    const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
     const admanLevel= props.adman_level || 'best';
     let prop: any = [];
     let visibility = 'visible';
@@ -435,6 +435,9 @@ export class RehabPrioComponent implements OnInit {
       color = '#8a0000';
     } else if (admanView === 'uncharted') {
       prop = ['get', 'pct_uncharted'];
+      color = '#333333';
+    } else if (admanView === 'staleness') {
+      prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
       color = '#333333';
     } else {
       prop = null;

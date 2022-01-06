@@ -112,19 +112,22 @@
             <mat-select [(value)]='rpState.mode'>
                 <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
                 <mat-option value="adman">Adm Region Analysis</mat-option>
+                <mat-option value="staleness">Staleness Analysis</mat-option>
             </mat-select>
             <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
             <ng-container *ngIf='rpState.mode === "rehab-prio"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
             </ng-container>
-            <ng-container *ngIf='rpState.mode === "adman"'>
+            <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
                 <mat-button-toggle-group [(ngModel)]="rpState.adman_level" aria-label="ADM Level" appearance='Legacy'>
                     <mat-button-toggle value="adm1" [disableRipple]='true'>Adm1</mat-button-toggle>
                     <mat-button-toggle value="adm2" [disableRipple]='true'>Adm2</mat-button-toggle>
                     <mat-button-toggle value="adm3" [disableRipple]='true'>Adm3</mat-button-toggle>
                     <mat-button-toggle value="best" [disableRipple]='true'>Best</mat-button-toggle>
                 </mat-button-toggle-group>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "adman"'>
                 <mat-select [(value)]='rpState.adman_view'>
                     <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
                     <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
@@ -140,6 +143,14 @@
             <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.3'></span><span>60%</span></div>
             <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.4'></span><span>80%</span></div>
             <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.5'></span><span>100%</span></div>
+        </div>
+        <div class='legend' *ngIf='rpState.mode === "staleness"'>
+            <strong [innerHtml]='adman_view_name'></strong>
+            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.1'></span><span>New</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.2'></span><span>&nbsp;</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.3'></span><span>&nbsp;</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.4'></span><span>&nbsp;</span></div>
+            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.5'></span><span>Stale</span></div>
         </div>
         <div class='legend' *ngIf='rpState.mode === "rehab-prio"'>
             <div class='legend-item'>
