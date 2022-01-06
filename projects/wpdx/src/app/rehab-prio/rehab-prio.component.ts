@@ -420,8 +420,10 @@ export class RehabPrioComponent implements OnInit {
     } else {
       this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
     }
+
+    // ADM Analysis Layer
     const admanView = props.mode === 'adman' ? props.adman_view : '';
-    this.rpState.map.setLayoutProperty('adm-analysis', 'visibility', 'visible');
+    const admanLevel= props.adman_level || 'best';
     let prop: any = [];
     let visibility = 'visible';
     let color = '';
@@ -445,9 +447,13 @@ export class RehabPrioComponent implements OnInit {
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', color);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
     }
-    this.rpState.map.setLayoutProperty('adm-analysis-labels', 'visibility', visibility);
-    this.rpState.map.setLayoutProperty('adm-analysis', 'visibility', visibility);
-    this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', visibility);
+    for (const layer of ['adm-analysis', 'adm-analysis-borders', 'adm-analysis-labels']) {
+      this.rpState.map.setLayoutProperty(layer, 'visibility', visibility);
+      this.rpState.map.setFilter(layer, ['all',
+        ['==', ['get', 'adm_level'], ['literal', admanLevel]]
+      ]);
+    }
+
     this.update_heatmaps(props);
     for (const layer of [
       'rehab-priority-text',

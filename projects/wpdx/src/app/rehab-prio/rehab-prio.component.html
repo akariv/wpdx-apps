@@ -119,6 +119,12 @@
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman"'>
+                <mat-button-toggle-group [(ngModel)]="rpState.adman_level" aria-label="ADM Level" appearance='Legacy'>
+                    <mat-button-toggle value="adm1" [disableRipple]='true'>Adm1</mat-button-toggle>
+                    <mat-button-toggle value="adm2" [disableRipple]='true'>Adm2</mat-button-toggle>
+                    <mat-button-toggle value="adm3" [disableRipple]='true'>Adm3</mat-button-toggle>
+                    <mat-button-toggle value="best" [disableRipple]='true'>Best</mat-button-toggle>
+                </mat-button-toggle-group>
                 <mat-select [(value)]='rpState.adman_view'>
                     <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
                     <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>

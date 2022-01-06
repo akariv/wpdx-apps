@@ -25,6 +25,7 @@ export class RpStateService {
     this.state.defaultValue('adman_view', 'unserved');
     this.state.defaultValue('show_adman_pies', true);
     this.state.defaultValue('mode', 'rehab-prio');
+    this.state.defaultValue('adman_level', 'best');
   }
 
   navigateToAdm(state) {
@@ -103,6 +104,14 @@ export class RpStateService {
 
   get adman_view() {
     return this.state.getProp('adman_view');
+  }
+
+  set adman_level(value) {
+    this.state.setProp('adman_level', value);
+  }
+
+  get adman_level() {
+    return this.state.getProp('adman_level');
   }
 
   get adman_view_name() {
