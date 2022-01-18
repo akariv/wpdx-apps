@@ -107,6 +107,20 @@ export class RehabPrioComponent implements OnInit {
     window.open(this.downloadUrl(), '_blank');
   }
 
+  downloadADMUrl() {
+    const bounds = this.state.bounds;
+    const fields = [
+      'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4',
+      'total_pop', 'rural_pop', 'unserved_pop', 'uncharted_pop', 'pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'
+    ];
+    console.log('QQQ', this.queryDLADM(fields));
+    return this.db.download(this.queryDLADM(fields), 'xlsx', 'adm-regions', fields);
+  }
+
+  downloadADMData() {
+    window.open(this.downloadADMUrl(), '_blank');
+  }
+
   queryUI(bounds) {
     const sql = `
       select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
@@ -126,6 +140,36 @@ export class RehabPrioComponent implements OnInit {
       where ${this.queryWhere(bounds)}
       order by ${this.rpState.sort_by} nulls last
     `;
+  }
+
+  queryDLADM(fields) {
+    return `
+      select "${fields.join('","')}"
+      from adm_analysis
+      where ${this.queryADMWhere()}
+      order by 1,2,3,4,5,6 nulls last
+    `;
+  }
+
+  queryADMWhere() {
+    const terms = [
+    ];
+    if (this.state.props.country_name) {
+      terms.push(`"NAME_0" = '${this.state.props.country_name}'`);
+    }
+    if (this.state.props.adm1) {
+      terms.push(`"NAME_1" = '${this.state.props.adm1}'`);
+    }
+    if (this.state.props.adm2) {
+      terms.push(`"NAME_2" = '${this.state.props.adm2}'`);
+    }
+    if (this.state.props.adm3) {
+      terms.push(`"NAME_3" = '${this.state.props.adm3}'`);
+    }
+    if (this.state.props.adm4) {
+      terms.push(`"NAME_4" = '${this.state.props.adm4}'`);
+    }
+    return terms.join(' and ');
   }
 
   queryWhere(bounds) {
@@ -177,6 +221,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
+    // console.log('PPP', value);
     if (!value.wpdx_id) {
       const baseQuery = `select
         sum(total_pop) as total_pop,
@@ -186,6 +231,10 @@ export class RehabPrioComponent implements OnInit {
         from adm_analysis
       `;
       const queries: string[] = [];
+      if (value.NAME_1) {
+        queries.push(`${baseQuery}
+          where "NAME_0"='${this.fq(value.NAME_0)}'`);
+      }
       if (value.NAME_2) {
         queries.push(`${baseQuery}
           where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
@@ -202,22 +251,28 @@ export class RehabPrioComponent implements OnInit {
       }
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
         this.admPopupSections = [value];
-        if (queries.length > 2) {
+        if (queries.length > 3) {
           // value.level3 = results[2].rows[0];
           this.admPopupSections.push(
-            Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[2].rows[0])
+            Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[3].rows[0])
+          );
+        }
+        if (queries.length > 2) {
+          // value.level2 = results[1].rows[0];
+          this.admPopupSections.push(
+            Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[2].rows[0])
           );
         }
         if (queries.length > 1) {
-          // value.level2 = results[1].rows[0];
+          // value.level1 = results[0].rows[0];
           this.admPopupSections.push(
-            Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[1].rows[0])
+            Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[1].rows[0])
           );
         }
         if (queries.length > 0) {
           // value.level1 = results[0].rows[0];
           this.admPopupSections.push(
-            Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[0].rows[0])
+            Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
       });
@@ -286,7 +341,6 @@ export class RehabPrioComponent implements OnInit {
 
         let marker = this.markers[id];
         if (!marker) {
-          console.log('ADDING MARKER', id);
           const el = this.createDonutChart(props);
           el.addEventListener('click', (ev) => {
             this.popupProperties = props;
@@ -315,7 +369,7 @@ export class RehabPrioComponent implements OnInit {
   createDonutChart(props: any): HTMLElement {
     const offsets = [];
     const counts = ['pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'].map((k) => props[k] || 0);
-    const clusterColors = ['#828282', '#185caf', '#8a0000', '#333333'];
+    const clusterColors = ['#333333', '#185caf', '#8a0000', '#828282'];
 
     let total = 0;
     for (const count of counts) {
@@ -420,6 +474,38 @@ export class RehabPrioComponent implements OnInit {
     } else {
       this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
     }
+    if (props.any_waterpoints) {
+      this.update_heatmaps(props);
+      for (const layer of [
+        'rehab-priority-text',
+        'rehab-priority-popuplation-served',
+        'rehab-priority-criticallity-heatmap',
+        'all-waterpoints'
+      ]) {
+        const baseFilt = this.mapFilters[layer];
+        const fullFilt = ['all', ...baseFilt, ...filt];
+        if (JSON.stringify(this.rpState.map.getFilter(layer)) !== JSON.stringify(fullFilt)) {
+          this.rpState.map.setFilter(layer, fullFilt);
+        }
+      }
+      for (const layer of [
+        'rehab-priority-text',
+        'rehab-priority-popuplation-served',
+        'rehab-priority-criticallity-heatmap',
+      ]) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', this.rpState.mode === 'rehab-prio' ? 'visible' : 'none');
+      }
+      this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
+    } else {
+      for (const layer of [
+        'rehab-priority-text',
+        'rehab-priority-popuplation-served',
+        'rehab-priority-criticallity-heatmap',
+        'all-waterpoints'
+      ]) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
+      }
+    }
 
     // ADM Analysis Layer
     const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
@@ -450,25 +536,28 @@ export class RehabPrioComponent implements OnInit {
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', color);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
     }
-    for (const layer of ['adm-analysis', 'adm-analysis-borders', 'adm-analysis-labels']) {
-      this.rpState.map.setLayoutProperty(layer, 'visibility', visibility);
-      this.rpState.map.setFilter(layer, ['all',
-        ['==', ['get', 'adm_level'], ['literal', admanLevel]]
-      ]);
-    }
-
-    this.update_heatmaps(props);
-    for (const layer of [
-      'rehab-priority-text',
-      'rehab-priority-popuplation-served',
-      'rehab-priority-criticallity-heatmap',
-      'all-waterpoints'
+    const admanFilt = [];
+    for (const [_f, _ff] of [
+      ['country_name', 'NAME_0'],
+      ['adm1', 'NAME_1'],
+      ['adm2', 'NAME_2'],
+      ['adm3', 'NAME_3'],
+      ['adm4', 'NAME_4'],
     ]) {
-      const baseFilt = this.mapFilters[layer];
-      const fullFilt = ['all', ...baseFilt, ...filt];
-      if (JSON.stringify(this.rpState.map.getFilter(layer)) !== JSON.stringify(fullFilt)) {
-        this.rpState.map.setFilter(layer, fullFilt);
+      if (props[_f]) {
+        admanFilt.push([
+          '==', ['get', _ff], ['literal', props[_f]]
+        ]);
       }
+    }
+    console.log('ADMAN FILT', admanFilt);
+    for (const layer of ['adm-analysis', 'adm-analysis-borders', 'adm-analysis-labels']) {
+      this.rpState.map.setLayoutProperty(layer, 'visibility',
+          layer === 'adm-analysis-labels' ? (this.rpState.show_adman_labels ? visibility : 'none') : visibility);
+      this.rpState.map.setFilter(layer, ['all',
+        ['==', ['get', 'adm_level'], ['literal', admanLevel]],
+        ...admanFilt
+      ]);
     }
   }
 

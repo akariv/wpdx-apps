@@ -1,11 +1,14 @@
 <h2 mat-dialog-title>View Settings</h2>
 <mat-dialog-content class="mat-typography">
     <mat-label>Point Selection</mat-label>
-    <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Show functional points</mat-slide-toggle>
-    <mat-slide-toggle [(ngModel)]='rpState.show_urban'>Show points in urban areas</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show water points</mat-slide-toggle>
+    <ng-container *ngIf='rpState.any_waterpoints'>
+        <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Show functional points</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]='rpState.show_urban'>Show points in urban areas</mat-slide-toggle>    
+    </ng-container>
 
-    <mat-label>Map Layers</mat-label>
-    <mat-slide-toggle [(ngModel)]='rpState.show_point_counts'>Show Likely Current Users</mat-slide-toggle>
+    <mat-label>Rehab Priority Layers</mat-label>
+    <mat-slide-toggle [(ngModel)]='rpState.show_point_counts'>Show Number of Likely Current Users</mat-slide-toggle>
     <mat-slide-toggle [(ngModel)]='rpState.show_heatmap_criticality'>Show Point Crucialness heatmap</mat-slide-toggle>
     <mat-slide-toggle [(ngModel)]='rpState.show_heatmap_population'>Show Likely Current Users heatmap</mat-slide-toggle>
     <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Show Population Density</mat-slide-toggle>

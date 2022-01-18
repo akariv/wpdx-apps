@@ -1,5 +1,5 @@
 <app-airtable-layout
-    id='rehab-prio'
+    [id]='preview ? "explorer" : "rehab-prio"'
     [interactionLayers]='["rehab-priority-text", "all-waterpoints"]'
     [filters]='filterConfiguration'
     [popupProperties]='popupProperties'
@@ -9,22 +9,38 @@
     (filterSelected)='nav = $event'
 >
     <ng-container ngProjectAs='.menu'>
-        <button mat-menu-item (click)='openAttributeFilterDialog()'>
-            <mat-icon>filter_alt</mat-icon>
-            <span>Filter by Attributes</span>
-        </button>
-        <button mat-menu-item (click)='openRegionFilterDialog()'>
-            <mat-icon>travel_explore</mat-icon>
-            <span>Filter by Region</span>
-        </button>
-        <button mat-menu-item (click)='openSettingsDialog()'>
-            <mat-icon>settings</mat-icon>
-            <span>View Settings</span>
-        </button>
-        <button mat-menu-item (click)='downloadData()'>
-            <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
-            <span>Download Data</span>
-        </button>
+        <button mat-fab color="primary" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>menu</mat-icon>
+        </button>    
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)='openAttributeFilterDialog()'>
+                <mat-icon>filter_alt</mat-icon>
+                <span>Filter by Attributes</span>
+            </button>
+            <button mat-menu-item (click)='openRegionFilterDialog()'>
+                <mat-icon>travel_explore</mat-icon>
+                <span>Filter by Region</span>
+            </button>
+            <button mat-menu-item (click)='openSettingsDialog()'>
+                <mat-icon>settings</mat-icon>
+                <span>View Settings</span>
+            </button>
+            <!-- <button mat-menu-item (click)='downloadData()'> -->
+            <button mat-menu-item [matMenuTriggerFor]='downloadMenu'>
+                <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+                <span>Download Data</span>
+            </button>
+        </mat-menu>
+        <mat-menu #downloadMenu="matMenu">
+            <button mat-menu-item (click)='downloadData()'>
+                <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+                <span>Water Point Data</span>
+            </button>
+            <button mat-menu-item (click)='downloadADMData()'>
+                <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+                <span>Adm. Region Analysis</span>
+            </button>
+        </mat-menu>
     </ng-container>
     <div class='workspace' ngProjectAs='.content'>
         <app-controls>
@@ -109,31 +125,41 @@
     </div>
     <div class='top-bar'>
         <div class='controls'>
-            <mat-select [(value)]='rpState.mode'>
-                <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
-                <mat-option value="adman">Adm Region Analysis</mat-option>
-                <mat-option value="staleness">Staleness Analysis</mat-option>
-            </mat-select>
-            <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
+            <div class='with-title'>
+                <span>Decision Support Tool:</span>
+                <mat-select [(value)]='rpState.mode'>
+                    <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
+                    <ng-container *ngIf='preview'>
+                        <mat-option value="adman">Adm Region Analysis</mat-option>
+                        <mat-option value="staleness">Staleness Analysis</mat-option>    
+                    </ng-container>
+                </mat-select>
+            </div>
             <ng-container *ngIf='rpState.mode === "rehab-prio"'>
+                <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
+                <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <mat-button-toggle-group [(ngModel)]="rpState.adman_level" aria-label="ADM Level" appearance='Legacy'>
                     <mat-button-toggle value="adm1" [disableRipple]='true'>Adm1</mat-button-toggle>
                     <mat-button-toggle value="adm2" [disableRipple]='true'>Adm2</mat-button-toggle>
                     <mat-button-toggle value="adm3" [disableRipple]='true'>Adm3</mat-button-toggle>
-                    <mat-button-toggle value="best" [disableRipple]='true'>Best</mat-button-toggle>
+                    <mat-button-toggle value="best" [disableRipple]='true'>Most Detailed</mat-button-toggle>
                 </mat-button-toggle-group>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman"'>
-                <mat-select [(value)]='rpState.adman_view'>
-                    <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
-                    <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
-                    <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
-                </mat-select>
-                <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>Pie Charts</mat-slide-toggle>
+                <div class='with-title'>
+                    <span>Parameter of Interest:</span>
+                    <mat-select [(value)]='rpState.adman_view'>
+                        <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
+                        <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
+                        <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
+                    </mat-select>    
+                </div>
+                <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>Coverage Summary</mat-slide-toggle>
+                <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_labels'>Region Titles</mat-slide-toggle>
             </ng-container>
         </div>
         <div class='legend' *ngIf='rpState.adman_view_name.length && rpState.mode === "adman"'>
@@ -173,7 +199,7 @@
                 <img src='assets/img/selected.png'>
                 <div class='legend-label'>
                     <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Currently appearing in the Data Table</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
                 </div>
             </div>
         </div>

@@ -20,10 +20,12 @@ export class RpStateService {
 
   constructor(public state: StateService) {
     this.state.defaultValue('all_waterpoints', true);
+    this.state.defaultValue('any_waterpoints', true);
     this.state.defaultValue('show_population_density', true);
     this.state.defaultValue('show_landcover', true);
     this.state.defaultValue('adman_view', 'unserved');
     this.state.defaultValue('show_adman_pies', true);
+    this.state.defaultValue('show_adman_labels', true);
     this.state.defaultValue('mode', 'rehab-prio');
     this.state.defaultValue('adman_level', 'best');
   }
@@ -66,6 +68,14 @@ export class RpStateService {
 
   get all_waterpoints() {
     return this.state.getProp('all_waterpoints');
+  }
+
+  set any_waterpoints(value) {
+    this.state.setProp('any_waterpoints', value);
+  }
+
+  get any_waterpoints() {
+    return this.state.getProp('any_waterpoints');
   }
 
   get source_filter() {
@@ -134,6 +144,14 @@ export class RpStateService {
 
   get show_adman_pies() {
     return this.state.getProp('show_adman_pies');
+  }
+
+  set show_adman_labels(value) {
+    this.state.setProp('show_adman_labels', value);
+  }
+
+  get show_adman_labels() {
+    return this.state.getProp('show_adman_labels');
   }
 
   set show_population_density(value) {

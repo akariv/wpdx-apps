@@ -79,12 +79,16 @@ export class AdmSelectorComponent implements OnInit {
 
   groupBy(items, keyFields, valueField) {
     const ret = {};
-    for (const item of items) {
+    for (const item_ of items) {
+      const item = Object.assign({}, item_);
       const key = keyFields.map((f) => item[f]).join('/');
       if (!ret[key]) {
         ret[key] = [];
       }
       item.value = item[valueField];
+      if (!item.value) {
+        console.log('BAD VALUE FOR', valueField, item);
+      }
       if (!item.bounds) {
         item.bounds = [
           item.lon_min,
@@ -146,6 +150,7 @@ export class AdmSelectorComponent implements OnInit {
 
   set adm3(value) {
     this._adm3 = value;
+    // console.log('SET ADM3', value, value.items);
     this.adm4 = {};
     this.adm4_options = value.items || [];
   }
