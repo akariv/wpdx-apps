@@ -567,6 +567,15 @@ export class RehabPrioComponent implements OnInit {
         ...admanFilt
       ]);
     }
+
+    //New constructions
+    if (props.mode === 'new_constructions'){
+      this.rpState.map.setLayoutProperty('nc-points', 'visibility', 'visible');
+      this.rpState.map.setLayoutProperty('nc-heatmap', 'visibility', 'visible');
+    } else {
+      this.rpState.map.setLayoutProperty('nc-points', 'visibility', 'none');
+      this.rpState.map.setLayoutProperty('nc-heatmap', 'visibility', 'none');
+    }
   }
 
   gotoPoint(point) {
