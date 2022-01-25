@@ -39,7 +39,8 @@ export class RehabPrioComponent implements OnInit {
   markers: any = {};
   markersOnScreen: any = {};
   admPopupSections: any[] = [];
-
+  colorRange: string[] = [];
+  
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
   }
@@ -512,28 +513,34 @@ export class RehabPrioComponent implements OnInit {
     const admanLevel= props.adman_level || 'best';
     let prop: any = [];
     let visibility = 'visible';
-    let color = '';
+    this.colorRange = [];
     if (admanView === 'served') {
       prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
-      color = '#185caf';
+      this.colorRange = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c'];
     } else if (admanView === 'unserved') {
       prop = ['get', 'pct_unserved'];
-      color = '#8a0000';
+      this.colorRange = ['#ffffd4', '#fed98e', '#fe9929', '#d95f0e', '#993404'];
     } else if (admanView === 'uncharted') {
       prop = ['get', 'pct_uncharted'];
-      color = '#333333';
+      this.colorRange = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];
     } else if (admanView === 'staleness') {
       prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
-      color = '#333333';
+      this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else {
       prop = null;
       visibility = 'none';
     }
     if (prop) {
-      const interpolate = ['interpolate', ['linear'], prop, 0, 0, 1, 0.5];
-      this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', interpolate);
-      this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', color);
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', color);
+      const interpolate = ['interpolate-hcl', ['linear'], prop,
+        0, ['to-color', this.colorRange[0]],
+        0.25, ['to-color', this.colorRange[1]],
+        0.5, ['to-color', this.colorRange[2]],
+        0.75, ['to-color', this.colorRange[3]],
+        1, ['to-color', this.colorRange[4]]
+      ];
+      this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', 0.5);
+      this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', interpolate);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', interpolate);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
     }
     const admanFilt = [];

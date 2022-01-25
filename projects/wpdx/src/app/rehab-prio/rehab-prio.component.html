@@ -163,22 +163,23 @@
             </ng-container>
         </div>
         <div class='legend' *ngIf='rpState.adman_view_name.length && rpState.mode === "adman"'>
-            <strong [innerHtml]='adman_view_name'></strong>
-            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.1'></span><span>20%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.2'></span><span>40%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.3'></span><span>60%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.4'></span><span>80%</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-" + rpState.adman_view' [style.opacity]='0.5'></span><span>100%</span></div>
+            <strong [innerHtml]='rpState.adman_view_name'></strong>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>20%</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>40%</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>60%</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>80%</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>100%</span></div>
         </div>
         <div class='legend' *ngIf='rpState.mode === "staleness"'>
-            <strong [innerHtml]='adman_view_name'></strong>
-            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.1'></span><span>New</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.2'></span><span>&nbsp;</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.3'></span><span>&nbsp;</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.4'></span><span>&nbsp;</span></div>
-            <div class='legend-item'><span [class]='"legend-color hl-uncharted"' [style.opacity]='0.5'></span><span>Stale</span></div>
+            <strong>Avg. Report Date Age</strong>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>New</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
+            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Stale</span></div>
         </div>
         <div class='legend' *ngIf='rpState.mode === "rehab-prio"'>
+            <strong>Map Symbols:</strong>
             <div class='legend-item'>
                 <img src='assets/img/functional.png'>
                 <div class='legend-label'>
