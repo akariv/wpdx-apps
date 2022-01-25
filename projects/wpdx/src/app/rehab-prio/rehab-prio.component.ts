@@ -559,8 +559,8 @@ export class RehabPrioComponent implements OnInit {
     }
     console.log('ADMAN FILT', admanFilt);
     for (const layer of ['adm-analysis', 'adm-analysis-borders', 'adm-analysis-labels']) {
-      this.rpState.map.setLayoutProperty(layer, 'visibility',
-          layer === 'adm-analysis-labels' ? (this.rpState.show_adman_labels ? visibility : 'none') : visibility);
+      this.rpState.map.setLayoutProperty(layer, 'visibility', visibility);
+      this.rpState.map.setPaintProperty('adm-analysis-labels', 'opacity', this.rpState.show_adman_labels ? 1 : 0);
       this.rpState.map.setFilter(layer, ['all',
         ['==', ['get', 'adm_level'], ['literal', admanLevel]],
         ...admanFilt
