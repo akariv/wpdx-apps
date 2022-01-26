@@ -567,7 +567,12 @@ export class RehabPrioComponent implements OnInit {
     }
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'text-opacity', this.rpState.show_adman_labels ? 1 : 0);
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
-}
+
+    //New constructions
+    for (const label of ['nc-points', 'nc-labels', 'nc-heatmap']) {
+      this.rpState.map.setLayoutProperty('nc-points', 'visibility', props.mode === 'new_constructions' ? 'visible' : 'hidden');
+    }
+  }
 
   gotoPoint(point) {
     this.addCircle(point);
