@@ -144,6 +144,7 @@
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <mat-button-toggle-group [(ngModel)]="rpState.adman_level" aria-label="ADM Level" appearance='Legacy'>
+                    <mat-button-toggle value="adm0" [disableRipple]='true'>Adm0</mat-button-toggle>
                     <mat-button-toggle value="adm1" [disableRipple]='true'>Adm1</mat-button-toggle>
                     <mat-button-toggle value="adm2" [disableRipple]='true'>Adm2</mat-button-toggle>
                     <mat-button-toggle value="adm3" [disableRipple]='true'>Adm3</mat-button-toggle>

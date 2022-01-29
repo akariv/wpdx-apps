@@ -329,7 +329,7 @@ export class RehabPrioComponent implements OnInit {
     if (this.state.bounds === null) {
       this.state.setBounds(this.rpState.map.getBounds(), true);
     }
-    console.log('SORUCES', (this.rpState.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
+    // console.log('SORUCES', (this.rpState.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
     this.rpState.map.on('render', () => {
       const newMarkers: any = {};
       const features = this.rpState.show_adman_pies && this.rpState.mode === 'adman' ?
@@ -493,6 +493,7 @@ export class RehabPrioComponent implements OnInit {
         'rehab-priority-text',
         'rehab-priority-popuplation-served',
         'rehab-priority-criticallity-heatmap',
+        'rehab-priority-highlights',
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', this.rpState.mode === 'rehab-prio' ? 'visible' : 'none');
       }
@@ -569,8 +570,8 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     //New constructions
-    for (const label of ['nc-points', 'nc-labels', 'nc-heatmap']) {
-      this.rpState.map.setLayoutProperty('nc-points', 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
+    for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap']) {
+      this.rpState.map.setLayoutProperty(layer, 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
     }
   }
 
