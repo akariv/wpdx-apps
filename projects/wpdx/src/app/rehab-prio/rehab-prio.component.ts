@@ -570,7 +570,7 @@ export class RehabPrioComponent implements OnInit {
 
     //New constructions
     for (const label of ['nc-points', 'nc-labels', 'nc-heatmap']) {
-      this.rpState.map.setLayoutProperty('nc-points', 'visibility', props.mode === 'new_constructions' ? 'visible' : 'hidden');
+      this.rpState.map.setLayoutProperty('nc-points', 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
     }
   }
 
