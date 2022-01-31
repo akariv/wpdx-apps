@@ -222,8 +222,8 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
-    // console.log('PPP', value);
-    if (!value.wpdx_id) {
+    //console.log('PPP', value.total_pop);
+    if (value.total_pop) {
       const baseQuery = `select
         sum(total_pop) as total_pop,
         sum(rural_pop) as rural_pop,
@@ -277,6 +277,10 @@ export class RehabPrioComponent implements OnInit {
           );
         }
       });
+      this._popupProperties = value;
+      return;
+    }
+    if (value.population){
       this._popupProperties = value;
       return;
     }

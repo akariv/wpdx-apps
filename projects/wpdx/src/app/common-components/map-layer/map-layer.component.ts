@@ -68,6 +68,9 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               this._map.setLayoutProperty(layer, 'visibility', 'visible');
               this._map.on('click', layer, (e) => {
                 this.popupProperties = e.features[0].properties;
+                this.popupProperties.coordinates = (e.features[0].geometry as GeoJSON.Point).coordinates.slice();
+                this.popupProperties.x = this.popupProperties.coordinates[0];
+                this.popupProperties.y = this.popupProperties.coordinates[1];
                 this.mapPopup.next(this.popupProperties);
               });
               this._map.on('mouseenter', layer, () => {

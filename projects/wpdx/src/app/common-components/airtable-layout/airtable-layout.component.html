@@ -29,7 +29,7 @@
                     </mat-drawer-content>
                 </mat-drawer-container>
             </mat-drawer-content>
-            <mat-drawer mode="side" [opened]='!!popupProperties.wpdx_id || !!popupProperties.CC' position='end' #popup>
+            <mat-drawer mode="side" [opened]='!!popupProperties.wpdx_id || !!popupProperties.NAME_0' position='end' #popup>
                 <div class='popup-container'>
                     <a class='close' (click)='mapPopup.next({})'>Close</a>
                     <ng-content selector='.map-popup'></ng-content>

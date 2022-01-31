@@ -1,6 +1,6 @@
 <app-airtable-layout
     [id]='preview ? "explorer" : "rehab-prio"'
-    [interactionLayers]='["rehab-priority-text", "all-waterpoints"]'
+    [interactionLayers]='["rehab-priority-text", "all-waterpoints", "nc-points"]'
     [filters]='filterConfiguration'
     [popupProperties]='popupProperties'
     mapStyle='mapbox://styles/wpdx/ckjmvff0e1tng19o33klef59z'
@@ -100,7 +100,17 @@
                 <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
             </p>
         </app-base-waterpoint-popup>
-        <ng-container *ngIf='!popupProperties.wpdx_id'>
+        <ng-container *ngIf='popupProperties.population'>
+            <p *ngIf='popupProperties.population > 0'>
+                <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.population | number:'1.0-0'}} ppl
+            </p>
+            <p>
+                <label><mat-icon>place</mat-icon></label> 
+                {{popupProperties.NAME_0}} &gt; {{popupProperties.NAME_1}}  &gt; {{popupProperties.NAME_2}}  &gt; {{popupProperties.NAME_3}}  &gt; {{popupProperties.NAME_4}}
+                <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
+            </p>
+        </ng-container>
+        <ng-container *ngIf='popupProperties.total_pop'>
             <ng-container *ngFor='let section of admPopupSections'>
                 <h3>{{section.title}}</h3>
                 <p>
