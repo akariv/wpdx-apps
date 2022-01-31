@@ -95,7 +95,10 @@ export class RehabPrioComponent implements OnInit {
         : 'rehab_priority',
       'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
       'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
-      'criticality', 'pressure', 'usage_cap',
+      query ?
+        'criticality as "crucialness"' 
+        : 'crucialness',
+      'pressure', 'usage_cap',
     ];
   }
 
