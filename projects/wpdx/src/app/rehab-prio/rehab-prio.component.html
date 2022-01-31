@@ -40,6 +40,10 @@
                 <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
                 <span>Adm. Region Analysis</span>
             </button>
+            <button mat-menu-item>
+                <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+                <span>New Constructions Analysis</span>
+            </button>
         </mat-menu>
     </ng-container>
     <div class='workspace' ngProjectAs='.content'>
@@ -146,7 +150,8 @@
                     </ng-container>
                 </mat-select>
             </div>
-            <ng-container *ngIf='rpState.mode === "rehab-prio"'>
+            <ng-container *ngIf='rpState.mode === "rehab-prio" || rpState.mode === "new_constructions"'>
+                <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
