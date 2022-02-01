@@ -577,7 +577,7 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     //New constructions
-    for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap']) {
+    for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
       this.rpState.map.setLayoutProperty(layer, 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
       this.rpState.map.setFilter(layer, 
         ['all',

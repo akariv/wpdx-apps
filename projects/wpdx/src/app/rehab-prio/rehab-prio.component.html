@@ -146,7 +146,7 @@
                     <ng-container *ngIf='preview'>
                         <mat-option value="adman">Adm Region Analysis</mat-option>
                         <mat-option value="staleness">Staleness Analysis</mat-option>  
-                        <mat-option value="new_constructions">New constructions Analysis</mat-option>  
+                        <mat-option value="new_constructions">New constructions Priority Analysis</mat-option>  
                     </ng-container>
                 </mat-select>
             </div>
@@ -218,6 +218,24 @@
                 <div class='legend-label'>
                     <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
                     <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
+                </div>
+            </div>
+        </div>
+        <div class='legend' *ngIf='rpState.mode === "new_constructions"'>
+            <strong>Map Symbols:</strong>
+            <div class='legend-item'>
+                <img src='assets/img/clustered.png'>
+                <div class='legend-label'>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Cluster of Possible New Constructions</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to Points in Cluster</span></span>
+                </div>
+            </div>
+            <div class='legend-item'>
+                <img src='assets/img/unclustered.png'>
+                <div class='legend-label'>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>New Construction Point</span></span>
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>1 km Radius Covered by This Point</span></span>                        
+                    <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point</span></span>
                 </div>
             </div>
         </div>
