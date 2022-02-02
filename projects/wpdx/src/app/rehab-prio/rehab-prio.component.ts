@@ -542,16 +542,19 @@ export class RehabPrioComponent implements OnInit {
     this.colorRange = [];
     if (admanView === 'served') {
       prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
-      this.colorRange = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c'];
+      // this.colorRange = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c']; // Blue-Green
+      this.colorRange = ['#eff3ff', '#bdd7e7', '#6baed6', '#3182bd', '#08519c']; // Blues
     } else if (admanView === 'unserved') {
       prop = ['get', 'pct_unserved'];
       this.colorRange = ['#ffffd4', '#fed98e', '#fe9929', '#d95f0e', '#993404'];
     } else if (admanView === 'uncharted') {
       prop = ['get', 'pct_uncharted'];
-      this.colorRange = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];
+      // this.colorRange = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f']; // Purples
+      this.colorRange = ['#f7f7f7', '#cccccc', '#969696', '#636363', '#252525']; // Grays
     } else if (admanView === 'staleness') {
       prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
-      this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
+      this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
+      // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else {
       prop = null;
       visibility = 'none';

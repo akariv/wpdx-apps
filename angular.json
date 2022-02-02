@@ -28,7 +28,7 @@
             "tsConfig": "projects/wpdx/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/wpdx/src/favicon.ico",
+              "projects/wpdx/src/favicons",
               "projects/wpdx/src/assets"
             ],
             "styles": [
@@ -92,7 +92,7 @@
             "tsConfig": "projects/wpdx/tsconfig.spec.json",
             "karmaConfig": "projects/wpdx/karma.conf.js",
             "assets": [
-              "projects/wpdx/src/favicon.ico",
+              "projects/wpdx/src/favicons",
               "projects/wpdx/src/assets"
             ],
             "styles": [
