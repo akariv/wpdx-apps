@@ -40,7 +40,7 @@ export class RehabPrioComponent implements OnInit {
   markersOnScreen: any = {};
   admPopupSections: any[] = [];
   colorRange: string[] = [];
-  
+
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
   }
@@ -96,7 +96,7 @@ export class RehabPrioComponent implements OnInit {
       'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
       'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
       query ?
-        'criticality as "crucialness"' 
+        'criticality as "crucialness"'
         : 'crucialness',
       'pressure', 'usage_cap',
     ];
@@ -104,7 +104,7 @@ export class RehabPrioComponent implements OnInit {
 
   downloadUrl() {
     const bounds = this.state.bounds;
-    return this.db.download(this.queryDL(bounds, this.downloadFields(true)), 'xlsx', 'wpdx-visible-points', this.downloadFields());
+    return this.db.download(this.queryDL(bounds, this.downloadFields(true)), 'xlsx', 'rehab-priority-analysis', this.downloadFields());
   }
 
   downloadData() {
@@ -115,7 +115,8 @@ export class RehabPrioComponent implements OnInit {
     const bounds = this.state.bounds;
     const fields = [
       'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4',
-      'total_pop', 'rural_pop','overcap_pop','urban_pop','served_pop', 'unserved_pop', 'uncharted_pop', 'pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'
+      'total_pop', 'rural_pop','overcap_pop','urban_pop','served_pop', 'unserved_pop', 'uncharted_pop',
+      'pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'
     ];
     console.log('QQQ', this.queryDLADM(fields));
     return this.db.download(this.queryDLADM(fields), 'xlsx', 'adm-regions', fields);
@@ -134,7 +135,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   downloadNCData(){
-    window.open(this.downloadNCUrl(), '_blank')
+    window.open(this.downloadNCUrl(), '_blank');
   }
 
   queryUI(bounds) {
@@ -593,33 +594,32 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'text-opacity', this.rpState.show_adman_labels ? 1 : 0);
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
-    //New constructions
-    const new_constFilt = {
+    // New constructions
+    const newConstFilt = {
       'nc-points': [[
-        "!=",
-        ["get", "clustered"],
+        '!=',
+        ['get', 'clustered'],
         true
       ]],
       'nc-labels': [],
       'nc-heatmap-clustered': [[
-        "==",
-        ["get", "clustered"],
+        '==',
+        ['get', 'clustered'],
         true
       ]],
       'nc-heatmap': [[
-        "!=",
-        ["get", "clustered"],
+        '!=',
+        ['get', 'clustered'],
         true
       ]]
-    }
+    };
     for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
       this.rpState.map.setLayoutProperty(layer, 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
-      this.rpState.map.setFilter(layer, 
+      this.rpState.map.setFilter(layer,
         ['all',
         ...admanFilt,
-        ...new_constFilt[layer]
+        ...newConstFilt[layer]
       ]);
-
     }
   }
 
