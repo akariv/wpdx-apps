@@ -145,6 +145,30 @@ mat-label {
         .nice-shadow;
         margin-top: 8px;
         margin-right: 8px;
+        position: relative;
+
+        max-height: 34px;
+        .legend-title {
+            margin-top: 0;
+            transition: margin-top 0.2s ease-in-out;
+        }
+        &.open {
+            max-height: 400px;
+            .legend-title {
+                margin-top: -26px;
+            }
+        }
+        overflow-y: hidden;
+        transition: max-height 0.2s ease-in-out;
+        strong {
+            margin-right: 32px;
+        }
+        .legend-control {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            cursor: pointer;
+        }
 
         .legend-item {
             display: flex;

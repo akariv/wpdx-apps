@@ -179,65 +179,71 @@
                 <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_labels'>Region Titles</mat-slide-toggle>
             </ng-container>
         </div>
-        <div class='legend' *ngIf='rpState.adman_view_name.length && rpState.mode === "adman"'>
-            <strong [innerHtml]='rpState.adman_view_name'></strong>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>20%</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>40%</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>60%</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>80%</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>100%</span></div>
-        </div>
-        <div class='legend' *ngIf='rpState.mode === "staleness"'>
-            <strong>Avg. Report Date Age</strong>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>New</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
-            <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Stale</span></div>
-        </div>
-        <div class='legend' *ngIf='rpState.mode === "rehab-prio"'>
-            <strong>Map Symbols:</strong>
-            <div class='legend-item'>
-                <img src='assets/img/functional.png'>
-                <div class='legend-label'>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Likely Current Users Heatmap</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
+        <div class='legend' [class.open]='legendOpen'>
+            <span class='legend-control' (click)='legendOpen = !legendOpen'>
+                <mat-icon>{{legendOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
+            </span>
+            <strong class='legend-title'>Legend</strong>
+            <ng-container *ngIf='rpState.adman_view_name.length && rpState.mode === "adman"'>
+                <strong [innerHtml]='rpState.adman_view_name'></strong>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>20%</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>40%</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>60%</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>80%</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>100%</span></div>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "staleness"'>
+                <strong>Avg. Report Date Age</strong>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>New</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Stale</span></div>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "rehab-prio"'>
+                <strong>Map Symbols:</strong>
+                <div class='legend-item'>
+                    <img src='assets/img/functional.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Likely Current Users Heatmap</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
+                    </div>
                 </div>
-            </div>
-            <div class='legend-item'>
-                <img src='assets/img/non-functional.png'>
-                <div class='legend-label'>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>High Crucialness Heatmap</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
+                <div class='legend-item'>
+                    <img src='assets/img/non-functional.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>High Crucialness Heatmap</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
+                    </div>
                 </div>
-            </div>
-            <div class='legend-item'>
-                <img src='assets/img/selected.png'>
-                <div class='legend-label'>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
+                <div class='legend-item'>
+                    <img src='assets/img/selected.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class='legend' *ngIf='rpState.mode === "new_constructions"'>
-            <strong>Map Symbols:</strong>
-            <div class='legend-item'>
-                <img src='assets/img/clustered.png'>
-                <div class='legend-label'>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Cluster of Possible New Constructions</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to Points in Cluster</span></span>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "new_constructions"'>
+                <strong>Map Symbols:</strong>
+                <div class='legend-item'>
+                    <img src='assets/img/clustered.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Cluster of Possible New Constructions</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to Points in Cluster</span></span>
+                    </div>
                 </div>
-            </div>
-            <div class='legend-item'>
-                <img src='assets/img/unclustered.png'>
-                <div class='legend-label'>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>New Construction Point</span></span>
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>1 km Radius Covered by This Point</span></span>                        
-                    <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point</span></span>
+                <div class='legend-item'>
+                    <img src='assets/img/unclustered.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>New Construction Point</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>1 km Radius Covered by This Point</span></span>                        
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point</span></span>
+                    </div>
                 </div>
-            </div>
+            </ng-container>
         </div>
     </div>
 </app-airtable-layout>
