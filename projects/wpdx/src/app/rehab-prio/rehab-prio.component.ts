@@ -125,6 +125,18 @@ export class RehabPrioComponent implements OnInit {
     window.open(this.downloadADMUrl(), '_blank');
   }
 
+  downloadNCUrl() {
+    const fields = [
+      'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4', 'population', 'lat_deg', 'lon_deg'
+    ];
+    console.log('QQQ', this.queryNC(fields));
+    return this.db.download(this.queryNC(fields), 'xlsx', 'new_constructions', fields);
+  }
+
+  downloadNCData(){
+    window.open(this.downloadNCUrl(), '_blank')
+  }
+
   queryUI(bounds) {
     const sql = `
       select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
@@ -153,6 +165,13 @@ export class RehabPrioComponent implements OnInit {
       where ${this.queryADMWhere()}
       order by 1,2,3,4,5,6 nulls last
     `;
+  }
+  queryNC(fields){
+    return `
+    select "${fields.join('","')}"
+    from new_constructions
+    where ${this.queryADMWhere()}
+  `;
   }
 
   queryADMWhere() {
@@ -577,11 +596,30 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     //New constructions
+    const new_constFilt = {
+      'nc-points': [[
+        "!=",
+        ["get", "clustered"],
+        true
+      ]],
+      'nc-labels': [],
+      'nc-heatmap-clustered': [[
+        "==",
+        ["get", "clustered"],
+        true
+      ]],
+      'nc-heatmap': [[
+        "!=",
+        ["get", "clustered"],
+        true
+      ]]
+    }
     for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
       this.rpState.map.setLayoutProperty(layer, 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
       this.rpState.map.setFilter(layer, 
         ['all',
-        ...admanFilt
+        ...admanFilt,
+        ...new_constFilt[layer]
       ]);
 
     }
