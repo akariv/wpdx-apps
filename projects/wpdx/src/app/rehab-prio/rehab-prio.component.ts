@@ -325,11 +325,11 @@ export class RehabPrioComponent implements OnInit {
   update_heatmaps(props) {
     this.rpState.map.setLayoutProperty(
       'rehab-priority-popuplation-served', 'visibility',
-      props.show_heatmap_population ? 'visible' : 'none'
+      this.rpState.mode === 'rehab-prio' && props.show_heatmap_population ? 'visible' : 'none'
     );
     this.rpState.map.setLayoutProperty(
       'rehab-priority-criticallity-heatmap', 'visibility',
-      props.show_heatmap_criticality ? 'visible' : 'none'
+      this.rpState.mode === 'rehab-prio' && props.show_heatmap_criticality ? 'visible' : 'none'
     );
   }
 
@@ -517,9 +517,6 @@ export class RehabPrioComponent implements OnInit {
         }
       }
       for (const layer of [
-        'rehab-priority-text',
-        'rehab-priority-popuplation-served',
-        'rehab-priority-criticallity-heatmap',
         'rehab-priority-highlights',
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', this.rpState.mode === 'rehab-prio' ? 'visible' : 'none');

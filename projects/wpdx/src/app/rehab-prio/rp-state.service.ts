@@ -23,6 +23,7 @@ export class RpStateService {
     this.state.defaultValue('any_waterpoints', true);
     this.state.defaultValue('show_population_density', true);
     this.state.defaultValue('show_landcover', true);
+    this.state.defaultValue('show_point_counts', true);
     this.state.defaultValue('adman_view', 'unserved');
     this.state.defaultValue('show_adman_pies', true);
     this.state.defaultValue('show_adman_labels', true);
