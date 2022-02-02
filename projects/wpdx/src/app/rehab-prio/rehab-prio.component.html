@@ -125,10 +125,10 @@
                 </p>
                 <div class='indent'>
                     <p>
-                        <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.rural_pop - section.unserved_pop) | number:'1.0-0'}} ppl
+                        <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl
                     </p>
                     <p>
-                        <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop - section.uncharted_pop) | number:'1.0-0'}} ppl    
+                        <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl    
                     </p>
                     <p>
                         <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl    
