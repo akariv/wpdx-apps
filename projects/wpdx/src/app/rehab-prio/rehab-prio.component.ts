@@ -176,6 +176,7 @@ export class RehabPrioComponent implements OnInit {
 
   queryADMWhere() {
     const terms = [
+      'true',
     ];
     if (this.state.props.country_name) {
       terms.push(`"NAME_0" = '${this.state.props.country_name}'`);
