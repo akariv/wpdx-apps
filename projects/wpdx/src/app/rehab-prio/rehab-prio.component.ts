@@ -117,7 +117,7 @@ export class RehabPrioComponent implements OnInit {
     const fields = [
       'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4',
       'total_pop', 'rural_pop','overcap_pop','urban_pop','served_pop', 'unserved_pop', 'uncharted_pop',
-      'pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'
+      'pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted', 'non_func_waterpoints', 'func_waterpoints'
     ];
     console.log('QQQ', this.queryDLADM(fields));
     return this.db.download(this.queryDLADM(fields), 'xlsx', 'adm-regions', fields);
