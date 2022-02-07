@@ -247,13 +247,14 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
-    //console.log('PPP', value.total_pop);
+    //console.log('PPP', value);
     if (value.total_pop) {
       const baseQuery = `select
         sum(total_pop) as total_pop,
         sum(rural_pop) as rural_pop,
         sum(unserved_pop) as unserved_pop,
-        sum(uncharted_pop) as uncharted_pop
+        sum(uncharted_pop) as uncharted_pop,
+        sum(served_pop) as served_pop
         from adm_analysis
       `;
       const queries: string[] = [];
@@ -273,10 +274,12 @@ export class RehabPrioComponent implements OnInit {
       if (value.NAME_4) {
         queries.push(`${baseQuery}
           where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
-                "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
+                "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);      
       }
+      //console.log(queries);
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
         this.admPopupSections = [value];
+        console.log(value);
         if (queries.length > 3) {
           // value.level3 = results[2].rows[0];
           this.admPopupSections.push(
@@ -302,6 +305,7 @@ export class RehabPrioComponent implements OnInit {
           );
         }
       });
+
       this._popupProperties = value;
       return;
     }
@@ -374,6 +378,9 @@ export class RehabPrioComponent implements OnInit {
           const el = this.createDonutChart(props);
           el.addEventListener('click', (ev) => {
             this.popupProperties = props;
+            this.popupProperties.coordinates = coords;
+            this.popupProperties.x = this.popupProperties.coordinates[0];
+            this.popupProperties.y = this.popupProperties.coordinates[1];
             ev.stopPropagation();
           });
           marker = this.markers[id] = new mapboxgl.Marker({

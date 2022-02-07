@@ -1,4 +1,5 @@
 import * as mapboxgl from 'mapbox-gl';
+import * as turf from '@turf/turf';
 
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
@@ -68,7 +69,7 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               this._map.setLayoutProperty(layer, 'visibility', 'visible');
               this._map.on('click', layer, (e) => {
                 this.popupProperties = e.features[0].properties;
-                this.popupProperties.coordinates = (e.features[0].geometry as GeoJSON.Point).coordinates.slice();
+                this.popupProperties.coordinates = e.features[0].geometry.type === 'Point' ? (e.features[0].geometry as GeoJSON.Point).coordinates.slice() : turf.centroid(turf.polygon((e.features[0].geometry as GeoJSON.Polygon).coordinates)).geometry.coordinates.slice();
                 this.popupProperties.x = this.popupProperties.coordinates[0];
                 this.popupProperties.y = this.popupProperties.coordinates[1];
                 this.mapPopup.next(this.popupProperties);
