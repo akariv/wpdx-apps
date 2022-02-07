@@ -123,20 +123,20 @@
             <ng-container *ngFor='let section of admPopupSections'>
                 <h3>{{section.title}}</h3>
                 <p>
-                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl
+                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl 
                 </p>
                 <p>
                     <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{section.rural_pop | number:'1.0-0'}} ppl, of which
                 </p>
                 <div class='indent'>
                     <p>
-                        <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl
+                        <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.total_pop)*100).toFixed(2)+"%"}})
                     </p>
                     <p>
-                        <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl    
+                        <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.total_pop)*100).toFixed(2)+"%"}})
                     </p>
                     <p>
-                        <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl    
+                        <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(2)+"%"}})
                     </p>
                 </div>
             </ng-container>
