@@ -16,10 +16,10 @@
                     <th>Functional?</th>
                     <th>Source</th>
                     <th>Tech</th>    
-                    <th class='clickable' (click)='sort_by = rpState.sort_options[0].value'>Local Pop.<mat-icon *ngIf='sort_by === rpState.sort_options[0].value'>arrow_drop_down</mat-icon></th>
-                    <th class='clickable' (click)='sort_by = rpState.sort_options[1].value'>Served Pop.<mat-icon *ngIf='sort_by === rpState.sort_options[1].value'>arrow_drop_down</mat-icon></th>
-                    <th class='clickable' (click)='sort_by = rpState.sort_options[2].value'>Crucialness<mat-icon *ngIf='sort_by === rpState.sort_options[2].value'>arrow_drop_down</mat-icon></th>
-                    <th class='clickable' (click)='sort_by = rpState.sort_options[3].value'>Pressure<mat-icon *ngIf='sort_by === rpState.sort_options[3].value'>arrow_drop_down</mat-icon></th>
+                    <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[0].value'>Local Pop.<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[0].value'>arrow_drop_down</mat-icon></th>
+                    <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[1].value'>Served Pop.<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[1].value'>arrow_drop_down</mat-icon></th>
+                    <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[2].value'>Crucialness<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[2].value'>arrow_drop_down</mat-icon></th>
+                    <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[3].value'>Pressure<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[3].value'>arrow_drop_down</mat-icon></th>
                 </thead>
                 <tbody *ngIf='rpState.top10 && rpState.top10.length'>
                     <tr *ngFor='let row of rpState.top10; let rank = index;' (click)='gotoPoint(row)'>
