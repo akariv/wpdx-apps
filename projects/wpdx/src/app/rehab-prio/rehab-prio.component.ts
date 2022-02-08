@@ -516,7 +516,9 @@ export class RehabPrioComponent implements OnInit {
         );
       }
     }
-    html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
+    html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />`;
+    html += `<circle cx="${r}" cy="${r}" r="${r}" fill="none" stroke="#ccc" stroke-width="1"/>`;
+    html += `
       </svg>
       </div>`;
     const el = document.createElement('div');
