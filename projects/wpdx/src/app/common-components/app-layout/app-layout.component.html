@@ -1,6 +1,5 @@
 <div class='app'>
     <div class='header'>
-        <ng-content select=".menu"></ng-content>
         <img class='logo' src='assets/img/logo.png'>
         <h1><ng-content select='.title'></ng-content></h1>
         <div class='info' (click)='info.emit()'>
@@ -9,5 +8,8 @@
     </div>
     <div class='content'>
         <ng-content select='.content'></ng-content>
+    </div>
+    <div class='menu'>
+        <ng-content select=".menu"></ng-content>
     </div>
 </div>

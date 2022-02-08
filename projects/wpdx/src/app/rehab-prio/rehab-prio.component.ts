@@ -41,6 +41,7 @@ export class RehabPrioComponent implements OnInit {
   admPopupSections: any[] = [];
   colorRange: string[] = [];
   legendOpen = true;
+  showTable = false;
 
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();

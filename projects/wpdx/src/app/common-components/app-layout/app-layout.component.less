@@ -24,17 +24,6 @@
         .nice-shadow;
         z-index: @zIndexHeader;
         
-        ::ng-deep .mat-menu-trigger {
-            mat-icon {
-                transform: rotate(0deg);
-                transition: transform 0.2s ease-in-out;
-            }
-            &[aria-expanded=true] {
-                mat-icon {
-                    transform: rotate(180deg);
-                }
-            }
-        }
         > .logo {
             .desktop({
                 height: 100%;
@@ -65,6 +54,30 @@
     > .content {
         flex: 1 1 100%;
         position: relative;
+    }
+    > .menu {
+        display: flex;
+        flex-flow: column;
+        align-items: flex-start;
+        position: absolute;
+        bottom: 32px;
+        left: 16px;
+        gap: 8px;
+        z-index: 1;
+
+        ::ng-deep {
+            .mat-menu-trigger, .table-trigger {
+                mat-icon {
+                    transform: rotate(0deg);
+                    transition: transform 0.2s ease-in-out;
+                }
+                &[aria-expanded=true] {
+                    mat-icon {
+                        transform: rotate(360deg);
+                    }
+                }
+            }
+        }
     }
    }
 }
