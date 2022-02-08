@@ -130,7 +130,7 @@
                 {{popupProperties.NAME_0}} &gt; {{popupProperties.NAME_1}}  &gt; {{popupProperties.NAME_2}}  &gt; {{popupProperties.NAME_3}}  &gt; {{popupProperties.NAME_4}}
                 <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
             </p>
-            <ng-container *ngIf='rpState.mode === "adman"; else elseBlock'>
+            <ng-container *ngIf='rpState.mode === "adman"'>
                 <ng-container *ngFor='let section of admPopupSections'>
                     <h3>{{section.title}}</h3>
                     <p>
@@ -152,8 +152,11 @@
                     </div>
                 </ng-container>
             </ng-container>
-            <ng-container #elseBlock>
-
+        
+            <ng-container *ngIf='rpState.mode === "staleness"'>
+                <!-- <p> -->
+                    <!-- <mat-icon>people</mat-icon><label>Average Days Since Report: </label>&nbsp;{{(popupProperties.age_in_days_total / (popupProperties.staleness_count*365)).toFixed(1)}}  -->
+                <!-- </p> -->
             </ng-container>
         </ng-container>
     </div>

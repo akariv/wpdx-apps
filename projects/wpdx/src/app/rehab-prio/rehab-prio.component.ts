@@ -273,10 +273,10 @@ export class RehabPrioComponent implements OnInit {
       terms.push(`"NAME_2" = '${this.state.props.adm2}'`);
     }
     if (this.state.props.adm3) {
-      terms.push(`NAME_3 = '${this.state.props.adm3}'`);
+      terms.push(`"NAME_3" = '${this.state.props.adm3}'`);
     }
     if (this.state.props.adm4) {
-      terms.push(`NAME_4 = '${this.state.props.adm4}'`);
+      terms.push(`"NAME_4" = '${this.state.props.adm4}'`);
     }
     return terms.join(' and ');
   }
