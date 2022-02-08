@@ -44,9 +44,9 @@
                 <tbody *ngIf='rpState.top10 && rpState.top10.length'>
                     <tr *ngFor='let row of rpState.top10; let rank = index;' (click)='gotoPoint(row)'>
                         <td>{{rank + 1}}</td>
-                        <td>{{row.population || 'Unknown' }}</td>
-                        <td>{{row.lat_deg}}</td>
-                        <td>{{row.lon_deg}}</td>
+                        <td>{{(row.population | number:'1.0-0') || 'Unknown' }}</td>
+                        <td>{{row.lat_deg | number:'1.3-3'}}</td>
+                        <td>{{row.lon_deg | number:'1.3-3'}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -152,12 +152,15 @@
                     </div>
                 </ng-container>
             </ng-container>
+<<<<<<< HEAD
         
             <ng-container *ngIf='rpState.mode === "staleness"'>
                 <!-- <p> -->
                     <!-- <mat-icon>people</mat-icon><label>Average Days Since Report: </label>&nbsp;{{(popupProperties.age_in_days_total / (popupProperties.staleness_count*365)).toFixed(1)}}  -->
                 <!-- </p> -->
             </ng-container>
+=======
+>>>>>>> 19c8328a846cdf31de7142ceb53403fd56ea73de
         </ng-container>
     </div>
     <div class='top-bar'>
