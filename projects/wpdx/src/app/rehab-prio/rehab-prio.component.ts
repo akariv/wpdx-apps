@@ -357,7 +357,7 @@ export class RehabPrioComponent implements OnInit {
       if (value.NAME_4) {
         queries.push(`${baseQuery}
           where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
-                "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);      
+                "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
       }
       //console.log(queries);
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
