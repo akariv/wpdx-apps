@@ -52,34 +52,45 @@ export class RehabPrioComponent implements OnInit {
       debounceTime(2500),
       map((s) => s.bounds),
       filter(b => !!b),
-      switchMap((bounds) => this.db.query(this.queryUI(bounds))),
-      map((results: any) => results.rows)
-    ).subscribe((results) => {
-      this.rpState.top10 = results;
-      if (this.rpState.map) {
-        if (results.length) {
-          this.rpState.map.setFilter('rehab-priority-highlights', [
-            'all',
-            [
-              'match',
-              ['get', 'wpdx_id'],
-              [...new Set(this.rpState.top10.map(r => r.wpdx_id))],
-              true,
-              false
-            ]
-          ]);
-        } else {
-          this.rpState.map.setFilter('rehab-priority-highlights', [
-            'all',
-            [
-              'match',
-              ['get', 'wpdx_id'],
-              [''],
-              true,
-              false
-            ]
-          ]);
+      switchMap((bounds) => {
+        console.log(this.queryUINC(bounds));
+        console.log(bounds);
+        const rehabPrio = this.db.query(this.queryUI(bounds));
+        const newConstructions = this.db.query(this.queryUINC(bounds));
+        return forkJoin([rehabPrio, newConstructions]);
+      }),
+      map(([resultsRehabPrio, resultsNC]: any) => [resultsRehabPrio.rows, resultsNC.rows])
+    ).subscribe(([resultsRehabPrio, resultsNC]) => {
+      if (this.rpState.mode === 'rehab-prio'){
+        this.rpState.top10 = resultsRehabPrio;
+        if (this.rpState.map) {
+          if (resultsRehabPrio.length) {
+            this.rpState.map.setFilter('rehab-priority-highlights', [
+              'all',
+              [
+                'match',
+                ['get', 'wpdx_id'],
+                [...new Set(this.rpState.top10.map(r => r.wpdx_id))],
+                true,
+                false
+              ]
+            ]);
+          } else {
+            this.rpState.map.setFilter('rehab-priority-highlights', [
+              'all',
+              [
+                'match',
+                ['get', 'wpdx_id'],
+                [''],
+                true,
+                false
+              ]
+            ]);
+          }
         }
+      } else {
+        console.log(resultsNC);
+        this.rpState.top10 = resultsNC;
       }
     });
   }
@@ -187,6 +198,17 @@ export class RehabPrioComponent implements OnInit {
     return sql;
   }
 
+  queryUINC(bounds){
+    const sql = `
+    select "NAME_0", "NAME_1", "NAME_2", "NAME_4", population, lat_deg, lon_deg
+    from new_constructions
+    where ${this.queryNCWhere(bounds)}
+    order by population DESC nulls last
+    limit 15
+    `
+    return sql
+  }
+
   queryDL(bounds, fields) {
     return `
       select ${fields.join(',')}
@@ -230,6 +252,31 @@ export class RehabPrioComponent implements OnInit {
     }
     if (this.state.props.adm4) {
       terms.push(`"NAME_4" = '${this.state.props.adm4}'`);
+    }
+    return terms.join(' and ');
+  }
+
+  queryNCWhere(bounds){
+    const terms = [
+      'lat_deg >= ' + bounds.getSouth(),
+      'lat_deg <= ' + bounds.getNorth(),
+      'lon_deg >= ' + bounds.getWest(),
+      'lon_deg <= ' + bounds.getEast(),
+    ];
+    if (this.state.props.country_name){
+      terms.push(`"NAME_0" = '${this.state.props.country_name}'`)
+    }
+    if (this.state.props.adm1) {
+      terms.push(`"NAME_1" = '${this.state.props.adm1}'`);
+    }
+    if (this.state.props.adm2) {
+      terms.push(`"NAME_2" = '${this.state.props.adm2}'`);
+    }
+    if (this.state.props.adm3) {
+      terms.push(`NAME_3 = '${this.state.props.adm3}'`);
+    }
+    if (this.state.props.adm4) {
+      terms.push(`NAME_4 = '${this.state.props.adm4}'`);
     }
     return terms.join(' and ');
   }

@@ -34,9 +34,25 @@
                     </tr>
                 </tbody>
             </table>
+            <table *ngIf='rpState.mode === "new_constructions"'>
+                <thead>
+                    <th>#</th>
+                    <th>Population</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                </thead>
+                <tbody *ngIf='rpState.top10 && rpState.top10.length'>
+                    <tr *ngFor='let row of rpState.top10; let rank = index;' (click)='gotoPoint(row)'>
+                        <td>{{rank + 1}}</td>
+                        <td>{{row.population || 'Unknown' }}</td>
+                        <td>{{row.lat_deg}}</td>
+                        <td>{{row.lon_deg}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <button mat-fab color="primary" (click)='showTable = !showTable' 
-                *ngIf='rpState.mode === "rehab-prio"'
+                *ngIf='rpState.mode === "rehab-prio" || rpState.mode === "new_constructions"'
                 class='table-trigger' [attr.aria-expanded]='showTable ? "true" : "false"'>
             <mat-icon>table_chart</mat-icon>
         </button>    
