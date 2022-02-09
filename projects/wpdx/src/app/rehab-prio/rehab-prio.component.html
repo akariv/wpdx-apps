@@ -152,15 +152,13 @@
                     </div>
                 </ng-container>
             </ng-container>
-<<<<<<< HEAD
-        
-            <ng-container *ngIf='rpState.mode === "staleness"'>
+            <ng-container *ngIf='rpState.mode === "staleness"'> 
                 <!-- <p> -->
                     <!-- <mat-icon>people</mat-icon><label>Average Days Since Report: </label>&nbsp;{{(popupProperties.age_in_days_total / (popupProperties.staleness_count*365)).toFixed(1)}}  -->
                 <!-- </p> -->
-            </ng-container>
-=======
->>>>>>> 19c8328a846cdf31de7142ceb53403fd56ea73de
+                <!-- <app-bar [popupProperties]='popupProperties'></app-bar> -->
+                <app-bar [popupProperties]='popupProperties'></app-bar>
+            </ng-container> 
         </ng-container>
     </div>
     <div class='top-bar'>
