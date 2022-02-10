@@ -337,7 +337,9 @@ export class RehabPrioComponent implements OnInit {
         sum(rural_pop) as rural_pop,
         sum(unserved_pop) as unserved_pop,
         sum(uncharted_pop) as uncharted_pop,
-        sum(served_pop) as served_pop
+        sum(served_pop) as served_pop,
+        sum(func_waterpoints) as func_waterpoints,
+        sum(non_func_waterpoints) as non_func_waterpoints
         from adm_analysis
       `;
       const queries: string[] = [];
@@ -362,7 +364,7 @@ export class RehabPrioComponent implements OnInit {
       //console.log(queries);
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
         this.admPopupSections = [value];
-        console.log(value);
+        //console.log(value);
         if (queries.length > 3) {
           // value.level3 = results[2].rows[0];
           this.admPopupSections.push(
@@ -401,7 +403,7 @@ export class RehabPrioComponent implements OnInit {
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {
         this._popupProperties = results.rows[0];
-        console.log('POPUP PROPERTIES', value);
+        //console.log('POPUP PROPERTIES', value);
         this.addCircle(value);
       }
     });

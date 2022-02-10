@@ -150,14 +150,22 @@
                             <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(2)+"%"}})
                         </p>
                     </div>
+                    <p>
+                        <mat-icon>water_drop</mat-icon><label>Functional Waterpoints:</label>&nbsp;{{section.func_waterpoints}}
+                    </p>
+                    <p>
+                        <mat-icon>water_drop</mat-icon><label>Non Functional Waterpoints:</label>&nbsp;{{section.non_func_waterpoints}}
+                    </p>
                 </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'> 
-                <!-- <p> -->
-                    <!-- <mat-icon>people</mat-icon><label>Average Days Since Report: </label>&nbsp;{{(popupProperties.age_in_days_total / (popupProperties.staleness_count*365)).toFixed(1)}}  -->
-                <!-- </p> -->
-                <!-- <app-bar [popupProperties]='popupProperties'></app-bar> -->
-                <app-bar [popupProperties]='popupProperties'></app-bar>
+                <p *ngIf='popupProperties.average_age != 0'>
+                    <mat-icon>hourglass_empty</mat-icon><label>Average Years Since Report:</label>&nbsp;{{((popupProperties.average_age)/365).toFixed(1)}} 
+                </p>
+                <p *ngIf='popupProperties.average_age === 0'>
+                    <mat-icon>hourglass_empty</mat-icon><label>Average Years Since Report:</label>&nbsp;No Data
+                </p>
+                <app-bar [popupProperties]='popupProperties' *ngIf='popupProperties.average_age != 0'></app-bar>
             </ng-container> 
         </ng-container>
     </div>
