@@ -12,8 +12,8 @@ export class BarComponent implements OnChanges, AfterViewInit {
   @ViewChild('bar') svgElement: ElementRef;
 
   svg;
-  x;
-  y;
+  // x;
+  // y;
   margin = {top: 50, right: 10, bottom: 70, left: 40};
   width = 270 - this.margin.left - this.margin.right;
   height = 360 - this.margin.top - this.margin.bottom;
@@ -25,10 +25,15 @@ export class BarComponent implements OnChanges, AfterViewInit {
       {name: "Under 15", count: popup.age_under_15},
       {name: "Above 15", count: popup.age_above_15},
     ];
-    return x
+    var data = Array(x[0].count).fill(3);
+    data = data.concat(Array(x[1].count).fill(7));
+    data = data.concat(Array(x[2].count).fill(13));
+    data = data.concat(Array(x[3].count).fill(25));
+  
+    return data
   }
 
-  private createSvg(): void {
+  createSvg(): void {
     this.svgElement.nativeElement.innerHTML = '';
     this.svg = d3.select("figure.bar")
     .append("svg")
@@ -39,53 +44,101 @@ export class BarComponent implements OnChanges, AfterViewInit {
           "translate(" + this.margin.left + "," + this.margin.top + ")");
  }
 
-  private drawBars(data: any[]): void {
+  drawHistogram(data: any[number]){
 
-    // Create the X-axis draw
-    this.x = d3.scaleBand()
-      .range([0,this.width])
-      .domain(data.map(d => d.name))
-      .padding(0.2);
+    var formatCount = d3.format(",.0f");
+
+    // create x axis
+    var x = d3.scaleLinear()
+      .domain([0, 20])    
+      .range([0,this.width]);
+
+    // draw x axis
+    this.svg.append("g")
+        .attr("transform", "translate(0," + this.height + ")")
+        .call(d3.axisBottom(x).ticks(4));
+
+    // create bins
+    var histogram = d3.bin()
+        .domain([0,20]) 
+        .thresholds(x.ticks(4));
+
+    var bins = histogram(data);
+
+    // create y axis
+    var y = d3.scaleLinear()
+        .range([this.height, 0]);
+        y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+
+    // draw y axis
+    this.svg.append("g")
+        .call(d3.axisLeft(y))
+        .selectAll("text")
+        .attr("transform", "rotate(-30)");
+
+    // draw bars
+    var bar = this.svg.selectAll("rect")
+         .data(bins)
+         .enter().append("g")
+         .attr("class", "bar")
+         .attr("transform", function(d) { return "translate(" + x(d.x0+0.2) + "," + y(d.length) + ")"; })
+
+
     
-    this.svg.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(this.x))
-      .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
-        .style("text-anchor", "end");
+    bar.append("rect")
+         .attr("x", 1)
+         .attr("width", 50)
+         .attr("height", function(d) { 
+           return 240 - y(d.length); })
+         .style("fill", '#756bb1');
+
+    // bar.append("text")
+    //   .attr("dy", ".75em") // why?
+    //   .attr("y", 6)
+    //   .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
+    //   .attr("text-anchor", "middle")
+    //   .text(function(d) { return (formatCount(d.length) != (0+"") ? formatCount(d.length): ""); });
 
 
-    //Create y axis and draw
-    this.y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.count)])
-      .range([this.height, 0])
-    this.svg.append("g")
-    .call(d3.axisLeft(this.y))
+    // x axis title
+    this.svg.append("text")
+      .attr("transform",
+      "translate(" + (this.width/2) + " ," + 
+                     (this.height + this.margin.top -10) + ")")
+      .style("text-anchor", "middle")
+      .text("Time in Years");
 
-    //Bars
-    this.svg.selectAll(".mybar")
-      .data(data)
-      .enter()
-      .append("rect")
-        .attr('class', 'mybar')
-        .attr("x", (d => this.x(d.name)))
-        .attr("y", (d => this.y(d.count)))
-        .attr("width", this.x.bandwidth())
-        .attr("height", (d => this.height-this.y(d.count)))
-        .attr("fill", "#69b3a2")
+    // y axis title
+    this.svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - this.margin.left)
+      .attr("x",0 - (this.height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Count");   
+  
+    // graph title
+    this.svg.append("text")
+        .attr("x", (this.width / 2))             
+        .attr("y", 0 - (this.margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Age of Data Graph");
 
   }
+
+  
   
 
   constructor() { }
 
   ngOnChanges(): void {
-    debugger;
     if (!this.svgElement?.nativeElement) {
       return;
     }
     this.createSvg();
-    this.drawBars(this.getData(this.popupProperties));
+    this.drawHistogram(this.getData(this.popupProperties));
   }
 
   ngAfterViewInit() {
