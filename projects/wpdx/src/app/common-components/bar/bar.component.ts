@@ -86,8 +86,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
     bar.append("rect")
          .attr("x", 1)
          .attr("width", 50)
-         .attr("height", function(d) { 
-           return 240 - y(d.length); })
+         .attr("height", (d) => this.height - y(d.length))
          .style("fill", '#756bb1');
 
  
@@ -103,10 +102,10 @@ export class BarComponent implements OnChanges, AfterViewInit {
     // x axis title
     this.svg.append("text")
       .attr("transform",
-      "translate(" + (this.width/2) + " ," + 
-                     (this.height + this.margin.top -10) + ")")
+            "translate(" + (this.width/2) + " ," + 
+                           (this.height + this.margin.top + 20) + ")")
       .style("text-anchor", "middle")
-      .text("Time in Years");
+      .text("Age in Years");
 
     // y axis title
     this.svg.append("text")
@@ -115,12 +114,8 @@ export class BarComponent implements OnChanges, AfterViewInit {
       .attr("x",0 - (this.height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text("Count");   
- 
+      .text("# Water Points");
   }
-
-  
-  
 
   constructor() { }
 
