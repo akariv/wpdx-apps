@@ -12,15 +12,9 @@ export class BarComponent implements OnChanges, AfterViewInit {
   @ViewChild('bar') svgElement: ElementRef;
 
   svg;
-<<<<<<< HEAD
   // x;
   // y;
   margin = {top: 50, right: 10, bottom: 70, left: 40};
-=======
-  x;
-  y;
-  margin = {top: 10, right: 10, bottom: 70, left: 40};
->>>>>>> 6e08cbc377fd86d223852441bda2fc609f8ebd1e
   width = 270 - this.margin.left - this.margin.right;
   height = 360 - this.margin.top - this.margin.bottom;
 
@@ -89,14 +83,14 @@ export class BarComponent implements OnChanges, AfterViewInit {
          .attr("class", "bar")
          .attr("transform", function(d) { return "translate(" + x(d.x0+0.2) + "," + y(d.length) + ")"; })
 
-
-    
     bar.append("rect")
          .attr("x", 1)
          .attr("width", 50)
          .attr("height", function(d) { 
            return 240 - y(d.length); })
          .style("fill", '#756bb1');
+
+ 
 
     // bar.append("text")
     //   .attr("dy", ".75em") // why?
@@ -122,16 +116,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .text("Count");   
-  
-    // graph title
-    this.svg.append("text")
-        .attr("x", (this.width / 2))             
-        .attr("y", 0 - (this.margin.top / 2))
-        .attr("text-anchor", "middle")  
-        .style("font-size", "16px") 
-        .style("text-decoration", "underline")  
-        .text("Age of Data Graph");
-
+ 
   }
 
   
