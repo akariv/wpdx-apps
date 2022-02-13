@@ -14,7 +14,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
   svg;
   // x;
   // y;
-  margin = {top: 50, right: 10, bottom: 70, left: 40};
+  margin = {top: 10, right: 10, bottom: 70, left: 40};
   width = 270 - this.margin.left - this.margin.right;
   height = 360 - this.margin.top - this.margin.bottom;
 
