@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SettingsDialogComponent } from './settings-dialog/settings-dialog.component';
 import { RegionFilterDialogComponent } from './region-filter-dialog/region-filter-dialog.component';
 import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
+import { SourcesDialogComponent } from './sources-dialog/sources-dialog.component';
 
 @Component({
   selector: 'app-rehab-prio',
@@ -53,8 +54,6 @@ export class RehabPrioComponent implements OnInit {
       map((s) => s.bounds),
       filter(b => !!b),
       switchMap((bounds) => {
-        console.log(this.queryUINC(bounds));
-        console.log(bounds);
         const rehabPrio = this.db.query(this.queryUI(bounds));
         const newConstructions = this.db.query(this.queryUINC(bounds));
         return forkJoin([rehabPrio, newConstructions]);
@@ -88,8 +87,7 @@ export class RehabPrioComponent implements OnInit {
             ]);
           }
         }
-      } else {
-        console.log(resultsNC);
+      } else if (this.rpState.mode === 'new_constructions'){
         this.rpState.top10 = resultsNC;
       }
     });
@@ -164,7 +162,6 @@ export class RehabPrioComponent implements OnInit {
 
   downloadADMUrl() {
     const bounds = this.state.bounds;
- 
     //console.log('QQQ', this.queryDLADM(fields));
     return this.db.download(this.queryDLADM(this.downloadADMFields(true)), 'xlsx', 'adm-regions', this.downloadADMFields());
   }
@@ -178,7 +175,6 @@ export class RehabPrioComponent implements OnInit {
     const fields = [
       'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4', 'population', 'lat_deg', 'lon_deg'
     ];
-    console.log('QQQ', this.queryNC(fields));
     return this.db.download(this.queryNC(fields), 'xlsx', 'new_constructions', fields);
   }
 
@@ -226,6 +222,7 @@ export class RehabPrioComponent implements OnInit {
       order by 1,2,3,4,5,6 nulls last
     `;
   }
+
   queryNC(fields){
     return `
     select "${fields.join('","')}"
@@ -551,9 +548,11 @@ export class RehabPrioComponent implements OnInit {
   }
 
   updateState(props, bounds, userBounds) {
+    // Fit map to bounds in state
     if (bounds && !userBounds) {
       this.rpState.map.fitBounds(bounds, {padding: 30, maxZoom: 18});
     }
+    // Water point filter
     const filt = [];
     for (const _f of ['country_name', 'adm1', 'adm2', 'adm3', 'adm4']) {
       const f = 'clean_' + _f;
@@ -593,43 +592,54 @@ export class RehabPrioComponent implements OnInit {
         ['==', ['get', 'management_clean'], ['literal', value]]
       )]);
     }
-    if (props.show_point_counts) {
-      this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
-    } else {
-      this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
-    }
-    if (props.any_waterpoints) {
-      this.update_heatmaps(props);
+    // Rehab Priority
+    if (this.rpState.mode === 'rehab-prio') {
       for (const layer of [
         'rehab-priority-text',
         'rehab-priority-popuplation-served',
         'rehab-priority-criticallity-heatmap',
+      ]) {
+        const baseFilt = this.mapFilters[layer];
+        const fullFilt = ['all', ...baseFilt, ...filt];
+        this.rpState.map.setFilter(layer, fullFilt);
+      }
+      if (props.show_point_counts) {
+        this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
+      } else {
+        this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
+      }
+      this.rpState.map.setLayoutProperty('rehab-priority-highlights', 'visibility', 'none');
+      this.update_heatmaps(props);
+    } else {
+      for (const layer of [
+        'rehab-priority-text',
+        'rehab-priority-popuplation-served',
+        'rehab-priority-criticallity-heatmap',
+        'rehab-priority-highlights',
+      ]) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
+      }
+    }
+    // Show water points
+    if (props.any_waterpoints || this.rpState.mode === 'basic') {
+      this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
+      for (const layer of [
         'all-waterpoints'
       ]) {
         const baseFilt = this.mapFilters[layer];
         const fullFilt = ['all', ...baseFilt, ...filt];
-        if (JSON.stringify(this.rpState.map.getFilter(layer)) !== JSON.stringify(fullFilt)) {
-          this.rpState.map.setFilter(layer, fullFilt);
-        }
-      }
-      for (const layer of [
-        'rehab-priority-highlights',
-      ]) {
-        this.rpState.map.setLayoutProperty(layer, 'visibility', this.rpState.mode === 'rehab-prio' ? 'visible' : 'none');
+        this.rpState.map.setFilter(layer, fullFilt);
       }
       this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
     } else {
       for (const layer of [
-        'rehab-priority-text',
-        'rehab-priority-popuplation-served',
-        'rehab-priority-criticallity-heatmap',
         'all-waterpoints'
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
       }
     }
 
-    // ADM Analysis Layer
+    // ADM Analysis / Staleness
     const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
     const admanLevel= props.adman_level || 'best';
     let prop: any = [];
@@ -662,10 +672,10 @@ export class RehabPrioComponent implements OnInit {
         0.75, ['to-color', this.colorRange[3]],
         1, ['to-color', this.colorRange[4]]
       ];
-      this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', 0.5);
+      this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', 0.7);
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', interpolate);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', interpolate);
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.25);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
     }
     const admanFilt = [];
     for (const [_f, _ff] of [
@@ -681,7 +691,6 @@ export class RehabPrioComponent implements OnInit {
         ]);
       }
     }
-    console.log('ADMAN FILT', admanFilt);
     for (const layer of ['adm-analysis', 'adm-analysis-borders', 'adm-analysis-labels']) {
       this.rpState.map.setLayoutProperty(layer, 'visibility', visibility);
       this.rpState.map.setFilter(layer, ['all',
@@ -693,32 +702,39 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     // New constructions
-    const newConstFilt = {
-      'nc-points': [[
-        '!=',
-        ['get', 'clustered'],
-        true
-      ]],
-      'nc-labels': [],
-      'nc-heatmap-clustered': [[
-        '==',
-        ['get', 'clustered'],
-        true
-      ]],
-      'nc-heatmap': [[
-        '!=',
-        ['get', 'clustered'],
-        true
-      ]]
-    };
-    for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
-      this.rpState.map.setLayoutProperty(layer, 'visibility', props.mode === 'new_constructions' ? 'visible' : 'none');
-      this.rpState.map.setFilter(layer,
-        ['all',
-        ...admanFilt,
-        ...newConstFilt[layer]
-      ]);
+    if (props.mode === 'new_constructions') {
+      const newConstFilt = {
+        'nc-points': [[
+          '!=',
+          ['get', 'clustered'],
+          true
+        ]],
+        'nc-labels': [],
+        'nc-heatmap-clustered': [[
+          '==',
+          ['get', 'clustered'],
+          true
+        ]],
+        'nc-heatmap': [[
+          '!=',
+          ['get', 'clustered'],
+          true
+        ]]
+      };
+      for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
+        this.rpState.map.setFilter(layer,
+          ['all',
+          ...admanFilt,
+          ...newConstFilt[layer]
+        ]);
+      }
+    } else {
+      for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
+      }
     }
+
   }
 
   gotoPoint(point) {
@@ -769,6 +785,10 @@ export class RehabPrioComponent implements OnInit {
 
   openSettingsDialog() {
     this.dialog.open(SettingsDialogComponent);
+  }
+
+  openSourcesDialog() {
+    this.dialog.open(SourcesDialogComponent);
   }
 
   openRegionFilterDialog() {

@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Data Sources</h2>
+<mat-dialog-content class="mat-typography">
+    <mat-radio-group aria-label="Data Scope" [(ngModel)]='view'>
+        <mat-radio-button value='current'>Current map view</mat-radio-button>
+        <mat-radio-button value='all'>All our data</mat-radio-button>
+    </mat-radio-group>
+    <ul>
+        <li *ngFor='let source of data'>
+            <a href='{{source.data_lnk}}' target='_blank'>{{source.title}}</a>
+            <span class='deets'><strong>{{source.created.slice(0,10)}}</strong>&nbsp;|&nbsp;From: <strong>{{join(source.sources)}}</strong>&nbsp;|&nbsp;Geo: <strong>{{join(source.countries)}}</strong></span>
+        </li>
+    </ul>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
+</mat-dialog-actions>
+  

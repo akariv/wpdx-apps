@@ -27,7 +27,7 @@ export class RpStateService {
     this.state.defaultValue('adman_view', 'unserved');
     this.state.defaultValue('show_adman_pies', true);
     this.state.defaultValue('show_adman_labels', true);
-    this.state.defaultValue('mode', 'rehab-prio');
+    this.state.defaultValue('mode', 'basic');
     this.state.defaultValue('adman_level', 'best');
   }
 

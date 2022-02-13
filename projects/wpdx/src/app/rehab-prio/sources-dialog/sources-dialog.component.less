@@ -1,0 +1,47 @@
+mat-dialog-content {
+    display: flex;;
+    flex-flow: column;
+    overflow: hidden;
+
+    .mat-radio-button ~ .mat-radio-button {
+        margin-left: 16px;
+    }
+    
+    ul {
+        display: flex;
+        flex-flow: column;
+    
+        flex: 1 1 auto;
+        overflow-y: scroll;
+        
+        padding: 0;
+        padding-left: 20px;
+    
+        li {
+            display: flex;
+            text-decoration: none;
+            list-style: none;
+            flex-flow: column;
+            padding: 5px 10px;
+    
+            a {
+                font-weight: 700;
+            }
+    
+            .deets {
+                font-size: 13px;
+                font-weight: lighter;
+        
+                strong {
+                    font-weight: 600;
+                }
+            }
+    
+            &:nth-child(even) {
+                background-color: #eee;
+            }
+        }
+    }
+    
+}
+

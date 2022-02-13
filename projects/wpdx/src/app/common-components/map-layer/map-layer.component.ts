@@ -69,7 +69,16 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
               this._map.setLayoutProperty(layer, 'visibility', 'visible');
               this._map.on('click', layer, (e) => {
                 this.popupProperties = e.features[0].properties;
-                this.popupProperties.coordinates = e.features[0].geometry.type === 'Point' ? (e.features[0].geometry as GeoJSON.Point).coordinates.slice() : turf.centroid(turf.polygon((e.features[0].geometry as GeoJSON.Polygon).coordinates)).geometry.coordinates.slice();
+                if (e.features[0].geometry.type === 'Point') {
+                  this.popupProperties.coordinates = (e.features[0].geometry as GeoJSON.Point).coordinates.slice();
+                } else if (e.features[0].geometry.type.indexOf('Polygon') > -1) {
+                  const features = {
+                    type: 'FeatureCollection',
+                    features: e.features
+                  };
+                  const centerPoint = turf.center(features as GeoJSON.FeatureCollection<any>);
+                  this.popupProperties.coordinates = centerPoint.geometry.coordinates.slice();
+                }
                 this.popupProperties.x = this.popupProperties.coordinates[0];
                 this.popupProperties.y = this.popupProperties.coordinates[1];
                 this.mapPopup.next(this.popupProperties);

@@ -51,12 +51,15 @@
                 </tbody>
             </table>
         </div>
-        <button mat-fab color="primary" (click)='showTable = !showTable' 
+        <button mat-fab color="primary" (click)='showTable = !showTable' title='Show Data Table'
                 *ngIf='rpState.mode === "rehab-prio" || rpState.mode === "new_constructions"'
                 class='table-trigger' [attr.aria-expanded]='showTable ? "true" : "false"'>
             <mat-icon>table_chart</mat-icon>
-        </button>    
-        <button mat-fab color="primary" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        </button>
+        <button mat-fab color="primary" title='Show Data Sources' (click)='openSourcesDialog()'>
+            <mat-icon>volunteer_activism</mat-icon>
+        </button>
+        <button mat-fab color="primary" [matMenuTriggerFor]="menu" aria-label="Settings Menu" title='Settings Menu'>
             <mat-icon>settings</mat-icon>
         </button>    
         <mat-menu #menu="matMenu" xPosition='after'>
@@ -164,19 +167,21 @@
                         <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl 
                     </p>
                     <p>
-                        <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{section.rural_pop | number:'1.0-0'}} ppl, of which
+                        <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{section.rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='section.rural_pop'>, of which</ng-container>
                     </p>
-                    <div class='indent'>
-                        <p>
-                            <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.total_pop)*100).toFixed(2)+"%"}})
-                        </p>
-                        <p>
-                            <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.total_pop)*100).toFixed(2)+"%"}})
-                        </p>
-                        <p>
-                            <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(2)+"%"}})
-                        </p>
-                    </div>
+                    <ng-container *ngIf='section.rural_pop'>
+                        <div class='indent'>
+                            <p>
+                                <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.total_pop)*100).toFixed(2)+"%"}})
+                            </p>
+                            <p>
+                                <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.total_pop)*100).toFixed(2)+"%"}})
+                            </p>
+                            <p>
+                                <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(2)+"%"}})
+                            </p>
+                        </div>
+                    </ng-container>
                 </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'> 
@@ -198,14 +203,23 @@
             <div class='with-title'>
                 <span>Decision Support Tool:</span>
                 <mat-select [(value)]='rpState.mode'>
-                    <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
+                    <mat-option value="basic">View Water Points</mat-option>
                     <ng-container *ngIf='preview'>
                         <mat-option value="adman">Adm Region Analysis</mat-option>
-                        <mat-option value="staleness">Data Staleness Analysis</mat-option>  
+                    </ng-container>
+                    <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
+                    <ng-container *ngIf='preview'>
                         <mat-option value="new_constructions">New Construction Priority Analysis</mat-option>  
+                        <mat-option value="staleness">Data Staleness Analysis</mat-option>  
                     </ng-container>
                 </mat-select>
             </div>
+            <ng-container *ngIf='rpState.mode === "basic"'>
+                <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_urban'>Urban Areas</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
+            </ng-container>
             <ng-container *ngIf='rpState.mode === "rehab-prio" || rpState.mode === "new_constructions"'>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
@@ -258,6 +272,21 @@
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Stale</span></div>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "basic"'>
+                <strong>Map Symbols:</strong>
+                <div class='legend-item'>
+                    <img src='assets/img/basic-functional.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                    </div>
+                </div>
+                <div class='legend-item'>
+                    <img src='assets/img/basic-non-functional.png'>
+                    <div class='legend-label'>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
+                    </div>
+                </div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "rehab-prio"'>
                 <strong>Map Symbols:</strong>
