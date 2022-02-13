@@ -119,20 +119,47 @@
                 <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.population | number:'1.0-0'}} ppl
             </p>
             <p>
-                <label><mat-icon>place</mat-icon></label> 
-                {{popupProperties.NAME_0}} &gt; {{popupProperties.NAME_1}}  &gt; {{popupProperties.NAME_2}}  &gt; {{popupProperties.NAME_3}}  &gt; {{popupProperties.NAME_4}}
+                <label><mat-icon>place</mat-icon></label>
+                {{popupProperties.NAME_0}}
+                <ng-container *ngIf='popupProperties.NAME_1'>
+                    &gt; {{popupProperties.NAME_1}}
+                    <ng-container *ngIf='popupProperties.NAME_2'>
+                        &gt; {{popupProperties.NAME_2}}
+                        <ng-container *ngIf='popupProperties.NAME_3'>
+                            &gt; {{popupProperties.NAME_3}}
+                            <ng-container *ngIf='popupProperties.NAME_4'>
+                                &gt; {{popupProperties.NAME_4}}
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
                 <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
             </p>
         </ng-container>
         <ng-container *ngIf='popupProperties.total_pop'> 
             <p>
                 <label><mat-icon>place</mat-icon></label> 
-                {{popupProperties.NAME_0}} &gt; {{popupProperties.NAME_1}}  &gt; {{popupProperties.NAME_2}}  &gt; {{popupProperties.NAME_3}}  &gt; {{popupProperties.NAME_4}}
+                {{popupProperties.NAME_0}}
+                <ng-container *ngIf='popupProperties.NAME_1'>
+                    &gt; {{popupProperties.NAME_1}}
+                    <ng-container *ngIf='popupProperties.NAME_2'>
+                        &gt; {{popupProperties.NAME_2}}
+                        <ng-container *ngIf='popupProperties.NAME_3'>
+                            &gt; {{popupProperties.NAME_3}}
+                            <ng-container *ngIf='popupProperties.NAME_4'>
+                                &gt; {{popupProperties.NAME_4}}
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
                 <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
             </p>
             <ng-container *ngIf='rpState.mode === "adman"'>
                 <ng-container *ngFor='let section of admPopupSections'>
                     <h3>{{section.title}}</h3>
+                    <p>
+                        <mat-icon>water_drop</mat-icon><label>{{section.func_waterpoints + section.non_func_waterpoints}} water points ({{section.func_waterpoints}} functional)</label>
+                    </p>
                     <p>
                         <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl 
                     </p>
@@ -150,20 +177,17 @@
                             <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(2)+"%"}})
                         </p>
                     </div>
-                    <p>
-                        <mat-icon>water_drop</mat-icon><label>Functional Waterpoints:</label>&nbsp;{{section.func_waterpoints}}
-                    </p>
-                    <p>
-                        <mat-icon>water_drop</mat-icon><label>Non Functional Waterpoints:</label>&nbsp;{{section.non_func_waterpoints}}
-                    </p>
                 </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'> 
-                <p *ngIf='popupProperties.average_age != 0'>
-                    <mat-icon>hourglass_empty</mat-icon><label>Average Years Since Report:</label>&nbsp;{{((popupProperties.average_age)/365).toFixed(1)}} 
-                </p>
-                <p *ngIf='popupProperties.average_age === 0'>
-                    <mat-icon>hourglass_empty</mat-icon><label>Average Years Since Report:</label>&nbsp;No Data
+                <p>
+                    <mat-icon>hourglass_empty</mat-icon><label>Average Report Age:</label>&nbsp;
+                    <ng-container *ngIf='popupProperties.average_age !== 0'>
+                        {{((popupProperties.average_age)/365).toFixed(1)}} years
+                    </ng-container>
+                    <ng-container *ngIf='popupProperties.average_age === 0'>
+                        No Data
+                    </ng-container>
                 </p>
                 <app-bar [popupProperties]='popupProperties' *ngIf='popupProperties.average_age != 0'></app-bar>
             </ng-container> 
@@ -191,21 +215,24 @@
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
-                <mat-button-toggle-group [(ngModel)]="rpState.adman_level" aria-label="ADM Level" appearance='Legacy'>
-                    <mat-button-toggle value="adm0" [disableRipple]='true'>Adm0</mat-button-toggle>
-                    <mat-button-toggle value="adm1" [disableRipple]='true'>Adm1</mat-button-toggle>
-                    <mat-button-toggle value="adm2" [disableRipple]='true'>Adm2</mat-button-toggle>
-                    <mat-button-toggle value="adm3" [disableRipple]='true'>Adm3</mat-button-toggle>
-                    <mat-button-toggle value="best" [disableRipple]='true'>Most Detailed</mat-button-toggle>
-                </mat-button-toggle-group>
+                <div class='with-title'>
+                    <span>Show  Administrative Level:</span>
+                    <mat-button-toggle-group [(ngModel)]="rpState.adman_level" aria-label="ADM Level" appearance='Legacy'>
+                        <mat-button-toggle value="adm0" [disableRipple]='true'>0</mat-button-toggle>
+                        <mat-button-toggle value="adm1" [disableRipple]='true'>1</mat-button-toggle>
+                        <mat-button-toggle value="adm2" [disableRipple]='true'>2</mat-button-toggle>
+                        <mat-button-toggle value="adm3" [disableRipple]='true'>3</mat-button-toggle>
+                        <mat-button-toggle value="best" [disableRipple]='true'>4</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman"'>
                 <div class='with-title'>
                     <span>Parameter of Interest:</span>
                     <mat-select [(value)]='rpState.adman_view'>
-                        <mat-option value="served">Highlight <span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
-                        <mat-option value="unserved">Highlight <span class='hl-unserved'>Unserved</span> Regions</mat-option>
-                        <mat-option value="uncharted">Highlight <span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
+                        <mat-option value="served"><span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
+                        <mat-option value="unserved"><span class='hl-unserved'>Unserved</span> Regions</mat-option>
+                        <mat-option value="uncharted"><span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
                     </mat-select>    
                 </div>
                 <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>Coverage Summary</mat-slide-toggle>

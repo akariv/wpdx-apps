@@ -12,9 +12,15 @@ export class BarComponent implements OnChanges, AfterViewInit {
   @ViewChild('bar') svgElement: ElementRef;
 
   svg;
+<<<<<<< HEAD
   // x;
   // y;
   margin = {top: 50, right: 10, bottom: 70, left: 40};
+=======
+  x;
+  y;
+  margin = {top: 10, right: 10, bottom: 70, left: 40};
+>>>>>>> 6e08cbc377fd86d223852441bda2fc609f8ebd1e
   width = 270 - this.margin.left - this.margin.right;
   height = 360 - this.margin.top - this.margin.bottom;
 

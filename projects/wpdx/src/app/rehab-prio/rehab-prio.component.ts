@@ -415,12 +415,12 @@ export class RehabPrioComponent implements OnInit {
 
   update_heatmaps(props) {
     this.rpState.map.setLayoutProperty(
-      'rehab-priority-popuplation-served', 'visibility',
-      this.rpState.mode === 'rehab-prio' && props.show_heatmap_population ? 'visible' : 'none'
+      'rehab-priority-popuplation-served', 'visibility', 'none'
+      // this.rpState.mode === 'rehab-prio' && props.show_heatmap_population ? 'visible' : 'none'
     );
     this.rpState.map.setLayoutProperty(
-      'rehab-priority-criticallity-heatmap', 'visibility',
-      this.rpState.mode === 'rehab-prio' && props.show_heatmap_criticality ? 'visible' : 'none'
+      'rehab-priority-criticallity-heatmap', 'visibility', 'none'
+      // this.rpState.mode === 'rehab-prio' && props.show_heatmap_criticality ? 'visible' : 'none'
     );
   }
 
