@@ -80,7 +80,6 @@ export class BarComponent implements OnChanges, AfterViewInit {
   constructor() { }
 
   ngOnChanges(): void {
-    debugger;
     if (!this.svgElement?.nativeElement) {
       return;
     }
