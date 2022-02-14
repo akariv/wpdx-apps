@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 })
 export class BarComponent implements OnChanges, AfterViewInit {
   @Input() popupProperties: any;
-  
+
   @ViewChild('bar') svgElement: ElementRef;
 
   svg;
@@ -19,77 +19,77 @@ export class BarComponent implements OnChanges, AfterViewInit {
   height = 360 - this.margin.top - this.margin.bottom;
 
   getData(popup: any){
-    var x = [
-      {name: "Under 5", count: popup.age_under_5},
-      {name: "Under 10", count: popup.age_under_10},
-      {name: "Under 15", count: popup.age_under_15},
-      {name: "Above 15", count: popup.age_above_15},
+    const x = [
+      {name: 'Under 5', count: popup.age_under_5},
+      {name: 'Under 10', count: popup.age_under_10},
+      {name: 'Under 15', count: popup.age_under_15},
+      {name: 'Above 15', count: popup.age_above_15},
     ];
-    var data = Array(x[0].count).fill(3);
+    let data = Array(x[0].count).fill(3);
     data = data.concat(Array(x[1].count).fill(7));
     data = data.concat(Array(x[2].count).fill(13));
-    data = data.concat(Array(x[3].count).fill(25));
-  
-    return data
+    data = data.concat(Array(x[3].count).fill(17));
+
+    return data;
   }
 
   createSvg(): void {
     this.svgElement.nativeElement.innerHTML = '';
-    this.svg = d3.select("figure.bar")
-    .append("svg")
-    .attr("width", this.width + this.margin.left + this.margin.right)
-    .attr("height", this.height + this.margin.top + this.margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + this.margin.left + "," + this.margin.top + ")");
+    this.svg = d3.select('figure.bar')
+    .append('svg')
+    .attr('width', this.width + this.margin.left + this.margin.right)
+    .attr('height', this.height + this.margin.top + this.margin.bottom)
+    .append('g')
+    .attr('transform',
+          'translate(' + this.margin.left + ',' + this.margin.top + ')');
  }
 
   drawHistogram(data: any[number]){
 
-    var formatCount = d3.format(",.0f");
+    const formatCount = d3.format(',.0f');
 
     // create x axis
-    var x = d3.scaleLinear()
-      .domain([0, 20])    
+    const x = d3.scaleLinear()
+      .domain([0, 20])
       .range([0,this.width]);
 
     // draw x axis
-    this.svg.append("g")
-        .attr("transform", "translate(0," + this.height + ")")
+    this.svg.append('g')
+        .attr('transform', 'translate(0,' + this.height + ')')
         .call(d3.axisBottom(x).ticks(4));
 
     // create bins
-    var histogram = d3.bin()
-        .domain([0,20]) 
+    const histogram = d3.bin()
+        .domain([0,20])
         .thresholds(x.ticks(4));
 
-    var bins = histogram(data);
+    const bins = histogram(data);
 
     // create y axis
-    var y = d3.scaleLinear()
+    const y = d3.scaleLinear()
         .range([this.height, 0]);
-        y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+        y.domain([0, d3.max(bins, (d) => d.length)]);
 
     // draw y axis
-    this.svg.append("g")
+    this.svg.append('g')
         .call(d3.axisLeft(y))
-        .selectAll("text")
-        .attr("transform", "rotate(-30)");
+        .selectAll('text')
+        .attr('transform', 'rotate(-30)');
 
     // draw bars
-    var bar = this.svg.selectAll("rect")
+    const bar = this.svg.selectAll('rect')
          .data(bins)
-         .enter().append("g")
-         .attr("class", "bar")
-         .attr("transform", function(d) { return "translate(" + x(d.x0+0.2) + "," + y(d.length) + ")"; })
+         .enter().append('g')
+         .attr('class', 'bar')
+         .attr('transform', (d) => 'translate(' + x(d.x0+0.2) + ',' + y(d.length) + ')');
 
-    bar.append("rect")
-         .attr("x", 1)
-         .attr("width", 50)
-         .attr("height", (d) => this.height - y(d.length))
-         .style("fill", '#756bb1');
+    bar.append('rect')
+         .attr('x', 1)
+         .attr('width', 50)
+         .attr('height', (d) => this.height - y(d.length))
+         .style('fill', '#756bb1');
 
- 
+
 
     // bar.append("text")
     //   .attr("dy", ".75em") // why?
@@ -100,21 +100,21 @@ export class BarComponent implements OnChanges, AfterViewInit {
 
 
     // x axis title
-    this.svg.append("text")
-      .attr("transform",
-            "translate(" + (this.width/2) + " ," + 
-                           (this.height + this.margin.top + 20) + ")")
-      .style("text-anchor", "middle")
-      .text("Age in Years");
+    this.svg.append('text')
+      .attr('transform',
+            'translate(' + (this.width/2) + ' ,' +
+                           (this.height + this.margin.top + 20) + ')')
+      .style('text-anchor', 'middle')
+      .text('Age in Years');
 
     // y axis title
-    this.svg.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - this.margin.left)
-      .attr("x",0 - (this.height / 2))
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text("# Water Points");
+    this.svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - this.margin.left)
+      .attr('x',0 - (this.height / 2))
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text('# Water Points');
   }
 
   constructor() { }
