@@ -53,10 +53,13 @@ export class BarComponent implements OnChanges, AfterViewInit {
       .domain([0, 20])
       .range([0,this.width]);
 
+    const x_axis = d3.axisBottom(x).ticks(4)
+      .tickFormat(x => x === 20 ? `${x}+` : `${x}`);
+
     // draw x axis
     this.svg.append('g')
         .attr('transform', 'translate(0,' + this.height + ')')
-        .call(d3.axisBottom(x).ticks(4));
+        .call(x_axis);
 
     // create bins
     const histogram = d3.bin()
