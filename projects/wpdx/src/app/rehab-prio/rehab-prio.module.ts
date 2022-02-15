@@ -21,6 +21,7 @@ import { SettingsDialogComponent } from './settings-dialog/settings-dialog.compo
 import { RegionFilterDialogComponent } from './region-filter-dialog/region-filter-dialog.component';
 import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 import { SourcesDialogComponent } from './sources-dialog/sources-dialog.component';
+import { AdmPopupComponent } from './adm-popup/adm-popup.component';
 
 
 
@@ -31,7 +32,8 @@ import { SourcesDialogComponent } from './sources-dialog/sources-dialog.componen
     SettingsDialogComponent,
     RegionFilterDialogComponent,
     AttributeFilterDialogComponent,
-    SourcesDialogComponent
+    SourcesDialogComponent,
+    AdmPopupComponent
   ],
   imports: [
     CommonModule,

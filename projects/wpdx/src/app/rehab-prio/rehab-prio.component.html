@@ -186,51 +186,28 @@
             </p>
         </ng-container>
         <ng-container *ngIf='popupProperties.total_pop'> 
-            <p>
-                <label><mat-icon>place</mat-icon></label> 
-                {{popupProperties.NAME_0}}
-                <ng-container *ngIf='popupProperties.NAME_1'>
-                    &gt; {{popupProperties.NAME_1}}
-                    <ng-container *ngIf='popupProperties.NAME_2'>
-                        &gt; {{popupProperties.NAME_2}}
-                        <ng-container *ngIf='popupProperties.NAME_3'>
-                            &gt; {{popupProperties.NAME_3}}
-                            <ng-container *ngIf='popupProperties.NAME_4'>
-                                &gt; {{popupProperties.NAME_4}}
+            <app-adm-popup [popupProperties]='popupProperties' [admPopupSections]='admPopupSections' *ngIf='rpState.mode === "adman"'>
+
+            </app-adm-popup>
+            
+            <ng-container *ngIf='rpState.mode === "staleness"'> 
+                <p>
+                    <label><mat-icon>place</mat-icon></label> 
+                    {{popupProperties.NAME_0}}
+                    <ng-container *ngIf='popupProperties.NAME_1'>
+                        &gt; {{popupProperties.NAME_1}}
+                        <ng-container *ngIf='popupProperties.NAME_2'>
+                            &gt; {{popupProperties.NAME_2}}
+                            <ng-container *ngIf='popupProperties.NAME_3'>
+                                &gt; {{popupProperties.NAME_3}}
+                                <ng-container *ngIf='popupProperties.NAME_4'>
+                                    &gt; {{popupProperties.NAME_4}}
+                                </ng-container>
                             </ng-container>
                         </ng-container>
                     </ng-container>
-                </ng-container>
-                <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
-            </p>
-            <ng-container *ngIf='rpState.mode === "adman"'>
-                <ng-container *ngFor='let section of admPopupSections'>
-                    <h3>{{section.title}}</h3>
-                    <p>
-                        <mat-icon>water_drop</mat-icon><label>{{section.func_waterpoints + section.non_func_waterpoints | number:'1.0-0'}} water points ({{section.func_waterpoints | number:'1.0-0'}} functional, {{((section.func_waterpoints/(section.func_waterpoints + section.non_func_waterpoints))*100).toFixed(1)+"%"}})</label>
-                    </p>
-                    <p>
-                        <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl 
-                    </p>
-                    <p>
-                        <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{section.rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='section.rural_pop'>, of which</ng-container>
-                    </p>
-                    <ng-container *ngIf='section.rural_pop'>
-                        <div class='indent'>
-                            <p>
-                                <mat-icon>people</mat-icon><label>Rural Pop with Basic Access:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.rural_pop)*100).toFixed(1)+"%"}})
-                            </p>
-                            <p>
-                                <mat-icon>people</mat-icon><label>Rural Pop without Basic Access:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.rural_pop)*100).toFixed(1)+"%"}})
-                            </p>
-                            <p>
-                                <mat-icon>people</mat-icon><label>Uncharted Rural Pop:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.rural_pop)*100).toFixed(1)+"%"}})
-                            </p>
-                        </div>
-                    </ng-container>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf='rpState.mode === "staleness"'> 
+                    <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
+                </p>
                 <p>
                     <mat-icon>hourglass_empty</mat-icon><label>Average Report Age:</label>&nbsp;
                     <ng-container *ngIf='popupProperties.average_report_age_years !== 0'>

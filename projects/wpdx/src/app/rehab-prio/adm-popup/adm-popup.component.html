@@ -1,0 +1,186 @@
+<div>
+    <p>
+        <label><mat-icon>place</mat-icon></label> 
+        {{popupProperties.NAME_0}}
+        <ng-container *ngIf='popupProperties.NAME_1'>
+            &gt; {{popupProperties.NAME_1}}
+            <ng-container *ngIf='popupProperties.NAME_2'>
+                &gt; {{popupProperties.NAME_2}}
+                <ng-container *ngIf='popupProperties.NAME_3'>
+                    &gt; {{popupProperties.NAME_3}}
+                    <ng-container *ngIf='popupProperties.NAME_4'>
+                        &gt; {{popupProperties.NAME_4}}
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
+    </p>
+    <ng-container *ngIf='popupProperties.title === popupProperties.NAME_0'>
+        <h2>{{popupProperties.title}}</h2>
+        <p>
+            <mat-icon>water_drop</mat-icon><label>{{popupProperties.func_waterpoints + popupProperties.non_func_waterpoints}} water points ({{popupProperties.func_waterpoints}} functional)</label>
+        </p>
+        <p>
+            <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{popupProperties.total_pop | number:'1.0-0'}} ppl 
+        </p>
+        <p>
+            <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{popupProperties.rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='popupProperties.rural_pop'>, of which</ng-container>
+        </p>
+        <ng-container *ngIf='popupProperties.rural_pop'>
+            <div class='indent'>
+                <p>
+                    <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(popupProperties.served_pop) | number:'1.0-0'}} ppl ({{((popupProperties.served_pop/popupProperties.total_pop)*100).toFixed(2)+"%"}})
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(popupProperties.unserved_pop) | number:'1.0-0'}} ppl ({{((popupProperties.unserved_pop/popupProperties.total_pop)*100).toFixed(2)+"%"}})
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{popupProperties.uncharted_pop | number:'1.0-0'}} ppl ({{((popupProperties.uncharted_pop/popupProperties.total_pop)*100).toFixed(2)+"%"}})
+                </p>
+            </div>
+        </ng-container>
+        
+    </ng-container>
+    <ng-container *ngIf='popupProperties.title != popupProperties.NAME_0'>
+        <ng-container *ngIf='admPopupSections.length === 5'>
+            <div class='with-title'>
+                <mat-button-toggle-group #group="matButtonToggleGroup" aria-label="ADM Level" appearance='Legacy' value="0">
+                    <mat-button-toggle value="4" [disableRipple]='true'>{{popupProperties.NAME_0}}</mat-button-toggle>
+                    <mat-button-toggle value="3" [disableRipple]='true'>{{popupProperties.NAME_1}}</mat-button-toggle>
+                    <mat-button-toggle value="2" [disableRipple]='true'>{{popupProperties.NAME_2}}</mat-button-toggle>
+                    <mat-button-toggle value="1" [disableRipple]='true'>{{popupProperties.NAME_3}}</mat-button-toggle>
+                    <mat-button-toggle value="0" [disableRipple]='true'>{{popupProperties.NAME_4}}</mat-button-toggle>
+                </mat-button-toggle-group>    
+            </div>
+            <ng-container *ngIf ='admPopupSections[group.value]'>
+                <h2>{{admPopupSections[group.value].title}}</h2>
+                <p>
+                    <mat-icon>water_drop</mat-icon><label>{{admPopupSections[group.value].func_waterpoints + admPopupSections[group.value].non_func_waterpoints}} water points ({{admPopupSections[group.value].func_waterpoints}} functional)</label>
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[group.value].total_pop | number:'1.0-0'}} ppl 
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[group.value].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[group.value].rural_pop'>, of which</ng-container>
+                </p>
+                <ng-container *ngIf='admPopupSections[group.value].rural_pop'>
+                    <div class='indent'>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[group.value].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].served_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[group.value].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].unserved_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[group.value].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].uncharted_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf='admPopupSections.length === 4'>
+            <div class='with-title'>
+                <mat-button-toggle-group #group="matButtonToggleGroup" aria-label="ADM Level" appearance='Legacy' value="0">
+                    <mat-button-toggle value="3" [disableRipple]='true'>{{popupProperties.NAME_0}}</mat-button-toggle>
+                    <mat-button-toggle value="2" [disableRipple]='true'>{{popupProperties.NAME_1}}</mat-button-toggle>
+                    <mat-button-toggle value="1" [disableRipple]='true'>{{popupProperties.NAME_2}}</mat-button-toggle>
+                    <mat-button-toggle value="0" [disableRipple]='true'>{{popupProperties.NAME_3}}</mat-button-toggle>
+                </mat-button-toggle-group>    
+            </div>
+            <ng-container *ngIf ='admPopupSections[group.value]'>
+                <h2>{{admPopupSections[group.value].title}}</h2>
+                <p>
+                    <mat-icon>water_drop</mat-icon><label>{{admPopupSections[group.value].func_waterpoints + admPopupSections[group.value].non_func_waterpoints}} water points ({{admPopupSections[group.value].func_waterpoints}} functional)</label>
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[group.value].total_pop | number:'1.0-0'}} ppl 
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[group.value].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[group.value].rural_pop'>, of which</ng-container>
+                </p>
+                <ng-container *ngIf='admPopupSections[group.value].rural_pop'>
+                    <div class='indent'>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[group.value].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].served_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[group.value].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].unserved_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[group.value].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].uncharted_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf='admPopupSections.length === 3'>
+            <div class='with-title'>
+                <mat-button-toggle-group #group="matButtonToggleGroup" aria-label="ADM Level" appearance='Legacy' value="0">
+                    <mat-button-toggle value="2" [disableRipple]='true'>{{popupProperties.NAME_0}}</mat-button-toggle>
+                    <mat-button-toggle value="1" [disableRipple]='true'>{{popupProperties.NAME_1}}</mat-button-toggle>
+                    <mat-button-toggle value="0" [disableRipple]='true'>{{popupProperties.NAME_2}}</mat-button-toggle>
+                </mat-button-toggle-group>    
+            </div>
+            <ng-container *ngIf ='admPopupSections[group.value]'>
+                <h2>{{admPopupSections[group.value].title}}</h2>
+                <p>
+                    <mat-icon>water_drop</mat-icon><label>{{admPopupSections[group.value].func_waterpoints + admPopupSections[group.value].non_func_waterpoints}} water points ({{admPopupSections[group.value].func_waterpoints}} functional)</label>
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[group.value].total_pop | number:'1.0-0'}} ppl 
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[group.value].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[group.value].rural_pop'>, of which</ng-container>
+                </p>
+                <ng-container *ngIf='admPopupSections[group.value].rural_pop'>
+                    <div class='indent'>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[group.value].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].served_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[group.value].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].unserved_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[group.value].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].uncharted_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf='admPopupSections.length === 2'>
+            <div class='with-title'>
+                <mat-button-toggle-group #group="matButtonToggleGroup" aria-label="ADM Level" appearance='Legacy' value="0">
+                    <mat-button-toggle value="1" [disableRipple]='true'>{{popupProperties.NAME_0}}</mat-button-toggle>
+                    <mat-button-toggle value="0" [disableRipple]='true'>{{popupProperties.NAME_1}}</mat-button-toggle>
+                </mat-button-toggle-group>    
+            </div>
+            <ng-container *ngIf ='admPopupSections[group.value]'>
+                <h2>{{admPopupSections[group.value].title}}</h2>
+                <p>
+                    <mat-icon>water_drop</mat-icon><label>{{admPopupSections[group.value].func_waterpoints + admPopupSections[group.value].non_func_waterpoints}} water points ({{admPopupSections[group.value].func_waterpoints}} functional)</label>
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[group.value].total_pop | number:'1.0-0'}} ppl 
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[group.value].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[group.value].rural_pop'>, of which</ng-container>
+                </p>
+                <ng-container *ngIf='admPopupSections[group.value].rural_pop'>
+                    <div class='indent'>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[group.value].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].served_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[group.value].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].unserved_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                        <p>
+                            <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[group.value].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[group.value].uncharted_pop/admPopupSections[group.value].total_pop)*100).toFixed(2)+"%"}})
+                        </p>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+ 
+</div>
