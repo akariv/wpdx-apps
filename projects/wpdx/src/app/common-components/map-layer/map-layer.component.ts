@@ -82,6 +82,7 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
                 this.popupProperties.x = this.popupProperties.coordinates[0];
                 this.popupProperties.y = this.popupProperties.coordinates[1];
                 this.mapPopup.next(this.popupProperties);
+                e.stopPropagation();
               });
               this._map.on('mouseenter', layer, () => {
                 this._map.getCanvas().style.cursor = 'pointer';

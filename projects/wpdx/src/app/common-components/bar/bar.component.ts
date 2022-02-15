@@ -14,7 +14,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
   svg;
   // x;
   // y;
-  margin = {top: 10, right: 10, bottom: 70, left: 40};
+  margin = {top: 20, right: 10, bottom: 70, left: 40};
   width = 270 - this.margin.left - this.margin.right;
   height = 360 - this.margin.top - this.margin.bottom;
 
@@ -73,12 +73,6 @@ export class BarComponent implements OnChanges, AfterViewInit {
         .range([this.height, 0]);
         y.domain([0, d3.max(bins, (d) => d.length)]);
 
-    // draw y axis
-    this.svg.append('g')
-        .call(d3.axisLeft(y))
-        .selectAll('text')
-        .attr('transform', 'rotate(-30)');
-
     // draw bars
     const bar = this.svg.selectAll('rect')
          .data(bins)
@@ -93,13 +87,14 @@ export class BarComponent implements OnChanges, AfterViewInit {
          .style('fill', '#756bb1');
 
 
+    // count
+    bar.append("text")
+      .attr("dy", ".75em") 
+      .attr("y", -15)
+      .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
+      .attr("text-anchor", "middle")
+      .text( (d) => formatCount(d.length) != (0+'') ? formatCount(d.length): '');
 
-    // bar.append("text")
-    //   .attr("dy", ".75em") // why?
-    //   .attr("y", 6)
-    //   .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
-    //   .attr("text-anchor", "middle")
-    //   .text(function(d) { return (formatCount(d.length) != (0+"") ? formatCount(d.length): ""); });
 
 
     // x axis title
