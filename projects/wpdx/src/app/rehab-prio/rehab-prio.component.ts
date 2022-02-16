@@ -608,7 +608,7 @@ export class RehabPrioComponent implements OnInit {
       } else {
         this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
       }
-      this.rpState.map.setLayoutProperty('rehab-priority-highlights', 'visibility', 'none');
+      this.rpState.map.setLayoutProperty('rehab-priority-highlights', 'visibility', 'visible');
       this.update_heatmaps(props);
     } else {
       for (const layer of [
