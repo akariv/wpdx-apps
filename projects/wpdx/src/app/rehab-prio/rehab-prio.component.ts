@@ -359,8 +359,8 @@ export class RehabPrioComponent implements OnInit {
                 "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
       }
       //console.log(queries);
+      this.admPopupSections = [value];
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
-        this.admPopupSections = [value];
         //console.log(value);
         if (queries.length > 3) {
           // value.level3 = results[2].rows[0];
