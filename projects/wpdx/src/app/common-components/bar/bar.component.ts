@@ -6,32 +6,25 @@ import * as d3 from 'd3';
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.less']
 })
-export class BarComponent implements OnChanges, AfterViewInit {
-  @Input() popupProperties: any;
+export class BarComponent implements OnChanges, AfterViewInit{
+  @Input() data: any;
+  @Input() xAxisTitle: string;
+  @Input() yAxisTitle: string;
+  
+  @Input() min: number;
+  @Input() max: number;
+  @Input() color: string;
+  
 
   @ViewChild('bar') svgElement: ElementRef;
 
   svg;
-  // x;
-  // y;
+  
   margin = {top: 20, right: 10, bottom: 70, left: 40};
   width = 270 - this.margin.left - this.margin.right;
   height = 360 - this.margin.top - this.margin.bottom;
+  tickNumber;
 
-  getData(popup: any){
-    const x = [
-      {name: 'Under 5', count: popup.age_under_5},
-      {name: 'Under 10', count: popup.age_under_10},
-      {name: 'Under 15', count: popup.age_under_15},
-      {name: 'Above 15', count: popup.age_above_15},
-    ];
-    let data = Array(x[0].count).fill(3);
-    data = data.concat(Array(x[1].count).fill(7));
-    data = data.concat(Array(x[2].count).fill(13));
-    data = data.concat(Array(x[3].count).fill(17));
-
-    return data;
-  }
 
   createSvg(): void {
     this.svgElement.nativeElement.innerHTML = '';
@@ -42,31 +35,59 @@ export class BarComponent implements OnChanges, AfterViewInit {
     .append('g')
     .attr('transform',
           'translate(' + this.margin.left + ',' + this.margin.top + ')');
- }
+  }
 
-  drawHistogram(data: any[number]){
 
+  drawHistogram(){
+  
+    this.tickNumber = 4;
+    if(this.min != 0){
+      if ((this.max-this.min+1) < 10){
+        this.tickNumber = 4;
+        if(((this.max-this.min+1)%4) != 0){
+          const res = (this.max-this.min+1)%4;
+          this.max = this.max + (4-res);
+        }
+      }
+      else {
+        this.tickNumber = 10;
+        if (((this.max-this.min+1)%10) != 0){
+          
+          const res = (this.max-this.min+1)%10;
+          this.max = this.max + (10-res);
+        }
+      }
+    }
     const formatCount = d3.format(',.0f');
-
-    // create x axis
-    const x = d3.scaleLinear()
-      .domain([0, 20])
-      .range([0,this.width]);
-
-    const x_axis = d3.axisBottom(x).ticks(4)
-      .tickFormat(x => x === 20 ? `${x}+` : `${x}`);
-
-    // draw x axis
-    this.svg.append('g')
-        .attr('transform', 'translate(0,' + this.height + ')')
-        .call(x_axis);
 
     // create bins
     const histogram = d3.bin()
-        .domain([0,20])
-        .thresholds(x.ticks(4));
+        .domain([this.min, this.max])
+        .thresholds(d3.range(this.min, this.max+((this.max-this.min+1)/this.tickNumber), (this.max-this.min+1) / this.tickNumber));
 
-    const bins = histogram(data);
+    const bins = histogram(this.data);
+    
+      // create x axis
+      const x = d3.scaleLinear()
+      .domain([this.min, this.max])
+      .range([0,this.width-this.margin.right]);
+  
+      // ticks
+      const x_axis = d3.axisBottom(x)
+      .tickValues(d3.range(this.min, this.max+((this.max-this.min+1)/this.tickNumber), (this.max-this.min+1) / this.tickNumber))
+      .tickFormat((x) => `${x}`);
+
+      // draw x axis
+      this.svg.append('g')
+          .attr('transform', 'translate(0,' + this.height + ')')
+          .call(x_axis)
+          .call(g => g.select(".domain").remove())
+          .selectAll('text')
+            .style('text-anchor', 'end')
+            .attr('dx', '-.8em')
+            .attr('dy', '.15em')
+            .attr('transform', 'rotate(-50)');
+  
 
     // create y axis
     const y = d3.scaleLinear()
@@ -78,18 +99,19 @@ export class BarComponent implements OnChanges, AfterViewInit {
          .data(bins)
          .enter().append('g')
          .attr('class', 'bar')
-         .attr('transform', (d) => 'translate(' + x(d.x0+0.2) + ',' + y(d.length) + ')');
+         .attr('transform', (d) => 'translate(' + x(d.x0+0.1) + ',' + y(d.length) + ')');
 
     bar.append('rect')
          .attr('x', 1)
-         .attr('width', 50)
+         .attr('width', (this.width-this.margin.right)/this.tickNumber-1)
          .attr('height', (d) => this.height - y(d.length))
-         .style('fill', '#756bb1');
+         .style('fill', this.color);
 
 
     // count
     bar.append("text")
       .attr("dy", ".75em") 
+      .style("font-size", "10px")
       .attr("y", -15)
       .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
       .attr("text-anchor", "middle")
@@ -101,9 +123,9 @@ export class BarComponent implements OnChanges, AfterViewInit {
     this.svg.append('text')
       .attr('transform',
             'translate(' + (this.width/2) + ' ,' +
-                           (this.height + this.margin.top + 20) + ')')
+                           (this.height + this.margin.top + 25) + ')')
       .style('text-anchor', 'middle')
-      .text('Age in Years');
+      .text(this.xAxisTitle);
 
     // y axis title
     this.svg.append('text')
@@ -112,9 +134,8 @@ export class BarComponent implements OnChanges, AfterViewInit {
       .attr('x',0 - (this.height / 2))
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
-      .text('# Water Points');
+      .text(this.yAxisTitle);
   }
-
   constructor() { }
 
   ngOnChanges(): void {
@@ -122,11 +143,10 @@ export class BarComponent implements OnChanges, AfterViewInit {
       return;
     }
     this.createSvg();
-    this.drawHistogram(this.getData(this.popupProperties));
+    this.drawHistogram();
   }
 
   ngAfterViewInit() {
     this.ngOnChanges();
   }
-
 }
