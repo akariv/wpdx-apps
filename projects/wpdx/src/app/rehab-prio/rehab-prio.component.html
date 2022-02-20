@@ -98,24 +98,26 @@
     </ng-container>
     <div class='map-popup'>
         <app-base-waterpoint-popup [popupProperties]='popupProperties' *ngIf='popupProperties.wpdx_id'>
-            <p *ngIf='popupProperties.local_population > 0'>
-                <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
-            </p>
-            <p *ngIf='popupProperties.criticality > 0'>
-                <mat-icon>warning</mat-icon><label>Crucialness:</label>&nbsp;{{popupProperties.criticality * 100 | number:'1.0-0'}}%
-            </p>
-            <p *ngIf='popupProperties.pressure > 0'>
-                <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
-            </p>
-            <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "Yes"'>
-                <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
-            </p>
-            <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "Yes"'>
-                <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
-            </p>
-            <p *ngIf='popupProperties.usage_cap > 0'>
-                <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
-            </p>
+            <ng-container *ngIf='rpState.mode==="rehab-prio"'>
+                <p *ngIf='popupProperties.local_population > 0'>
+                    <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
+                </p>
+                <p *ngIf='popupProperties.criticality > 0'>
+                    <mat-icon>warning</mat-icon><label>Crucialness:</label>&nbsp;{{popupProperties.criticality * 100 | number:'1.0-0'}}%
+                </p>
+                <p *ngIf='popupProperties.pressure > 0'>
+                    <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
+                </p>
+                <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "Yes"'>
+                    <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+                </p>
+                <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "Yes"'>
+                    <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+                </p>
+                <p *ngIf='popupProperties.usage_cap > 0'>
+                    <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
+                </p>
+            </ng-container>
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
             <p *ngIf='popupProperties.population > 0'>
