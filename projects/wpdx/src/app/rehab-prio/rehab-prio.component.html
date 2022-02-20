@@ -315,10 +315,9 @@
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>100%</span></div>
                 <ng-container *ngIf='rpState.show_adman_pies'>
                     <strong>Coverage Summary</strong>
-                    <div class='legend-item'><span class='legend-color hl-served'></span><span>% served</span></div>
-                    <div class='legend-item'><span class='legend-color hl-unserved'></span><span>% unserved</span></div>
-                    <div class='legend-item'><span class='legend-color hl-uncharted'></span>% uncharted</div>
-                    
+                    <div class='legend-item'><span class='legend-color hl-served slice'></span><span>% served</span></div>
+                    <div class='legend-item'><span class='legend-color hl-unserved slice'></span><span>% unserved</span></div>
+                    <div class='legend-item'><span class='legend-color hl-uncharted slice'></span>% uncharted</div>
                 </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'>
