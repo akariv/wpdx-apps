@@ -171,7 +171,8 @@
                         No Data
                     </ng-container>
                 </p>
-                <app-bar [popupProperties]='popupProperties' *ngIf='popupProperties.average_age != 0'></app-bar>
+                <app-staleness-popup-bar [popupProperties]='popupProperties' *ngIf='popupProperties.average_age != 0'></app-staleness-popup-bar>
+
             </ng-container> 
         </ng-container>
     </div>
