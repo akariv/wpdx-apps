@@ -56,6 +56,7 @@ export class RehabPrioComponent implements OnInit {
       switchMap((bounds) => {
         const rehabPrio = this.db.query(this.queryUI(bounds));
         const newConstructions = this.db.query(this.queryUINC(bounds));
+        this.rpState.top10 = [];
         return forkJoin([rehabPrio, newConstructions]);
       }),
       map(([resultsRehabPrio, resultsNC]: any) => [resultsRehabPrio.rows, resultsNC.rows])
@@ -674,7 +675,7 @@ export class RehabPrioComponent implements OnInit {
       ];
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', 0.7);
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', interpolate);
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', interpolate);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', ['to-color', this.colorRange[4]]);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
     }
     const admanFilt = [];

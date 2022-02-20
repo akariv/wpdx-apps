@@ -12,8 +12,8 @@ export class RpStateService {
 
   top10: any[] = [];
   sort_options = [
-    {value: 'assigned_population desc', display: 'Sort by Served Pop.'},
     {value: 'local_population desc', display: 'Sort by Local Pop.'},
+    {value: 'assigned_population desc', display: 'Sort by Water Point Pop.'},
     {value: 'criticality desc', display: 'Sort by Crucialness'},
     {value: 'pressure desc', display: 'Sort by Pressure'},
   ];
