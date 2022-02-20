@@ -163,7 +163,7 @@
                 <ng-container *ngFor='let section of admPopupSections'>
                     <h3>{{section.title}}</h3>
                     <p>
-                        <mat-icon>water_drop</mat-icon><label>{{section.func_waterpoints + section.non_func_waterpoints}} water points ({{section.func_waterpoints}} functional)</label>
+                        <mat-icon>water_drop</mat-icon><label>{{section.func_waterpoints + section.non_func_waterpoints | number:'1.0-0'}} water points ({{section.func_waterpoints | number:'1.0-0'}} functional, {{((section.func_waterpoints/(section.func_waterpoints + section.non_func_waterpoints))*100).toFixed(1)+"%"}})</label>
                     </p>
                     <p>
                         <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{section.total_pop | number:'1.0-0'}} ppl 
@@ -174,13 +174,13 @@
                     <ng-container *ngIf='section.rural_pop'>
                         <div class='indent'>
                             <p>
-                                <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.total_pop)*100).toFixed(2)+"%"}})
+                                <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.total_pop)*100).toFixed(1)+"%"}})
                             </p>
                             <p>
-                                <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.total_pop)*100).toFixed(2)+"%"}})
+                                <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.total_pop)*100).toFixed(1)+"%"}})
                             </p>
                             <p>
-                                <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(2)+"%"}})
+                                <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.total_pop)*100).toFixed(1)+"%"}})
                             </p>
                         </div>
                     </ng-container>
@@ -269,6 +269,13 @@
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>60%</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>80%</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>100%</span></div>
+                <ng-container *ngIf='rpState.show_adman_pies'>
+                    <strong>Coverage Summary</strong>
+                    <div class='legend-item'><span class='legend-color hl-served'></span><span>% served</span></div>
+                    <div class='legend-item'><span class='legend-color hl-unserved'></span><span>% unserved</span></div>
+                    <div class='legend-item'><span class='legend-color hl-uncharted'></span>% uncharted</div>
+                    
+                </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'>
                 <strong>Avg. Report Date Age</strong>
@@ -299,14 +306,12 @@
                     <img src='assets/img/functional.png'>
                     <div class='legend-label'>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Likely Current Users Heatmap</span></span>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
                     </div>
                 </div>
                 <div class='legend-item'>
                     <img src='assets/img/non-functional.png'>
                     <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>High Crucialness Heatmap</span></span>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
                     </div>
