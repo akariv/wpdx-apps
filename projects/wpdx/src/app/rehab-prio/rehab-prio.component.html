@@ -9,7 +9,7 @@
     (filterSelected)='nav = $event'
 >
     <ng-container ngProjectAs='.menu'>
-        <div class='data-table' *ngIf='showTable'>
+        <div class='data-table' *ngIf='showTable && (rpState.mode === "rehab-prio" || rpState.mode === "new_constructions")'>
             <table *ngIf='rpState.mode === "rehab-prio"'>
                 <thead>
                     <th>#</th>
@@ -17,7 +17,7 @@
                     <th>Source</th>
                     <th>Tech</th>    
                     <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[0].value'>Local Pop.<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[0].value'>arrow_drop_down</mat-icon></th>
-                    <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[1].value'>Served Pop.<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[1].value'>arrow_drop_down</mat-icon></th>
+                    <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[1].value'>Water Point Pop.<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[1].value'>arrow_drop_down</mat-icon></th>
                     <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[2].value'>Crucialness<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[2].value'>arrow_drop_down</mat-icon></th>
                     <th class='clickable' (click)='rpState.sort_by = rpState.sort_options[3].value'>Pressure<mat-icon *ngIf='rpState.sort_by === rpState.sort_options[3].value'>arrow_drop_down</mat-icon></th>
                 </thead>
@@ -50,6 +50,23 @@
                     </tr>
                 </tbody>
             </table>
+            <div class='placeholders' *ngIf='!rpState.top10 || !rpState.top10.length'>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+                <div class='row-placeholder'></div>
+            </div>
         </div>
         <button mat-fab color="primary" (click)='showTable = !showTable' title='Show Data Table'
                 *ngIf='rpState.mode === "rehab-prio" || rpState.mode === "new_constructions"'
