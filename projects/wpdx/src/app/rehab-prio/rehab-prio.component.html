@@ -251,7 +251,10 @@
                         <mat-option value="uncharted"><span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
                     </mat-select>    
                 </div>
-                <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>Coverage Summary</mat-slide-toggle>
+                <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>
+                    <img src='assets/img/pie_chart_black_24dp.svg'>
+                    Coverage Summary
+                </mat-slide-toggle>
             </ng-container>
         </div>
         <div class='legend' [class.open]='legendOpen'>
