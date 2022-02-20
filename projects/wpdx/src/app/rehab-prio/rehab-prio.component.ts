@@ -788,7 +788,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   openSourcesDialog() {
-    this.dialog.open(SourcesDialogComponent);
+    this.dialog.open(SourcesDialogComponent, {data: this.queryWhere(this.state.bounds)});
   }
 
   openRegionFilterDialog() {

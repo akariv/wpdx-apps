@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { StateService } from '../../common-components/state.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DbService } from '../../db.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class SourcesDialogComponent implements OnInit {
   _view = 'current';
   data: any[];
 
-  constructor(private db: DbService, private state: StateService) { }
+  constructor(private db: DbService, @Inject(MAT_DIALOG_DATA) public queryWhere: string) { }
 
   ngOnInit(): void {
     this.query();
@@ -28,7 +28,7 @@ export class SourcesDialogComponent implements OnInit {
   }
 
   query() {
-    const where = this.where();
+    const where = this.queryWhere;
     const query = `
       select data_lnk, dataset_title as title,
              max(created_timestamp) as created,
@@ -42,20 +42,6 @@ export class SourcesDialogComponent implements OnInit {
     this.db.query(query).subscribe(res => {
       this.data = res.rows || [];
     });
-  }
-
-  where() {
-    const bounds = this.state.bounds;
-    if (this.view === 'current') {
-      return `
-        lat_deg >= ${bounds.getSouth()} and
-        lat_deg <= ${bounds.getNorth()} and
-        lon_deg >= ${bounds.getWest()} and
-        lon_deg <= ${bounds.getEast()}
-      `;
-    } else {
-      return 'true';
-    }
   }
 
   join(arr: string[]) {
