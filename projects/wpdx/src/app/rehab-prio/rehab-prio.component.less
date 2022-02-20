@@ -250,3 +250,28 @@ mat-label {
         }
     }
 }
+
+.filtering-for {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 8px;
+    background: #CDD3EDcc;
+    border-radius: 4px;
+    border: 1px solid black;
+    .nice-shadow;
+
+    font-weight: 600;
+    label {
+        font-weight: 300;
+    }
+
+    .filtering-remove {
+        cursor: pointer;
+        color: #888888;
+        &:hover {
+            color: #000000;
+        }
+    }
+}

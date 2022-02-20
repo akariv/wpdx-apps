@@ -64,8 +64,15 @@
         left: 16px;
         gap: 8px;
         z-index: 1;
+        height: calc(100% - 180px);
+        justify-content: flex-start;
 
         ::ng-deep {
+            .separator {
+                display: block;
+                height: 0px;
+                margin-top: auto;
+            }
             .mat-menu-trigger, .table-trigger {
                 mat-icon {
                     transform: rotate(0deg);

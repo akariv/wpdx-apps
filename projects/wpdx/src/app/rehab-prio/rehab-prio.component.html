@@ -9,6 +9,33 @@
     (filterSelected)='nav = $event'
 >
     <ng-container ngProjectAs='.menu'>
+        <div class='filtering-for' *ngIf='state.props.country_name'>
+            <mat-icon class='filtering-remove' (click)='state.props.country_name = state.props.adm1 = state.props.adm2 = state.props.adm3 = state.props.adm4 = null; state.bump()'>highlight_off</mat-icon>
+            <label>Region Filter:</label>
+            {{state.props.country_name}}
+            <ng-container *ngIf='state.props.adm1'>
+                &gt; {{state.props.adm1}}
+                <ng-container *ngIf='state.props.adm2'>
+                    &gt; {{state.props.adm2}}
+                    <ng-container *ngIf='state.props.adm3'>
+                        &gt; {{state.props.adm3}}
+                        <ng-container *ngIf='state.props.adm4'>
+                            &gt; {{state.props.adm4}}
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </div>
+        <div class='filtering-for' *ngIf='state.props.source'>
+            <mat-icon class='filtering-remove' (click)='state.setProp("source", null)'>highlight_off</mat-icon><label>Water Source Filter:</label> {{state.props.source}}
+        </div>
+        <div class='filtering-for' *ngIf='state.props.tech'>
+            <mat-icon class='filtering-remove' (click)='state.setProp("tech", null)'>highlight_off</mat-icon><label>Water Tech Filter:</label> {{state.props.tech}}
+        </div>
+        <div class='filtering-for' *ngIf='state.props.management'>
+            <mat-icon class='filtering-remove' (click)='state.setProp("management", null)'>highlight_off</mat-icon><label>Water Management Filter:</label> {{state.props.management}}
+        </div>
+        <div class='separator'></div>
         <div class='data-table' *ngIf='showTable && (rpState.mode === "rehab-prio" || rpState.mode === "new_constructions")'>
             <table *ngIf='rpState.mode === "rehab-prio"'>
                 <thead>

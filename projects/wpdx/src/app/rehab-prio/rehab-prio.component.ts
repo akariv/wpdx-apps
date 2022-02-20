@@ -44,7 +44,7 @@ export class RehabPrioComponent implements OnInit {
   legendOpen = true;
   showTable = false;
 
-  constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
+  constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
   }
 
