@@ -16,7 +16,8 @@ export class AdmPopupComponent implements OnChanges {
   @Input() popupProperties: any;
   @Input() admPopupSections: any;
   data = [];
-  index_array = [];
+  pie_data = [];
+  selectedSection = 0;
 
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
@@ -84,8 +85,21 @@ export class AdmPopupComponent implements OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  getPieData(){
+    this.pie_data = [];
+    for (let i = 0; i < this.admPopupSections.length; i++){
+      this.pie_data.push([{'name': 'functional', 'value': this.admPopupSections[i].func_waterpoints},
+      {'name': 'non_functional', 'value': this.admPopupSections[i].non_func_waterpoints}]);
+    }
+  }
+
+ 
+
+
+  ngOnChanges(): void {
+    console.log(this.admPopupSections);
     this.getData();
+    this.getPieData();
   }
 
 }

@@ -33,11 +33,6 @@ export class StalenessPopupBarComponent implements OnInit  {
     return data;
   }
 
-  tickFormat(num: any){
-    // return x === 20 ? `${x}+` : `${x}`
-    return num;
-  }
-
 
   constructor() { }
 

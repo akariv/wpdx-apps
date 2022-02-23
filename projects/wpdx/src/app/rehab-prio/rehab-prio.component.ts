@@ -386,6 +386,7 @@ export class RehabPrioComponent implements OnInit {
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
+        this.admPopupSections = this.admPopupSections.slice();
       });
 
       this._popupProperties = value;
