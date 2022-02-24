@@ -11,24 +11,9 @@ export class PieComponent implements OnChanges, AfterViewInit {
   @ViewChild('pie') svgElement: ElementRef;
   @Input() data: any;
 
-
-  // data = [
-  //   {
-  //     name: "text1",
-  //     value: "95"
-  //   },
-  //   {
-  //     name: "text1",
-  //     value: "4"
-  //   },
-  //   {
-  //     name: "text3",
-  //     value: "1"
-  //   }
-  // ];
-
   chartId;
   svg;
+  mySvg;
   margin = 25;
   width = 650;
   height = 350;
@@ -38,16 +23,17 @@ export class PieComponent implements OnChanges, AfterViewInit {
 
   createSvg(): void {
     this.svgElement.nativeElement.innerHTML = '';
-    this.svg = d3
-      .select("figure.pie")
-      .append("svg")
-      .attr("viewBox", `0 0 ${this.width} ${this.height}`)
+    this.mySvg = d3
+      .select(this.svgElement.nativeElement)
+      .append('svg')
+      .attr('viewBox', `0 0 ${this.width} ${this.height}`)
       // .attr('width', this.width)
       //.attr('height', this.height)
-      .append("g")
+    this.svg = this.mySvg
+      .append('g')
       .attr(
-        "transform",
-        "translate(" + this.width / 4 + "," + this.height / 2 + ")"
+        'transform',
+        'translate(' + this.width / 4 + ',' + this.height / 2 + ')'
       );
   }
 
@@ -55,15 +41,7 @@ export class PieComponent implements OnChanges, AfterViewInit {
     this.colors = d3
       .scaleOrdinal()
       .domain(data.map(d => d.value.toString()))
-      .range([
-        "#6773f1",
-        "#32325d",
-        "#6162b5",
-        "#6586f6",
-        "#8b6ced",
-        "#1b1b1b",
-        "#212121"
-      ]);
+      .range(d3.schemePastel1);
   }
 
   drawChart(data=this.data){
@@ -82,20 +60,39 @@ export class PieComponent implements OnChanges, AfterViewInit {
       .outerRadius(this.radius * 0.8);
 
       this.svg
-      .selectAll("pieces")
+      .selectAll('pieces')
       .data(data_ready)
       .enter()
-      .append("path")
+      .append('path')
       .attr(
-        "d",
+        'd',
         d3
           .arc()
           .innerRadius(0)
           .outerRadius(this.radius)
       )
-      .attr("fill", (d, i) => (d.data.color ? d.data.color : this.colors(i)))
-      .attr("stroke", "#121926")
-      .style("stroke-width", "1px");
+      .attr('fill', (d, i) => (d.data.color ? d.data.color : this.colors(i)))
+      .attr('stroke', '#121926')
+      .style('stroke-width', '1px');
+
+    const legendG = this.mySvg.selectAll(".legend") // note appending it to mySvg and not svg to make positioning easier
+      .data(pie(data))
+      .enter().append("g")
+      .attr("transform", (d,i) =>
+        "translate(" + this.width/2 + "," + (i *40) + ")")
+      .attr("class", "legend");
+
+    legendG.append("rect") // make a matching color rect
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("fill", (d, i) => this.colors(i));
+
+    legendG.append("text") // add the text
+      .text((d) => d.value + "  " + d.data.name)
+      .style("font-size", 20)
+      .attr("y", 20)
+      .attr("x", 22);
+
   }
 
   constructor() { }
