@@ -48,8 +48,8 @@
                 </div>
             </ng-container>
             
-            <ng-container *ngIf='data[admPopupSections.length-1-selectedSection]'>
-                <ng-container *ngIf='data[admPopupSections.length-1-selectedSection].length'>
+            <ng-container *ngIf='install_year_data[admPopupSections.length-1-selectedSection]'>
+                <ng-container *ngIf='install_year_data[admPopupSections.length-1-selectedSection].length'>
                     <mat-expansion-panel hideToggle>
                         <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -60,15 +60,15 @@
                         </mat-panel-description>
                         </mat-expansion-panel-header>
                         
-                        <app-bar [data]='data[admPopupSections.length-1-selectedSection]'
-                        xAxisTitle='Install Year' yAxisTitle='# Water Points' [min] = 'data[admPopupSections.length-1-selectedSection][0]' [max] = 'data[admPopupSections.length-1-selectedSection][data[admPopupSections.length-1-selectedSection].length-1]'
+                        <app-bar [data]='install_year_data[admPopupSections.length-1-selectedSection]'
+                        xAxisTitle='Install Year' yAxisTitle='# Water Points' [min] = 'install_year_data[admPopupSections.length-1-selectedSection][0]' [max] = 'install_year_data[admPopupSections.length-1-selectedSection][install_year_data[admPopupSections.length-1-selectedSection].length-1]'
                         color='#ffd580'></app-bar>
                         
                     </mat-expansion-panel>
                 </ng-container>
             </ng-container>
-            <ng-container *ngIf='pie_data[selectedSection]'>
-                <ng-container *ngIf='pie_data[selectedSection][0].value > 0 || pie_data[selectedSection][1].value > 0'>
+            <ng-container *ngIf='state_data[selectedSection]'>
+                <ng-container *ngIf='state_data[selectedSection][0].value > 0 || state_data[selectedSection][1].value > 0'>
                     <mat-expansion-panel hideToggle>
                         <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -79,11 +79,59 @@
                         </mat-panel-description>
                         </mat-expansion-panel-header>
                         
-                        <app-pie [data]='pie_data[selectedSection]'></app-pie>
+                        <app-pie [data]='state_data[selectedSection]'></app-pie>
                         
                     </mat-expansion-panel>
                 </ng-container>
             </ng-container>
+            <ng-container *ngIf='source_data[admPopupSections.length-1-selectedSection]'>
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Waterpoint source Analysis
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Pie chart of waterpoint source
+                    </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    
+                    <app-pie [data]='source_data[admPopupSections.length-1-selectedSection]'></app-pie>
+                    
+                </mat-expansion-panel>
+            </ng-container>
+
+            <ng-container *ngIf='tech_data[admPopupSections.length-1-selectedSection]'>
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Waterpoint tech Analysis
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Pie chart of waterpoint tech
+                    </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    
+                    <app-pie [data]='tech_data[admPopupSections.length-1-selectedSection]'></app-pie>
+                    
+                </mat-expansion-panel>
+            </ng-container>
+            <ng-container *ngIf='management_data[admPopupSections.length-1-selectedSection]'>
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Waterpoint management Analysis
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Pie chart of waterpoint management
+                    </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    
+                    <app-pie [data]='management_data[admPopupSections.length-1-selectedSection]'></app-pie>
+                    
+                </mat-expansion-panel>
+            </ng-container>
+            
+            
             
            
         </ng-container>

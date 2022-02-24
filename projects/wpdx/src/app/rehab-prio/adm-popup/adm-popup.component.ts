@@ -15,8 +15,11 @@ export class AdmPopupComponent implements OnChanges {
 
   @Input() popupProperties: any;
   @Input() admPopupSections: any;
-  data = [];
-  pie_data = [];
+  install_year_data = [];
+  state_data = [];
+  source_data = [];
+  tech_data = [];
+  management_data = [];
   selectedSection = 0;
 
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
@@ -31,7 +34,8 @@ export class AdmPopupComponent implements OnChanges {
   fq(s) {
     return s.split(`'`).join(`''`);
   }
-  getQuery(value){
+
+  getInstallYearQuery(value){
 
     const baseQuery = `select
         install_year
@@ -65,13 +69,83 @@ export class AdmPopupComponent implements OnChanges {
       }
       
     return queries;                                                                                                                               
+  }
+
+  getDataQuery(value, attribute){
+    const baseQuery = `select ${attribute}, count(${attribute}) from 
+    wpdx_plus`
+    const queries: string[] = [];
+    if (value.NAME_0) {
+      queries.push(`${baseQuery}
+        where clean_country_name='${this.fq(value.NAME_0)}' group by ${attribute}`);
+    }
+    if (value.NAME_1) {
+      queries.push(`${baseQuery}
+        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' group by ${attribute}`);
+    }
+    if (value.NAME_2) {
+      queries.push(`${baseQuery}
+        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
+              clean_adm2='${this.fq(value.NAME_2)}' group by ${attribute}`);
+    }
+    if (value.NAME_3) {
+      queries.push(`${baseQuery}
+        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
+              clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' group by ${attribute}`);
+    }
+
+    if (value.NAME_4) {
+      queries.push(`${baseQuery}
+        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
+              clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' and clean_adm4='${this.fq(value.NAME_4)}' group by ${attribute}`);
+    }
+    return queries;
 
   }
 
-  getData(){
+  getManagementData(){
+    forkJoin(this.getDataQuery(this.popupProperties, 'management_clean').map(q => this.db.query(q))).subscribe(results => {
+      this.management_data = [];
+      for (let i = 0; i < results.length; i++){
+        const x = [];
+        for (let j = 0; j < results[i].rows.length; j++){
+          x.push({'name': results[i].rows[j].management_clean, 'value': results[i].rows[j].count});
+        }
+        this.management_data.push(x);
+      }
+    })
+  }
+
+  getTechData(){
+    forkJoin(this.getDataQuery(this.popupProperties, 'water_tech_clean').map(q => this.db.query(q))).subscribe(results => {
+      this.tech_data = [];
+      for (let i = 0; i < results.length; i++){
+        const x = [];
+        for (let j = 0; j < results[i].rows.length; j++){
+          x.push({'name': results[i].rows[j].water_tech_clean, 'value': results[i].rows[j].count});
+        }
+        this.tech_data.push(x);
+      }
+    })
+  }
+
+  getSourceData(){
+    forkJoin(this.getDataQuery(this.popupProperties, 'water_source_clean').map(q => this.db.query(q))).subscribe(results => {
+      this.source_data = [];
+      for (let i = 0; i < results.length; i++){
+        const x = [];
+        for (let j = 0; j < results[i].rows.length; j++){
+          x.push({'name': results[i].rows[j].water_source_clean, 'value': results[i].rows[j].count});
+        }
+        this.source_data.push(x);
+      }
+    })
+  }
+
+  getInstallYearData(){
     
-    forkJoin(this.getQuery(this.popupProperties).map(q => this.db.query(q))).subscribe(results => {
-      this.data = [];
+    forkJoin(this.getInstallYearQuery(this.popupProperties).map(q => this.db.query(q))).subscribe(results => {
+      this.install_year_data = [];
       for (let i = 0; i < results.length; i++){
         
         const x = [];
@@ -80,15 +154,15 @@ export class AdmPopupComponent implements OnChanges {
             x.push(+results[i].rows[j].install_year);
           }
         }
-        this.data.push(x); 
+        this.install_year_data.push(x); 
       }
     });
   }
 
-  getPieData(){
-    this.pie_data = [];
+  getStateData(){
+    this.state_data = [];
     for (let i = 0; i < this.admPopupSections.length; i++){
-      this.pie_data.push([{'name': 'functional', 'value': this.admPopupSections[i].func_waterpoints},
+      this.state_data.push([{'name': 'functional', 'value': this.admPopupSections[i].func_waterpoints},
       {'name': 'non_functional', 'value': this.admPopupSections[i].non_func_waterpoints}]);
     }
   }
@@ -97,9 +171,11 @@ export class AdmPopupComponent implements OnChanges {
 
 
   ngOnChanges(): void {
-    console.log(this.admPopupSections);
-    this.getData();
-    this.getPieData();
+    this.getInstallYearData();
+    this.getStateData();
+    this.getSourceData();
+    this.getTechData();
+    this.getManagementData();
   }
 
 }
