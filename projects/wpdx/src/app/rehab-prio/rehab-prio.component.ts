@@ -456,6 +456,9 @@ export class RehabPrioComponent implements OnInit {
         const props: any = feature.properties;
         const id = props.NAME_0 + props.NAME_1 + props.NAME_2 + props.NAME_3 + props.NAME_4;
 
+        if (props.pct_urban > 0.75) {
+          continue;
+        }
         let marker = this.markers[id];
         if (!marker) {
           const el = this.createDonutChart(props);
@@ -488,8 +491,8 @@ export class RehabPrioComponent implements OnInit {
 
   createDonutChart(props: any): HTMLElement {
     const offsets = [];
-    const counts = ['pct_urban', 'pct_served', 'pct_unserved', 'pct_uncharted'].map((k) => props[k] || 0);
-    const clusterColors = ['#333333', '#185caf', '#8a0000', '#828282'];
+    const counts = ['pct_served', 'pct_unserved', 'pct_uncharted'].map((k) => props[k] || 0);
+    const clusterColors = ['#185caf', '#8a0000', '#828282'];
 
     let total = 0;
     for (const count of counts) {
