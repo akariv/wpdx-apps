@@ -61,6 +61,7 @@ export class RehabPrioComponent implements OnInit {
       }),
       map(([resultsRehabPrio, resultsNC]: any) => [resultsRehabPrio.rows, resultsNC.rows])
     ).subscribe(([resultsRehabPrio, resultsNC]) => {
+      this.rpState.mode = this.rpState.mode;
       if (this.rpState.mode === 'rehab-prio'){
         this.rpState.top10 = resultsRehabPrio;
         if (this.rpState.map) {
