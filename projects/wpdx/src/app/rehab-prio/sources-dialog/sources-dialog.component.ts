@@ -28,7 +28,7 @@ export class SourcesDialogComponent implements OnInit {
   }
 
   query() {
-    const where = this.queryWhere;
+    const where = this.view === 'current' ? this.queryWhere : 'true';
     const query = `
       select data_lnk, dataset_title as title,
              max(created_timestamp) as created,

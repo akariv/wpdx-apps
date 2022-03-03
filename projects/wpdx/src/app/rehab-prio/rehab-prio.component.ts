@@ -632,9 +632,10 @@ export class RehabPrioComponent implements OnInit {
         this.rpState.map.setFilter(layer, fullFilt);
       }
       this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
+      this.rpState.map.setLayoutProperty('urban-areas', 'visibility', props.show_urban ? 'none' : 'visible');
     } else {
       for (const layer of [
-        'all-waterpoints'
+        'all-waterpoints', 'urban-areas'
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
       }
