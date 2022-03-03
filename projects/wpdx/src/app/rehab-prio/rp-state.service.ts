@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StateService } from '../common-components/state.service';
 
 import * as mapboxgl from 'mapbox-gl';
+import { Title } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class RpStateService {
     {value: 'pressure desc', display: 'Sort by Pressure'},
   ];
 
-  constructor(public state: StateService) {
+  constructor(public state: StateService, private title: Title) {
     this.state.defaultValue('all_waterpoints', true);
     this.state.defaultValue('any_waterpoints', true);
     this.state.defaultValue('show_population_density', true);
@@ -55,6 +56,17 @@ export class RpStateService {
   }
 
   set mode(value) {
+    if (value === 'rehab-prio') {
+      this.title.setTitle('WPdx Decision Support Tools - Rehab Priority Analysis');
+    } else if (value === 'adman') {
+      this.title.setTitle('WPdx Decision Support Tools - Administrative Region Analysis');
+    } else if (value === 'staleness') {
+      this.title.setTitle('WPdx Decision Support Tools - Data Staleness Analysis');
+    } else if (value === 'new_constructions') {
+      this.title.setTitle('WPdx Decision Support Tools - New Construction Analysis');
+    } else {
+      this.title.setTitle('WPdx Decision Support Tools');
+    }
     this.state.setProp('mode', value);
   }
 
