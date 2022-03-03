@@ -109,8 +109,10 @@ export class AdmPopupComponent implements OnChanges {
       for (let i = 0; i < results.length; i++){
         const x = [];
         for (let j = 0; j < results[i].rows.length; j++){
-          x.push({'name': results[i].rows[j].management_clean, 'value': results[i].rows[j].count});
-        }
+          if (results[i].rows[j].count > 0){
+            x.push({'name': results[i].rows[j].management_clean, 'value': results[i].rows[j].count});
+          }
+      }
         this.management_data.push(x);
       }
     })
@@ -122,7 +124,9 @@ export class AdmPopupComponent implements OnChanges {
       for (let i = 0; i < results.length; i++){
         const x = [];
         for (let j = 0; j < results[i].rows.length; j++){
-          x.push({'name': results[i].rows[j].water_tech_clean, 'value': results[i].rows[j].count});
+          if (results[i].rows[j].count > 0){
+            x.push({'name': results[i].rows[j].water_tech_clean, 'value': results[i].rows[j].count});
+          }
         }
         this.tech_data.push(x);
       }
@@ -135,7 +139,9 @@ export class AdmPopupComponent implements OnChanges {
       for (let i = 0; i < results.length; i++){
         const x = [];
         for (let j = 0; j < results[i].rows.length; j++){
-          x.push({'name': results[i].rows[j].water_source_clean, 'value': results[i].rows[j].count});
+          if (results[i].rows[j].count > 0){
+            x.push({'name': results[i].rows[j].water_source_clean, 'value': results[i].rows[j].count});
+          }
         }
         this.source_data.push(x);
       }
@@ -162,8 +168,14 @@ export class AdmPopupComponent implements OnChanges {
   getStateData(){
     this.state_data = [];
     for (let i = 0; i < this.admPopupSections.length; i++){
-      this.state_data.push([{'name': 'functional', 'value': this.admPopupSections[i].func_waterpoints},
-      {'name': 'non_functional', 'value': this.admPopupSections[i].non_func_waterpoints}]);
+      const x = []
+      if (this.admPopupSections[i].func_waterpoints > 0){
+        x.push({'name': 'Functional', 'value': this.admPopupSections[i].func_waterpoints})
+      }
+      if (this.admPopupSections[i].non_func_waterpoints > 0){
+        x.push({'name': 'Non Functional', 'value': this.admPopupSections[i].non_func_waterpoints})
+      }
+      this.state_data.push(x);
     }
   }
 
