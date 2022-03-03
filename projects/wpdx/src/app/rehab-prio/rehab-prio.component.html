@@ -218,13 +218,13 @@
                     <ng-container *ngIf='section.rural_pop'>
                         <div class='indent'>
                             <p>
-                                <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.rural_pop)*100).toFixed(1)+"%"}})
+                                <mat-icon>people</mat-icon><label>Rural Pop with Basic Access:</label>&nbsp;{{(section.served_pop) | number:'1.0-0'}} ppl ({{((section.served_pop/section.rural_pop)*100).toFixed(1)+"%"}})
                             </p>
                             <p>
-                                <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.rural_pop)*100).toFixed(1)+"%"}})
+                                <mat-icon>people</mat-icon><label>Rural Pop without Basic Access:</label>&nbsp;{{(section.unserved_pop) | number:'1.0-0'}} ppl ({{((section.unserved_pop/section.rural_pop)*100).toFixed(1)+"%"}})
                             </p>
                             <p>
-                                <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.rural_pop)*100).toFixed(1)+"%"}})
+                                <mat-icon>people</mat-icon><label>Uncharted Rural Pop:</label>&nbsp;{{section.uncharted_pop | number:'1.0-0'}} ppl ({{((section.uncharted_pop/section.rural_pop)*100).toFixed(1)+"%"}})
                             </p>
                         </div>
                     </ng-container>
@@ -290,9 +290,9 @@
                 <div class='with-title'>
                     <span>Parameter of Interest:</span>
                     <mat-select [(value)]='rpState.adman_view'>
-                        <mat-option value="served"><span class='hl-served'>Served</span> & <span class='hl-urban'>Urban</span> Regions</mat-option>
-                        <mat-option value="unserved"><span class='hl-unserved'>Unserved</span> Regions</mat-option>
-                        <mat-option value="uncharted"><span class='hl-uncharted'>Uncharted</span> Regions</mat-option>
+                        <mat-option value="served"><span class='hl-served'>Rural Pop with Basic Access</span></mat-option>
+                        <mat-option value="unserved"><span class='hl-unserved'>Rural Pop without Basic Access</span> Regions</mat-option>
+                        <mat-option value="uncharted"><span class='hl-uncharted'>Uncharted Rural Pop </span></mat-option>
                     </mat-select>    
                 </div>
                 <mat-slide-toggle *ngIf='rpState.adman_view !== ""' [(ngModel)]='rpState.show_adman_pies'>
