@@ -132,7 +132,7 @@
             </button>
             <button mat-menu-item (click)='downloadADMData()'>
                 <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
-                <span>Adm. Region Analysis</span>
+                <span>Adm. Region & Data Quality Analysis</span>
             </button>
             <button mat-menu-item (click)='downloadNCData()'>
                 <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
@@ -233,10 +233,19 @@
             <ng-container *ngIf='rpState.mode === "staleness"'> 
                 <p>
                     <mat-icon>hourglass_empty</mat-icon><label>Average Report Age:</label>&nbsp;
-                    <ng-container *ngIf='popupProperties.average_age !== 0'>
-                        {{((popupProperties.average_age)/365).toFixed(1)}} years
+                    <ng-container *ngIf='popupProperties.average_report_age_years !== 0'>
+                        {{popupProperties.average_report_age_years.toFixed(1)}} years
                     </ng-container>
-                    <ng-container *ngIf='popupProperties.average_age === 0'>
+                    <ng-container *ngIf='popupProperties.average_report_age_years === 0'>
+                        No Data
+                    </ng-container>
+                </p>
+                <p>
+                    <mat-icon>hourglass_empty</mat-icon><label>Rural Pop. Data Coverage:</label>&nbsp;
+                    <ng-container *ngIf='popupProperties.rural_pop > 0'>
+                        {{(100 - 100 * (popupProperties.uncharted_pop / popupProperties.rural_pop)).toFixed(1)}}%
+                    </ng-container>
+                    <ng-container *ngIf='popupProperties.rural_pop === 0'>
                         No Data
                     </ng-container>
                 </p>
@@ -256,7 +265,7 @@
                     <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
                     <ng-container *ngIf='preview'>
                         <mat-option value="new_constructions">New Construction Priority Analysis</mat-option>  
-                        <mat-option value="staleness">Data Staleness Analysis</mat-option>  
+                        <mat-option value="staleness">Data Quality Score</mat-option>  
                     </ng-container>
                 </mat-select>
             </div>
@@ -321,12 +330,12 @@
                 </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'>
-                <strong>Avg. Report Date Age</strong>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>New</span></div>
+                <strong>Data Quality</strong>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>High</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Stale</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Low</span></div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <strong>Map Symbols:</strong>
@@ -362,7 +371,7 @@
                 <div class='legend-item'>
                     <img src='assets/img/selected.png'>
                     <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Unknown Status Water Point</span></span>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
                     </div>
                 </div>

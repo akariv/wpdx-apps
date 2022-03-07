@@ -22,8 +22,8 @@ export class RpStateService {
   constructor(public state: StateService, private title: Title) {
     this.state.defaultValue('all_waterpoints', true);
     this.state.defaultValue('any_waterpoints', true);
-    this.state.defaultValue('show_population_density', true);
-    this.state.defaultValue('show_landcover', true);
+    this.state.defaultValue('show_population_density', false);
+    this.state.defaultValue('show_landcover', false);
     this.state.defaultValue('show_point_counts', true);
     this.state.defaultValue('adman_view', 'unserved');
     this.state.defaultValue('show_adman_pies', true);
@@ -203,11 +203,6 @@ export class RpStateService {
 
   set show_landcover(value) {
     this.state.setProp('show_landcover', value);
-    this.map.getStyle().layers.forEach((layer) => {
-      if (layer.id.indexOf('road-') === 0 || layer.id.indexOf('building') === 0) {
-        this.map.setLayoutProperty(layer.id, 'visibility', value ? 'visible' : 'none');
-      }
-    });
   }
 
   get show_landcover() {

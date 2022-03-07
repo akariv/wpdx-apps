@@ -129,12 +129,13 @@ export class RehabPrioComponent implements OnInit {
       'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4',
       'total_pop', 'urban_pop', 'rural_pop', 'overcap_pop',
       'rural_pop_with_basic_access',
-      'pct_rural_pop_without_basic_access',
-      'pct_rural_pop_uncharted',
+      'rural_pop_without_basic_access',
+      'rural_pop_uncharted',
       'pct_rural_pop_with_basic_access',
       'pct_rural_pop_without_basic_access',
       'pct_rural_pop_uncharted',
       'non_func_waterpoints', 'func_waterpoints', 'unknown_func_waterpoints',
+      'staleness', 'staleness_uncharted', 'average_report_age_years'
     ];
     return ret.map((f) => {
       if (f.indexOf(' as ') >= 0) {
@@ -327,25 +328,26 @@ export class RehabPrioComponent implements OnInit {
         sum(func_waterpoints) as func_waterpoints,
         sum(non_func_waterpoints) as non_func_waterpoints
         from adm_analysis
+        where adm_level='best' and
       `;
       const queries: string[] = [];
       if (value.NAME_1) {
         queries.push(`${baseQuery}
-          where "NAME_0"='${this.fq(value.NAME_0)}'`);
+          "NAME_0"='${this.fq(value.NAME_0)}'`);
       }
       if (value.NAME_2) {
         queries.push(`${baseQuery}
-          where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
+          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
       }
       if (value.NAME_3) {
         queries.push(`${baseQuery}
-          where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
-                "NAME_2"='${this.fq(value.NAME_2)}'`);
+          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+          "NAME_2"='${this.fq(value.NAME_2)}'`);
       }
       if (value.NAME_4) {
         queries.push(`${baseQuery}
-          where "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
-                "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
+          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+          "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
       }
       //console.log(queries);
       this.admPopupSections = [value];
@@ -650,7 +652,8 @@ export class RehabPrioComponent implements OnInit {
       // this.colorRange = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f']; // Purples
       this.colorRange = ['#f7f7f7', '#cccccc', '#969696', '#636363', '#252525']; // Grays
     } else if (admanView === 'staleness') {
-      prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
+      prop = ['-', ['literal', 1], ['/', ['get', 'staleness_uncharted'], ['literal', 100]]];
+      // prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else {
@@ -728,6 +731,12 @@ export class RehabPrioComponent implements OnInit {
       }
     }
 
+    // Landcover
+    this.rpState.map.getStyle().layers.forEach((layer) => {
+      if (layer.id.indexOf('road-') === 0 || layer.id.indexOf('building') === 0) {
+        this.rpState.map.setLayoutProperty(layer.id, 'visibility', this.rpState.show_landcover ? 'visible' : 'none');
+      }
+    });
   }
 
   gotoPoint(point) {
