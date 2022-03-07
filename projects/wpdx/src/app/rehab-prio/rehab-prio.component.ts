@@ -128,26 +128,13 @@ export class RehabPrioComponent implements OnInit {
     const ret = [
       'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4',
       'total_pop', 'urban_pop', 'rural_pop', 'overcap_pop',
-      query ? 
-      	'"served_pop" as "rural_served_pop"'
-        : 'rural_served_pop',
-        query ?
-        '"unserved_pop" as "rural_unserved_pop"'
-        : 'rural_unserved_pop',
-      query ?
-        '"uncharted_pop" as "rural_uncharted_pop"'
-        : 'rural_uncharted_pop',
-      'pct_urban',
-      query ?
-        '"pct_served" as "pct_rural_served"'
-        : 'pct_rural_served',
-      query ?
-        '"pct_unserved" as "pct_rural_unserved"'
-        : 'pct_rural_unserved',
-      query ?
-        '"pct_uncharted" as "pct_rural_uncharted"'
-        : 'pct_rural_uncharted',
-      'non_func_waterpoints', 'func_waterpoints'
+      'rural_pop_with_basic_access',
+      'pct_rural_pop_without_basic_access',
+      'pct_rural_pop_uncharted',
+      'pct_rural_pop_with_basic_access',
+      'pct_rural_pop_without_basic_access',
+      'pct_rural_pop_uncharted',
+      'non_func_waterpoints', 'func_waterpoints', 'unknown_func_waterpoints',
     ];
     return ret.map((f) => {
       if (f.indexOf(' as ') >= 0) {
