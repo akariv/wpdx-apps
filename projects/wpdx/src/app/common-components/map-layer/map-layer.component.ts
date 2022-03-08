@@ -63,6 +63,8 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
           this._map = new mapboxgl.Map({
             container: mapEl,
             style: this.style,
+            center: [0, 0],
+            zoom: 2
           });
           this._map.on('style.load', () => {
             for (const layer of this.interactionLayers) {
