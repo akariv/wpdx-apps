@@ -10,14 +10,6 @@ export class StalenessPopupBarComponent implements OnInit  {
 
   @Input() popupProperties: any;
 
-  @ViewChild('bar') svgElement: ElementRef;
-
-  svg;
-  
-  margin = {top: 20, right: 10, bottom: 70, left: 40};
-  width = 270 - this.margin.left - this.margin.right;
-  height = 360 - this.margin.top - this.margin.bottom;
-
   getData(popup: any){
     const x = [
       {name: 'Under 5', count: popup.age_under_5},
