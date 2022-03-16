@@ -71,80 +71,53 @@ export class AdmPopupComponent implements OnChanges {
     return queries;                                                                                                                               
   }
 
+
+  addQuery(value, baseQuery, count, queries, attribute){
+    if (value){
+      baseQuery = `${baseQuery} and clean_adm${count}='${this.fq(value)}'`;
+      queries.push(`${baseQuery} group by ${attribute}`);
+    }
+    return baseQuery
+    
+  }
+
   getDataQuery(value, attribute){
-    const baseQuery = `select ${attribute}, count(${attribute}) from 
+    const values = [value.NAME_1, value.NAME_2, value.NAME_3, value.NAME_4];
+    let baseQuery = `select ${attribute}, count(${attribute}) from
     wpdx_plus`
     const queries: string[] = [];
-    if (value.NAME_0) {
-      queries.push(`${baseQuery}
-        where clean_country_name='${this.fq(value.NAME_0)}' group by ${attribute}`);
+    if (value.NAME_0){
+      baseQuery = `${baseQuery} where clean_country_name='${this.fq(value.NAME_0)}'`;
+      queries.push(`${baseQuery} group by ${attribute}`);
     }
-    if (value.NAME_1) {
-      queries.push(`${baseQuery}
-        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' group by ${attribute}`);
-    }
-    if (value.NAME_2) {
-      queries.push(`${baseQuery}
-        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
-              clean_adm2='${this.fq(value.NAME_2)}' group by ${attribute}`);
-    }
-    if (value.NAME_3) {
-      queries.push(`${baseQuery}
-        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
-              clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' group by ${attribute}`);
-    }
-
-    if (value.NAME_4) {
-      queries.push(`${baseQuery}
-        where clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
-              clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' and clean_adm4='${this.fq(value.NAME_4)}' group by ${attribute}`);
+    for (let i = 0; i < values.length; i++){
+      baseQuery = this.addQuery(values[i], baseQuery, i+1, queries, attribute)
     }
     return queries;
 
   }
 
-  getManagementData(){
-    forkJoin(this.getDataQuery(this.popupProperties, 'management_clean').map(q => this.db.query(q))).subscribe(results => {
-      this.management_data = [];
+  getData(column_name){
+    forkJoin(this.getDataQuery(this.popupProperties, column_name).map(q => this.db.query(q))).subscribe(results => {
+      const data_array = [];
       for (let i = 0; i < results.length; i++){
         const x = [];
-        for (let j = 0; j < results[i].rows.length; j++){
+        for (let j = 0; j < results[i].rows.length; j ++){
           if (results[i].rows[j].count > 0){
-            x.push({'name': results[i].rows[j].management_clean, 'value': results[i].rows[j].count});
-          }
-      }
-        this.management_data.push(x);
-      }
-    })
-  }
-
-  getTechData(){
-    forkJoin(this.getDataQuery(this.popupProperties, 'water_tech_clean').map(q => this.db.query(q))).subscribe(results => {
-      this.tech_data = [];
-      for (let i = 0; i < results.length; i++){
-        const x = [];
-        for (let j = 0; j < results[i].rows.length; j++){
-          if (results[i].rows[j].count > 0){
-            x.push({'name': results[i].rows[j].water_tech_clean, 'value': results[i].rows[j].count});
+            x.push({'name': Object.values(results[i].rows[j])[1], 'value': results[i].rows[j].count});
+            
           }
         }
-        this.tech_data.push(x);
+        data_array.push(x);
       }
-    })
-  }
+      if (column_name === 'water_tech_clean'){
+        this.tech_data = data_array;
+      } else if (column_name === 'water_source_clean'){
+        this.source_data = data_array;
+      } else if (column_name === 'management_clean') {
+        this.management_data = data_array;
+      }
 
-  getSourceData(){
-    forkJoin(this.getDataQuery(this.popupProperties, 'water_source_clean').map(q => this.db.query(q))).subscribe(results => {
-      this.source_data = [];
-      for (let i = 0; i < results.length; i++){
-        const x = [];
-        for (let j = 0; j < results[i].rows.length; j++){
-          if (results[i].rows[j].count > 0){
-            x.push({'name': results[i].rows[j].water_source_clean, 'value': results[i].rows[j].count});
-          }
-        }
-        this.source_data.push(x);
-      }
     })
   }
 
@@ -185,9 +158,11 @@ export class AdmPopupComponent implements OnChanges {
   ngOnChanges(): void {
     this.getInstallYearData();
     this.getStateData();
-    this.getSourceData();
-    this.getTechData();
-    this.getManagementData();
+    this.getData('water_source_clean');
+    this.getData('water_tech_clean');
+    this.getData('management_clean');
+    
+
   }
 
 }
