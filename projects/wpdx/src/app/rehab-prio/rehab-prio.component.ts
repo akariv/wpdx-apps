@@ -279,7 +279,7 @@ export class RehabPrioComponent implements OnInit {
     if (!this.rpState.all_waterpoints) {
       terms.push('rehab_priority > 0');
     }
-    if (!this.rpState.show_urban) {
+    if (!this.rpState.show_urban_waterpoints) {
       terms.push('not is_urban');
     }
     if (this.rpState.source_filter) {
@@ -556,7 +556,7 @@ export class RehabPrioComponent implements OnInit {
         ]);
       }
     }
-    if (!props.show_urban) {
+    if (!props.show_urban_waterpoints) {
       filt.push(
         ['!', ['get', 'is_urban']]
       );
@@ -625,7 +625,7 @@ export class RehabPrioComponent implements OnInit {
         this.rpState.map.setFilter(layer, fullFilt);
       }
       this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
-      this.rpState.map.setLayoutProperty('urban-areas', 'visibility', props.show_urban ? 'none' : 'visible');
+      this.rpState.map.setLayoutProperty('urban-areas', 'visibility', props.show_urban ? 'visible' : 'none');
     } else {
       for (const layer of [
         'all-waterpoints', 'urban-areas'

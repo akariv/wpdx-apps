@@ -104,6 +104,14 @@ export class RpStateService {
     return this.state.getProp('show_urban');
   }
 
+  set show_urban_waterpoints(value){
+    this.state.setProp('show_urban_waterpoints', value);
+  }
+
+  get show_urban_waterpoints(){
+    return this.state.getProp('show_urban_waterpoints');
+  }
+
   set sort_by(value) {
     this.top10 = [];
     this.state.setProp('sort_by', value);
