@@ -83,7 +83,7 @@ export class AdmPopupComponent implements OnChanges {
 
   getDataQuery(value, attribute){
     const values = [value.NAME_1, value.NAME_2, value.NAME_3, value.NAME_4];
-    let baseQuery = `select ${attribute}, count(${attribute}) from
+    let baseQuery = `select ${attribute} as name, count(${attribute}) from
     wpdx_plus`
     const queries: string[] = [];
     if (value.NAME_0){
@@ -100,11 +100,11 @@ export class AdmPopupComponent implements OnChanges {
   getData(column_name){
     forkJoin(this.getDataQuery(this.popupProperties, column_name).map(q => this.db.query(q))).subscribe(results => {
       const data_array = [];
-      for (let i = 0; i < results.length; i++){
+      for (const result of results){
         const x = [];
-        for (let j = 0; j < results[i].rows.length; j ++){
-          if (results[i].rows[j].count > 0){
-            x.push({'name': Object.values(results[i].rows[j])[1], 'value': results[i].rows[j].count});
+        for (let j = 0; j < result.rows.length; j ++){
+          if (result.rows[j].count > 0){
+            x.push({'name': result.rows[j].name, 'value': result.rows[j].count});
             
           }
         }
