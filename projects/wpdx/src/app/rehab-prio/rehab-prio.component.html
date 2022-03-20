@@ -252,12 +252,14 @@
                 <mat-slide-toggle [(ngModel)]='rpState.show_urban'>Urban Areas</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_adm_borders'>Show Adm Borders</mat-slide-toggle>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "rehab-prio" || rpState.mode === "new_constructions"'>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_adm_borders'>Show Adm Borders</mat-slide-toggle>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>

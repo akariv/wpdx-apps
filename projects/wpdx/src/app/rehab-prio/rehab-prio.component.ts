@@ -755,6 +755,83 @@ export class RehabPrioComponent implements OnInit {
         this.rpState.map.setLayoutProperty(layer.id, 'visibility', this.rpState.show_landcover ? 'visible' : 'none');
       }
     });
+
+    if (this.rpState.show_adm_borders){
+      
+    //   this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', 
+    //   [
+    //   "case",
+    //   [
+    //     "match",
+    //     ["get", "adm_level"],
+    //     [
+    //       "best",
+    //       "adm3",
+    //       "adm2",
+    //       "adm1"
+    //     ],
+    //     false,
+    //     true
+    //   ],
+    //   "hsl(0, 93%, 59%)",
+    //   [
+    //     "match",
+    //     ["get", "adm_level"],
+    //     [
+    //       "adm3",
+    //       "adm2",
+    //       "adm0",
+    //       "best"
+    //     ],
+    //     false,
+    //     true
+    //   ],
+    //   "hsl(218, 91%, 54%)",
+    //   [
+    //     "match",
+    //     ["get", "adm_level"],
+    //     [
+    //       "adm0",
+    //       "adm1",
+    //       "adm3",
+    //       "best"
+    //     ],
+    //     false,
+    //     true
+    //   ],
+    //   "hsl(124, 71%, 65%)",
+    //   [
+    //     "match",
+    //     ["get", "adm_level"],
+    //     [
+    //       "adm0",
+    //       "adm1",
+    //       "adm2",
+    //       "best"
+    //     ],
+    //     false,
+    //     true
+    //   ],
+    //   "hsl(52, 92%, 56%)",
+    //   "hsla(0, 0%, 0%, 0)"
+    // ]);
+      
+      // this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color',
+      // [
+      //   "match",
+      //   ["get", "adm_level"],
+      //   ["adm0"],
+      //   "#00000",
+      // ])
+
+      
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
+      this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'visible');
+
+      
+    }
+
+    
   }
 
   gotoPoint(point) {
