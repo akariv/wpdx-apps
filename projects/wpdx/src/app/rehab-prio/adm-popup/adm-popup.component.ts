@@ -4,7 +4,7 @@ import { StateService } from '../../common-components/state.service';
 import { DbService } from '../../db.service';
 import { RpStateService } from '../rp-state.service';
 
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-adm-popup',
@@ -102,9 +102,9 @@ export class AdmPopupComponent implements OnChanges {
       const data_array = [];
       for (const result of results){
         const x = [];
-        for (let j = 0; j < result.rows.length; j ++){
-          if (result.rows[j].count > 0){
-            x.push({'name': result.rows[j].name, 'value': result.rows[j].count});
+        for (const val of result.rows){
+          if (val.count > 0){
+            x.push({'name': val.name, 'value':val.count});
             
           }
         }
