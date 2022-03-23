@@ -5,6 +5,7 @@ import { DbService } from '../../db.service';
 import { RpStateService } from '../rp-state.service';
 
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-adm-popup',
@@ -68,7 +69,7 @@ export class AdmPopupComponent implements OnChanges {
                 clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' and clean_adm4='${this.fq(value.NAME_4)}' order by install_year`);
       }
       
-    return queries;                                                                                                                               
+    return queries;
   }
 
 
@@ -94,31 +95,24 @@ export class AdmPopupComponent implements OnChanges {
       baseQuery = this.addQuery(values[i], baseQuery, i+1, queries, attribute)
     }
     return queries;
-
   }
 
   getData(column_name){
-    forkJoin(this.getDataQuery(this.popupProperties, column_name).map(q => this.db.query(q))).subscribe(results => {
-      const data_array = [];
-      for (const result of results){
-        const x = [];
-        for (const val of result.rows){
-          if (val.count > 0){
-            x.push({'name': val.name, 'value':val.count});
-            
+    return forkJoin(this.getDataQuery(this.popupProperties, column_name).map(q => this.db.query(q))).pipe(
+      map((results => {
+        const data_array = [];
+        for (const result of results){
+          const x = [];
+          for (const val of result.rows){
+            if (val.count > 0){
+              x.push({'name': val.name, 'value':val.count});              
+            }
           }
+          data_array.push(x);
         }
-        data_array.push(x);
-      }
-      if (column_name === 'water_tech_clean'){
-        this.tech_data = data_array;
-      } else if (column_name === 'water_source_clean'){
-        this.source_data = data_array;
-      } else if (column_name === 'management_clean') {
-        this.management_data = data_array;
-      }
-
-    })
+        return data_array;
+      }))
+    );
   }
 
   getInstallYearData(){
@@ -158,11 +152,9 @@ export class AdmPopupComponent implements OnChanges {
   ngOnChanges(): void {
     this.getInstallYearData();
     this.getStateData();
-    this.getData('water_source_clean');
-    this.getData('water_tech_clean');
-    this.getData('management_clean');
-    
-
+    this.getData('water_source_clean').subscribe(data => { this.source_data = data; });
+    this.getData('water_tech_clean').subscribe(data => { this.tech_data = data; });;
+    this.getData('management_clean').subscribe(data => { this.management_data = data; });;
   }
 
 }
