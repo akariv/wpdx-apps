@@ -50,7 +50,8 @@ export class AdmPopupComponent implements OnChanges {
       }
       if (value.NAME_1) {
         queries.push(`${baseQuery}
-          where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' order by install_year`);
+          where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' 
+          and clean_adm1='${this.fq(value.NAME_1)}' order by install_year`);
       }
       if (value.NAME_2) {
         queries.push(`${baseQuery}
@@ -65,10 +66,11 @@ export class AdmPopupComponent implements OnChanges {
 
       if (value.NAME_4) {
         queries.push(`${baseQuery}
-          where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
-                clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' and clean_adm4='${this.fq(value.NAME_4)}' order by install_year`);
+          where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' 
+          and clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' 
+          and clean_adm4='${this.fq(value.NAME_4)}' order by install_year`);
       }
-      
+
     return queries;
   }
 
@@ -78,75 +80,75 @@ export class AdmPopupComponent implements OnChanges {
       baseQuery = `${baseQuery} and clean_adm${count}='${this.fq(value)}'`;
       queries.push(`${baseQuery} group by ${attribute}`);
     }
-    return baseQuery
-    
+    return baseQuery;
+
   }
 
   getDataQuery(value, attribute){
     const values = [value.NAME_1, value.NAME_2, value.NAME_3, value.NAME_4];
     let baseQuery = `select ${attribute} as name, count(${attribute}) from
-    wpdx_plus`
+    wpdx_plus`;
     const queries: string[] = [];
     if (value.NAME_0){
       baseQuery = `${baseQuery} where clean_country_name='${this.fq(value.NAME_0)}'`;
       queries.push(`${baseQuery} group by ${attribute}`);
     }
     for (let i = 0; i < values.length; i++){
-      baseQuery = this.addQuery(values[i], baseQuery, i+1, queries, attribute)
+      baseQuery = this.addQuery(values[i], baseQuery, i+1, queries, attribute);
     }
     return queries;
   }
 
-  getData(column_name){
-    return forkJoin(this.getDataQuery(this.popupProperties, column_name).map(q => this.db.query(q))).pipe(
+  getData(columnName){
+    return forkJoin(this.getDataQuery(this.popupProperties, columnName).map(q => this.db.query(q))).pipe(
       map((results => {
-        const data_array = [];
+        const dataArray = [];
         for (const result of results){
           const x = [];
           for (const val of result.rows){
             if (val.count > 0){
-              x.push({'name': val.name, 'value':val.count});              
+              x.push({name: val.name, value:val.count});
             }
           }
-          data_array.push(x);
+          dataArray.push(x);
         }
-        return data_array;
+        return dataArray;
       }))
     );
   }
 
   getInstallYearData(){
-    
+
     forkJoin(this.getInstallYearQuery(this.popupProperties).map(q => this.db.query(q))).subscribe(results => {
       this.install_year_data = [];
-      for (let i = 0; i < results.length; i++){
-        
+      for (const result of results){
+
         const x = [];
-        if (results[i].rows){
-          for (let j = 0; j < results[i].rows.length; j++){
-            x.push(+results[i].rows[j].install_year);
+        if (result.rows){
+          for (const val of result.rows){
+            x.push(+val.install_year);
           }
         }
-        this.install_year_data.push(x); 
+        this.install_year_data.push(x);
       }
     });
   }
 
   getStateData(){
     this.state_data = [];
-    for (let i = 0; i < this.admPopupSections.length; i++){
-      const x = []
-      if (this.admPopupSections[i].func_waterpoints > 0){
-        x.push({'name': 'Functional', 'value': this.admPopupSections[i].func_waterpoints})
+    for (const section of this.admPopupSections){
+      const x = [];
+      if (section.func_waterpoints > 0){
+        x.push({name: 'Functional', value: section.func_waterpoints});
       }
-      if (this.admPopupSections[i].non_func_waterpoints > 0){
-        x.push({'name': 'Non Functional', 'value': this.admPopupSections[i].non_func_waterpoints})
+      if (section.non_func_waterpoints > 0){
+        x.push({name: 'Non Functional', value: section.non_func_waterpoints});
       }
       this.state_data.push(x);
     }
   }
 
- 
+
 
 
   ngOnChanges(): void {

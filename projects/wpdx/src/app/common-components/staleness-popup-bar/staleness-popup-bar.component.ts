@@ -10,6 +10,10 @@ export class StalenessPopupBarComponent implements OnInit  {
 
   @Input() popupProperties: any;
 
+  constructor() { }
+
+
+
   getData(popup: any){
     const x = [
       {name: 'Under 5', count: popup.age_under_5},
@@ -26,10 +30,10 @@ export class StalenessPopupBarComponent implements OnInit  {
   }
 
 
-  constructor() { }
+
 
   ngOnInit(): void {
-      
+
   }
 
 
