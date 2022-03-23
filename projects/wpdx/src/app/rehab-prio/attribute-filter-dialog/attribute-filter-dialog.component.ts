@@ -6,11 +6,8 @@ import { RpStateService } from '../rp-state.service';
   templateUrl: './attribute-filter-dialog.component.html',
   styleUrls: ['./attribute-filter-dialog.component.less']
 })
-export class AttributeFilterDialogComponent implements OnInit {
+export class AttributeFilterDialogComponent {
 
   constructor(public rpState: RpStateService) { }
-
-  ngOnInit(): void {
-  }
 
 }

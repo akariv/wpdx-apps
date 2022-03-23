@@ -7,16 +7,13 @@ import { LayoutService } from '../../layout.service';
   templateUrl: './about-panel.component.html',
   styleUrls: ['./about-panel.component.less']
 })
-export class AboutPanelComponent implements OnInit {
+export class AboutPanelComponent {
 
   @Input() open = false;
   @Input() logosKey: string;
   @Output() closed = new EventEmitter<void>();
 
   constructor(public layout: LayoutService) {}
-
-  ngOnInit(): void {
-  }
 
   get position() {
     return this.layout.mobile() ? 'bottom' : 'right';

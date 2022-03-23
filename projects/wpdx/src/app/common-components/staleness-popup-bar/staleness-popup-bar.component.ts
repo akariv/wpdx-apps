@@ -6,13 +6,11 @@ import * as d3 from 'd3';
   templateUrl: './staleness-popup-bar.component.html',
   styleUrls: ['./staleness-popup-bar.component.less']
 })
-export class StalenessPopupBarComponent implements OnInit  {
+export class StalenessPopupBarComponent  {
 
   @Input() popupProperties: any;
 
   constructor() { }
-
-
 
   getData(popup: any){
     const x = [
@@ -28,13 +26,5 @@ export class StalenessPopupBarComponent implements OnInit  {
 
     return data;
   }
-
-
-
-
-  ngOnInit(): void {
-
-  }
-
 
 }

@@ -6,11 +6,8 @@ import { RpStateService } from '../rp-state.service';
   templateUrl: './settings-dialog.component.html',
   styleUrls: ['./settings-dialog.component.less']
 })
-export class SettingsDialogComponent implements OnInit {
+export class SettingsDialogComponent {
 
   constructor(public rpState: RpStateService) { }
-
-  ngOnInit(): void {
-  }
 
 }
