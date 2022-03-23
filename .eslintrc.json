@@ -25,7 +25,10 @@
           "error",
           {
             "selector": "variableLike",
-            "format": ["camelCase", "UPPER_CASE"],
+            "format": [
+              "camelCase",
+              "UPPER_CASE"
+            ],
             "leadingUnderscore": "allow",
             "trailingUnderscore": "allow"
           }
