@@ -122,7 +122,9 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
             });
             this._map.addControl(scale, 'bottom-right');
             this._map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-right');
+            this._map.dragRotate.disable();
             this.map.next(this._map);
+
           });
         }
       );
