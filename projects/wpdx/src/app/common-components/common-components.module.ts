@@ -25,6 +25,7 @@ import { BaseWaterpointPopupComponent } from './base-waterpoint-popup/base-water
 import { BarComponent } from './bar/bar.component';
 import { StalenessPopupBarComponent } from './staleness-popup-bar/staleness-popup-bar.component';
 import { PieComponent } from './pie/pie.component';
+import { SparkLineComponent } from './spark-line/spark-line.component';
 
 export { StateService } from './state.service';
 
@@ -46,6 +47,7 @@ export { StateService } from './state.service';
     BaseWaterpointPopupComponent,
     BarComponent,
     StalenessPopupBarComponent,
+    SparkLineComponent,
     PieComponent
   ],
   imports: [
@@ -74,6 +76,7 @@ export { StateService } from './state.service';
     BaseWaterpointPopupComponent,
     BarComponent,
     StalenessPopupBarComponent,
+    SparkLineComponent,
     PieComponent
   ]
 })
