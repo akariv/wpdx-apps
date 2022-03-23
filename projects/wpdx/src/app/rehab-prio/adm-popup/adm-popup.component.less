@@ -7,16 +7,34 @@ mat-label {
     margin-top: 16px;
 }
 
-    
-.with-title {
+p.adm-location {
     display: flex;
-    flex-flow: column;
-    align-items: flex-start;
-    background-color: #ffffff60;
-    border-radius: 4px;
-    padding: 0 4px;
-    padding-bottom: 4px;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 4px;
+    mat-icon {
+        width: auto;
+        height: auto;
+    }
 
+    .adm-label {
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: light;
+        color: #000;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        cursor: pointer;
+
+        &.active {
+            text-decoration-style: solid;
+            text-decoration-thickness: 2px;
+            font-weight: 700;
+        }
+    }
+}
+
+.with-title {
     span {
         font-size: 12px;
         font-weight: light;
@@ -51,12 +69,16 @@ mat-label {
 .indent {
     padding-left: 16px;
 }
-h3 {
-    margin: 32px 0 0 0;
+h2 {
+    padding: 12px 0;
     font-weight: 600;
-    &:first-child {
-        margin-top: 0;
-    }
+    border-top: #ccc solid 1px;
+    border-bottom: #ccc solid 1px;
+    margin: 12px 0;
+}
+mat-accordion {
+    display: block;
+    margin-top: 16px;
 }
 
 
