@@ -21,12 +21,14 @@ export class PieComponent implements OnChanges, AfterViewInit {
   radius = Math.min(this.width, this.height) / 2 - this.margin;
   colors;
 
+  constructor() { }
+
   createSvg(): void {
     this.svgElement.nativeElement.innerHTML = '';
     this.mySvg = d3
       .select(this.svgElement.nativeElement)
       .append('svg')
-      .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+      .attr('viewBox', `0 0 ${this.width} ${this.height}`);
       // .attr('width', this.width)
       //.attr('height', this.height)
     this.svg = this.mySvg
@@ -47,21 +49,21 @@ export class PieComponent implements OnChanges, AfterViewInit {
   drawChart(data=this.data){
     // Compute the position of each group on the pie
     const pie = d3.pie<any>().value((d: any) => Number(d.value));
-    const data_ready = pie(data);
+    const dataReady = pie(data);
 
-    let outerArc = d3
+    const outerArc = d3
     .arc()
     .innerRadius(this.radius * 0.9)
     .outerRadius(this.radius * 0.9);
 
-    let arc = d3
+    const arc = d3
       .arc()
       .innerRadius(this.radius * 0.5) // This is the size of the donut hole
       .outerRadius(this.radius * 0.8);
 
       this.svg
       .selectAll('pieces')
-      .data(data_ready)
+      .data(dataReady)
       .enter()
       .append('path')
       .attr(
@@ -75,27 +77,27 @@ export class PieComponent implements OnChanges, AfterViewInit {
       .attr('stroke', '#121926')
       .style('stroke-width', '1px');
 
-    const legendG = this.mySvg.selectAll(".legend") // note appending it to mySvg and not svg to make positioning easier
+    const legendG = this.mySvg.selectAll('.legend') // note appending it to mySvg and not svg to make positioning easier
       .data(pie(data))
-      .enter().append("g")
-      .attr("transform", (d,i) =>
-        "translate(" + this.width/2 + "," + (i *40) + ")")
-      .attr("class", "legend");
+      .enter().append('g')
+      .attr('transform', (d,i) =>
+        'translate(' + this.width/2 + ',' + (i *40) + ')')
+      .attr('class', 'legend');
 
-    legendG.append("rect") // make a matching color rect
-      .attr("width", 20)
-      .attr("height", 20)
-      .attr("fill", (d, i) => this.colors(i));
+    legendG.append('rect') // make a matching color rect
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('fill', (d, i) => this.colors(i));
 
-    legendG.append("text") // add the text
-      .text((d) => d.value + "  " + d.data.name)
-      .style("font-size", 20)
-      .attr("y", 20)
-      .attr("x", 22);
+    legendG.append('text') // add the text
+      .text((d) => d.value + '  ' + d.data.name)
+      .style('font-size', 20)
+      .attr('y', 20)
+      .attr('x', 22);
 
   }
 
-  constructor() { }
+
 
   ngOnChanges(): void {
     if (!this.svgElement?.nativeElement) {
