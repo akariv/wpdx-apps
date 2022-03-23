@@ -364,25 +364,25 @@ export class RehabPrioComponent implements OnInit {
         //console.log(value);
         if (queries.length > 3) {
           // value.level3 = results[2].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[3].rows[0])
           );
         }
         if (queries.length > 2) {
           // value.level2 = results[1].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[2].rows[0])
           );
         }
         if (queries.length > 1) {
           // value.level1 = results[0].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[1].rows[0])
           );
         }
         if (queries.length > 0) {
           // value.level1 = results[0].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
@@ -464,7 +464,9 @@ export class RehabPrioComponent implements OnInit {
             this.popupProperties.coordinates = coords;
             this.popupProperties.x = this.popupProperties.coordinates[0];
             this.popupProperties.y = this.popupProperties.coordinates[1];
-            ev.stopPropagation();
+            if (ev.stopPropagation) {
+              ev.stopPropagation();
+            }
           });
           marker = this.markers[id] = new mapboxgl.Marker({
             element: el

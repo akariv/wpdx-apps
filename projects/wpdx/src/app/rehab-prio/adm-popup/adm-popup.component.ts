@@ -22,6 +22,7 @@ export class AdmPopupComponent implements OnChanges {
   tech_data = [];
   management_data = [];
   selectedSection = 0;
+  viz = 0;
 
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
@@ -63,7 +64,6 @@ export class AdmPopupComponent implements OnChanges {
           where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
                 clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' order by install_year`);
       }
-
       if (value.NAME_4) {
         queries.push(`${baseQuery}
           where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' 
@@ -159,4 +159,7 @@ export class AdmPopupComponent implements OnChanges {
     this.getData('management_clean').subscribe(data => { this.management_data = data; });;
   }
 
+  setViz(viz){
+    this.viz = viz;
+  }
 }
