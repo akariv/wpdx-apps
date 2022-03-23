@@ -5,13 +5,10 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './base-waterpoint-popup.component.html',
   styleUrls: ['./base-waterpoint-popup.component.less']
 })
-export class BaseWaterpointPopupComponent implements OnInit {
+export class BaseWaterpointPopupComponent {
 
   @Input() popupProperties: any;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

@@ -8,7 +8,7 @@ import { LayoutService } from '../layout.service';
   templateUrl: './data-robot.component.html',
   styleUrls: ['./data-robot.component.less']
 })
-export class DataRobotComponent implements OnInit {
+export class DataRobotComponent {
 
   @ViewChild('popup') popup: ElementRef;
 
@@ -32,9 +32,6 @@ export class DataRobotComponent implements OnInit {
 
 
   constructor(public layout: LayoutService) {
-  }
-
-  ngOnInit(): void {
   }
 
   set map(value) {
