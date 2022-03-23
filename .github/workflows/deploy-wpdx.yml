@@ -30,6 +30,9 @@ jobs:
       - name: deps
         run: |
           npm install
+      - name: lint
+        run: |
+          npm run lint
       - name: git identity
         run: |
           git config user.email "adam.kariv@gmail.com"

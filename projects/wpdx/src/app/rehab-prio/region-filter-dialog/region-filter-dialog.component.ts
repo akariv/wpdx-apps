@@ -6,11 +6,8 @@ import { RpStateService } from '../rp-state.service';
   templateUrl: './region-filter-dialog.component.html',
   styleUrls: ['./region-filter-dialog.component.less']
 })
-export class RegionFilterDialogComponent implements OnInit {
+export class RegionFilterDialogComponent {
 
   constructor(public rpState: RpStateService) { }
-
-  ngOnInit(): void {
-  }
 
 }

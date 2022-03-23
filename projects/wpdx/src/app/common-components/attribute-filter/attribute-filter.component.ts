@@ -6,7 +6,7 @@ import { StateService } from '../state.service';
   templateUrl: './attribute-filter.component.html',
   styleUrls: ['./attribute-filter.component.less']
 })
-export class AttributeFilterComponent implements OnInit {
+export class AttributeFilterComponent {
 
   changed = new EventEmitter<any>();
 
@@ -80,9 +80,6 @@ export class AttributeFilterComponent implements OnInit {
 
   get management() {
     return this.state.getProp('management') || null;
-  }
-
-  ngOnInit(): void {
   }
 
   sendState() {
