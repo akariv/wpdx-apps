@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 })
 export class SparkLineComponent implements OnChanges, AfterViewInit {
 
+  @Input() popupProperties;
   @ViewChild('chart') svgElement: ElementRef;
   svg;
 
@@ -16,8 +17,12 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
   height = 360 - this.margin.top - this.margin.bottom;
 
   innerWidth  = this.width - this.margin.left - this.margin.right;
-  ineerHeight = this.height - this.margin.top - this.margin.bottom;
-  dataCount = 40;
+  innerHeight = this.height - this.margin.top - this.margin.bottom;
+  dataCount = 10;
+  
+  functionalProb = [0.1, 0.3, 0.1, 0.7, 0.8, 1, 0, 0.5, 0.1, 0.2];
+
+  non_functionalProb = [0.2, 0.4, 0.5, 1, 0.7, 0.9, 0.8, 0.2, 0, 1]
 
   constructor() { }
 
@@ -33,10 +38,36 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
   }
 
   drawLine(){
-    const data = d3.range(this.dataCount).map( d => Math.random() );
-    const x = d3.scaleLinear().domain([0, this.dataCount]).range([0, this.innerWidth]);
-    const y = d3.scaleLinear().domain([0, 1]).range([innerHeight, 0]);
-  }
+    // const data = d3.range(this.dataCount).map( d => Math.random());
+    const x = d3.scaleLinear().domain([0,this.dataCount]).range([0, this.innerWidth]);
+    const y = d3.scaleLinear().domain([0, 1]).range([this.innerHeight, 0]);
+    const line: any = d3.line()
+          .x((d: any, i: any) => x(i))
+          .y((d: any) => y(d));
+
+    this.svg.append('g')
+      .attr('transform', 'translate(0,' + this.innerHeight + ')')
+      .call(d3.axisBottom(x));
+
+    this.svg.append('g')
+      .call(d3.axisLeft(y));
+    
+    this.svg.append('path').datum(this.functionalProb)
+      .attr('fill', 'none')
+      .attr('stroke', 'blue')
+      .attr('stroke-width', 1)
+      .attr('d', line);
+
+    this.svg.append('path').datum(this.non_functionalProb)
+      .attr('fill', 'none')
+      .attr('stroke', 'red')
+      .attr('stroke-width', 1)
+      .attr('d', line);
+
+    
+    }
+
+    
 
   ngOnChanges(): void {
     if (!this.svgElement?.nativeElement) {
@@ -48,7 +79,6 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
 
   ngAfterViewInit() {
     this.ngOnChanges();
-    console.log('chao');
   }
 
 }

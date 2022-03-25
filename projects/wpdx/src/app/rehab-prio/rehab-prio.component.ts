@@ -13,6 +13,7 @@ import { SettingsDialogComponent } from './settings-dialog/settings-dialog.compo
 import { RegionFilterDialogComponent } from './region-filter-dialog/region-filter-dialog.component';
 import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 import { SourcesDialogComponent } from './sources-dialog/sources-dialog.component';
+import { range } from 'd3';
 
 @Component({
   selector: 'app-rehab-prio',
@@ -392,7 +393,6 @@ export class RehabPrioComponent implements OnInit {
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {
         this._popupProperties = results.rows[0];
-        //console.log('POPUP PROPERTIES', value);
         this.addCircle(value);
       }
     });
