@@ -1,148 +1,85 @@
 <div>
-    <p>
-        <label><mat-icon>place</mat-icon></label> 
-        {{admPopupSections[0].NAME_0}}
+    <p class='adm-location'>
+        <span class='adm-label' [class.active]='selectedSection === 0' (click)='selectedSection = 0'>{{admPopupSections[admPopupSections.length-1].NAME_0}}</span>
         <ng-container *ngIf='popupProperties.NAME_1'>
-            &gt; {{popupProperties.NAME_1}}
+            &nbsp;&gt;&nbsp;
+            <span class='adm-label' [class.active]='selectedSection === 1' (click)='selectedSection = 1'>{{popupProperties.NAME_1}}</span>
             <ng-container *ngIf='popupProperties.NAME_2'>
-                &gt; {{popupProperties.NAME_2}}
+                &nbsp;&gt;&nbsp;
+                <span class='adm-label' [class.active]='selectedSection === 2' (click)='selectedSection = 2'>{{popupProperties.NAME_2}}</span>
                 <ng-container *ngIf='popupProperties.NAME_3'>
-                    &gt; {{popupProperties.NAME_3}}
+                    &nbsp;&gt;&nbsp;
+                    <span class='adm-label' [class.active]='selectedSection === 3' (click)='selectedSection = 3'>{{popupProperties.NAME_3}}</span>
                     <ng-container *ngIf='popupProperties.NAME_4'>
-                        &gt; {{popupProperties.NAME_4}}
+                        &nbsp;&gt;&nbsp;
+                        <span class='adm-label' [class.active]='selectedSection === 4' (click)='selectedSection = 4'>{{popupProperties.NAME_4}}</span>
                     </ng-container>
                 </ng-container>
             </ng-container>
         </ng-container>
         <a [href]='"https://www.google.com/maps/@" + (popupProperties.y) + "," + (popupProperties.x) + ",16z"' target='_blank'><mat-icon>launch</mat-icon></a>
     </p>
-    <div class='with-title'>
-        <mat-button-toggle-group [(ngModel)]='selectedSection' aria-label='ADM Level' appearance='Legacy'>
-            <ng-container *ngFor='let section of admPopupSections; let i = index'>
-                <mat-button-toggle [value]='i' [disableRipple]='true'>{{admPopupSections[i].title}}</mat-button-toggle>
-            </ng-container>
-        </mat-button-toggle-group>
-        
-        <ng-container *ngIf ='selectedSection >= 0 && admPopupSections[selectedSection]'>
-            <h2>{{admPopupSections[selectedSection].title}}</h2>
-            <p>
-                <mat-icon>water_drop</mat-icon><label>{{admPopupSections[selectedSection].func_waterpoints + admPopupSections[selectedSection].non_func_waterpoints}} water points ({{admPopupSections[selectedSection].func_waterpoints}} functional)</label>
-            </p>
-            <p>
-                <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[selectedSection].total_pop | number:'1.0-0'}} ppl 
-            </p>
-            <p>
-                <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[selectedSection].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>, of which</ng-container>
-            </p>
-            <ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>
-                <div class='indent'>
-                    <p>
-                        <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[selectedSection].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].served_pop/admPopupSections[selectedSection].total_pop)*100).toFixed(2)+"%"}})
-                    </p>
-                    <p>
-                        <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[selectedSection].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].unserved_pop/admPopupSections[selectedSection].total_pop)*100).toFixed(2)+"%"}})
-                    </p>
-                    <p>
-                        <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[selectedSection].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].uncharted_pop/admPopupSections[selectedSection].total_pop)*100).toFixed(2)+"%"}})
-                    </p>
-                </div>
-            </ng-container>
-            
-            <ng-container *ngIf='install_year_data[admPopupSections.length-1-selectedSection]'>
-                <ng-container *ngIf='install_year_data[admPopupSections.length-1-selectedSection].length'>
-                    <mat-expansion-panel hideToggle>
-                        <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Install Year Analysis
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Bar graph of install years
-                        </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        
-                        <app-bar [data]='install_year_data[admPopupSections.length-1-selectedSection]'
-                        xAxisTitle='Install Year' yAxisTitle='# Water Points' [min] = 'install_year_data[admPopupSections.length-1-selectedSection][0]' [max] = 'install_year_data[admPopupSections.length-1-selectedSection][install_year_data[admPopupSections.length-1-selectedSection].length-1]'
-                        color='#ffd580'></app-bar>
-                        
-                    </mat-expansion-panel>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf='state_data[selectedSection]'>
-                <ng-container *ngIf='state_data[selectedSection].length'>
-                    <mat-expansion-panel hideToggle>
-                        <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Waterpoint state Analysis
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Pie chart of waterpoint state
-                        </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        
-                        <app-pie [data]='state_data[selectedSection]'></app-pie>
-                        
-                    </mat-expansion-panel>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf='source_data[admPopupSections.length-1-selectedSection]'>
-                <ng-container *ngIf='source_data[admPopupSections.length-1-selectedSection].length'>
-                    <mat-expansion-panel hideToggle>
-                        <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Waterpoint source Analysis
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Pie chart of waterpoint source
-                        </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        
-                        <app-pie [data]='source_data[admPopupSections.length-1-selectedSection]'></app-pie>
-                        
-                    </mat-expansion-panel>
-                </ng-container>
-            </ng-container>
-
-            <ng-container *ngIf='tech_data[admPopupSections.length-1-selectedSection]'>
-                <ng-container *ngIf='tech_data[admPopupSections.length-1-selectedSection].length'>
-                    <mat-expansion-panel hideToggle>
-                        <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Waterpoint tech Analysis
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Pie chart of waterpoint tech
-                        </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        
-                        <app-pie [data]='tech_data[admPopupSections.length-1-selectedSection]'></app-pie>
-                        
-                    </mat-expansion-panel>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf='management_data[admPopupSections.length-1-selectedSection]'>
-                <ng-container *ngIf='management_data[admPopupSections.length-1-selectedSection].length'>
-                    <mat-expansion-panel hideToggle>
-                        <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Waterpoint management Analysis
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Pie chart of waterpoint management
-                        </mat-panel-description>
-                        </mat-expansion-panel-header>
-                        
-                        <app-pie [data]='management_data[admPopupSections.length-1-selectedSection]'></app-pie>
-                        
-                    </mat-expansion-panel>
-                </ng-container>
-            </ng-container>
-            
-            
-            
-           
+    <ng-container *ngIf ='selectedSection >= 0 && admPopupSections[selectedSection]'>
+        <h2>{{admPopupSections[selectedSection].title}}</h2>
+        <p>
+            <mat-icon>water_drop</mat-icon><label>{{admPopupSections[selectedSection].func_waterpoints + admPopupSections[selectedSection].non_func_waterpoints}} water points ({{admPopupSections[selectedSection].func_waterpoints}} functional)</label>
+        </p>
+        <p>
+            <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[selectedSection].total_pop | number:'1.0-0'}} ppl 
+        </p>
+        <p>
+            <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[selectedSection].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>, of which</ng-container>
+        </p>
+        <ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>
+            <div class='indent'>
+                <p>
+                    <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[selectedSection].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].served_pop/admPopupSections[selectedSection].total_pop)*100).toFixed(2)+"%"}})
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[selectedSection].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].unserved_pop/admPopupSections[selectedSection].total_pop)*100).toFixed(2)+"%"}})
+                </p>
+                <p>
+                    <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[selectedSection].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].uncharted_pop/admPopupSections[selectedSection].total_pop)*100).toFixed(2)+"%"}})
+                </p>
+            </div>
         </ng-container>
-    </div>
-    
-    
-   
+        
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="viz === 0" (opened)="setViz(0)"  *ngIf='install_year_data[selectedSection] && install_year_data[selectedSection].length'>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Water Point Install Years</mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-bar [data]='install_year_data[selectedSection]'
+                        xAxisTitle='Install Year' yAxisTitle='# Water Points'
+                        [min]='install_year_data[selectedSection][0]'
+                        [max]='install_year_data[selectedSection][install_year_data[selectedSection].length-1]'
+                        color='#ffd580'>
+                </app-bar>
+            </mat-expansion-panel>
+            <mat-expansion-panel [expanded]="viz === 1" (opened)="setViz(1)"  *ngIf='state_data[selectedSection] && state_data[selectedSection].length'>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Water Point Statuses</mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-pie [data]='state_data[selectedSection]'></app-pie>
+            </mat-expansion-panel>
+            <mat-expansion-panel [expanded]="viz === 2" (opened)="setViz(2)"  *ngIf='source_data[selectedSection] && source_data[selectedSection].length'>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Water Source Distribution</mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-pie [data]='source_data[selectedSection]'></app-pie>
+            </mat-expansion-panel>
+            <mat-expansion-panel [expanded]="viz === 3" (opened)="setViz(3)"  *ngIf='tech_data[selectedSection] && tech_data[selectedSection].length'>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Water Tech Distribution</mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-pie [data]='tech_data[selectedSection]'></app-pie>
+            </mat-expansion-panel>
+            <mat-expansion-panel [expanded]="viz === 4" (opened)="setViz(4)"  *ngIf='management_data[selectedSection] && management_data[selectedSection].length'>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Water Point Management</mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-pie [data]='management_data[selectedSection]'></app-pie>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </ng-container>
 </div>
