@@ -655,7 +655,7 @@ export class RehabPrioComponent implements OnInit {
     // ADM Analysis / Staleness
     const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
     const admanLevel= props.adman_level || 'best';
-    this.rpState.show_adm_borders = props.mode === 'adman' ? false : (props.mode === 'staleness' ? false : (this.rpState.show_adm_borders));
+    const admBorders = props.mode === 'adman' ? false : (props.mode === 'staleness' ? false : (this.rpState.show_adm_borders));
     let prop: any = [];
     let visibility = 'visible';
     this.colorRange = [];
@@ -757,14 +757,18 @@ export class RehabPrioComponent implements OnInit {
       }
     });
 
-    if (this.rpState.show_adm_borders){
-
+    if (admBorders){
       this.rpState.map.setFilter('adm-analysis-borders', null);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color','#5D3FD3');
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.2);
       this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'visible');
+    }
 
-
+    if (!this.rpState.show_adm_borders){
+      this.rpState.map.setFilter('adm-analysis-borders', null);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color','#000000');
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
+      this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'none');
     }
 
 
