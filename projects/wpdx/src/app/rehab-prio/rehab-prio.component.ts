@@ -396,18 +396,17 @@ export class RehabPrioComponent implements OnInit {
         console.log(this._popupProperties);
         const noPredictions = [];
         const yesPredictions = [];
-        for(let i = 0; i < 10; i++){
-          const x = eval('this.popupProperties.prediction_no_'+i+'y;');
-          const z = eval('this.popupProperties.prediction_yes_'+i+'y;');
-          if (x !== null){
-            noPredictions.push(x);
-          }
-          if (z !== null){
-            yesPredictions.push(z);
-          } 
+        for (let i = 0; i < 10; i++){
+          noPredictions.push(this.popupProperties['prediction_no_'+i+'y']);
+          yesPredictions.push(this.popupProperties['prediction_yes_'+i+'y']);
         }
-        this._popupProperties.yesPredictions = yesPredictions.length === 10 ? yesPredictions : 0;
-        this._popupProperties.noPredictions = noPredictions.length === 10 ? noPredictions : 0;
+        if (noPredictions.every(x => x !== null) && yesPredictions.every(x => x !== null)) {
+          this._popupProperties.yesPredictions = yesPredictions.map(x => x * 100);
+          this._popupProperties.noPredictions = noPredictions.map(x => x * 100);
+        } else {
+          this._popupProperties.yesPredictions = null;
+          this._popupProperties.noPredictions = null;
+        }
         this.addCircle(value);
       }
     });
