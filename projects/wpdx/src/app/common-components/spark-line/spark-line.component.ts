@@ -52,17 +52,23 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
     this.svg.append('g')
       .call(d3.axisLeft(y));
     
-    this.svg.append('path').datum(this.functionalProb)
+    if (this.popupProperties.yesPredictions !== 0){
+      this.svg.append('path').datum(this.popupProperties.yesPredictions)
       .attr('fill', 'none')
       .attr('stroke', 'blue')
       .attr('stroke-width', 1)
       .attr('d', line);
+    }
+    
 
-    this.svg.append('path').datum(this.non_functionalProb)
+    if (this.popupProperties.noPredictions !== 0){
+      this.svg.append('path').datum(this.popupProperties.noPredictions)
       .attr('fill', 'none')
       .attr('stroke', 'red')
       .attr('stroke-width', 1)
       .attr('d', line);
+    }
+    
 
     
     }

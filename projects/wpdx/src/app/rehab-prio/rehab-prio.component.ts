@@ -393,6 +393,21 @@ export class RehabPrioComponent implements OnInit {
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {
         this._popupProperties = results.rows[0];
+        console.log(this._popupProperties);
+        const noPredictions = [];
+        const yesPredictions = [];
+        for(let i = 0; i < 10; i++){
+          const x = eval('this.popupProperties.prediction_no_'+i+'y;');
+          const z = eval('this.popupProperties.prediction_yes_'+i+'y;');
+          if (x !== null){
+            noPredictions.push(x);
+          }
+          if (z !== null){
+            yesPredictions.push(z);
+          } 
+        }
+        this._popupProperties.yesPredictions = yesPredictions.length === 10 ? yesPredictions : 0;
+        this._popupProperties.noPredictions = noPredictions.length === 10 ? noPredictions : 0;
         this.addCircle(value);
       }
     });
