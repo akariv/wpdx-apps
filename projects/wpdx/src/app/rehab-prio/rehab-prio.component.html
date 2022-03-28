@@ -117,7 +117,7 @@
                 <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
             </p>
 
-            
+        <app-spark-line [popupProperties] = 'popupProperties' *ngIf='popupProperties.noPredictions !== 0 || popupProperties.yesPredictions !== 0'></app-spark-line>
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
             <p *ngIf='popupProperties.population > 0'>
