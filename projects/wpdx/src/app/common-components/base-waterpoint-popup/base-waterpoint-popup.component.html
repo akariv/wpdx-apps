@@ -18,7 +18,7 @@
     </p>
     <p *ngIf='popupProperties.report_date'>
         <label title='Report Date' i18n-title><mat-icon>edit_calendar</mat-icon></label>&nbsp;
-        <span>Reported at</span>&nbsp;
+        <span>Reported <ng-container *ngIf='popupProperties.status_id === "Yes"'>as Functional</ng-container><ng-container *ngIf='popupProperties.status_id === "No"'>as Non-functional</ng-container> at</span>&nbsp;
         <span>{{popupProperties.report_date}}</span>
     </p>
 </div>
