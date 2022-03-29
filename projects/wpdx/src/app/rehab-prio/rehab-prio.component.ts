@@ -691,6 +691,7 @@ export class RehabPrioComponent implements OnInit {
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', interpolate);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', ['to-color', this.colorRange[4]]);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
+      this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'visible');
     }
     const admanFilt = [];
     for (const [_f, _ff] of [
@@ -762,12 +763,7 @@ export class RehabPrioComponent implements OnInit {
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color','#5D3FD3');
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.2);
       this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'visible');
-    }
-
-    if (!this.rpState.show_adm_borders){
-      this.rpState.map.setFilter('adm-analysis-borders', null);
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color','#000000');
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
+    } else if (!admanView){
       this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'none');
     }
 
