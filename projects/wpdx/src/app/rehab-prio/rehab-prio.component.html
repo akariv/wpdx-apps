@@ -142,12 +142,6 @@
     </ng-container>
     <div class='map-popup'>
         <app-base-waterpoint-popup [popupProperties]='popupProperties' *ngIf='popupProperties.wpdx_id'>
-            <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
-                <p>
-                    <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
-                </p>    
-                <app-spark-line [popupProperties]='popupProperties' *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
-            </ng-container>
             <p *ngIf='popupProperties.local_population > 0'>
                 <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
             </p>
