@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   templateUrl: './custom-selector.component.html',
   styleUrls: ['./custom-selector.component.less']
 })
-export class CustomSelectorComponent implements OnInit {
+export class CustomSelectorComponent {
 
   @Input() title: string;
   @Input() value: string;
@@ -14,9 +14,6 @@ export class CustomSelectorComponent implements OnInit {
   @Output() valueChange = new EventEmitter<string>();
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   get _value() {
     return this.value;

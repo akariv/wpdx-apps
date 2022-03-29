@@ -23,6 +23,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { AttributeFilterComponent } from './attribute-filter/attribute-filter.component';
 import { BaseWaterpointPopupComponent } from './base-waterpoint-popup/base-waterpoint-popup.component';
 import { BarComponent } from './bar/bar.component';
+import { StalenessPopupBarComponent } from './staleness-popup-bar/staleness-popup-bar.component';
+import { PieComponent } from './pie/pie.component';
+import { SparkLineComponent } from './spark-line/spark-line.component';
 
 export { StateService } from './state.service';
 
@@ -42,7 +45,10 @@ export { StateService } from './state.service';
     ControlsComponent,
     AttributeFilterComponent,
     BaseWaterpointPopupComponent,
-    BarComponent
+    BarComponent,
+    StalenessPopupBarComponent,
+    SparkLineComponent,
+    PieComponent
   ],
   imports: [
     CommonModule,
@@ -68,7 +74,10 @@ export { StateService } from './state.service';
     FiltersControlComponent,
     ControlsComponent,
     BaseWaterpointPopupComponent,
-    BarComponent
+    BarComponent,
+    StalenessPopupBarComponent,
+    SparkLineComponent,
+    PieComponent
   ]
 })
 export class CommonComponentsModule { }

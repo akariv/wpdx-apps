@@ -13,6 +13,7 @@ import { SettingsDialogComponent } from './settings-dialog/settings-dialog.compo
 import { RegionFilterDialogComponent } from './region-filter-dialog/region-filter-dialog.component';
 import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 import { SourcesDialogComponent } from './sources-dialog/sources-dialog.component';
+import { range } from 'd3';
 
 @Component({
   selector: 'app-rehab-prio',
@@ -355,28 +356,29 @@ export class RehabPrioComponent implements OnInit {
         //console.log(value);
         if (queries.length > 3) {
           // value.level3 = results[2].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[3].rows[0])
           );
         }
         if (queries.length > 2) {
           // value.level2 = results[1].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[2].rows[0])
           );
         }
         if (queries.length > 1) {
           // value.level1 = results[0].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[1].rows[0])
           );
         }
         if (queries.length > 0) {
           // value.level1 = results[0].rows[0];
-          this.admPopupSections.push(
+          this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
+        this.admPopupSections = this.admPopupSections.slice();
       });
 
       this._popupProperties = value;
@@ -391,7 +393,20 @@ export class RehabPrioComponent implements OnInit {
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {
         this._popupProperties = results.rows[0];
-        //console.log('POPUP PROPERTIES', value);
+        console.log(this._popupProperties);
+        const noPredictions = [];
+        const yesPredictions = [];
+        for (let i = 0; i < 10; i++){
+          noPredictions.push(this.popupProperties['prediction_no_'+i+'y']);
+          yesPredictions.push(this.popupProperties['prediction_yes_'+i+'y']);
+        }
+        if (noPredictions.every(x => x !== null) && yesPredictions.every(x => x !== null)) {
+          this._popupProperties.yesPredictions = yesPredictions.map(x => x * 100);
+          this._popupProperties.noPredictions = noPredictions.map(x => x * 100);
+        } else {
+          this._popupProperties.yesPredictions = null;
+          this._popupProperties.noPredictions = null;
+        }
         this.addCircle(value);
       }
     });
@@ -457,7 +472,9 @@ export class RehabPrioComponent implements OnInit {
             this.popupProperties.coordinates = coords;
             this.popupProperties.x = this.popupProperties.coordinates[0];
             this.popupProperties.y = this.popupProperties.coordinates[1];
-            ev.stopPropagation();
+            if (ev.stopPropagation) {
+              ev.stopPropagation();
+            }
           });
           marker = this.markers[id] = new mapboxgl.Marker({
             element: el

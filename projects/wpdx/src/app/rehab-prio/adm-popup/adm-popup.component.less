@@ -1,0 +1,85 @@
+@import '../../common-components/common.less';
+@import '../../common-components/popup-contents.less';
+
+
+mat-label {
+    font-weight: 500;
+    margin-top: 16px;
+}
+
+p.adm-location {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 4px;
+    mat-icon {
+        width: auto;
+        height: auto;
+    }
+
+    .adm-label {
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: light;
+        color: #000;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        cursor: pointer;
+
+        &.active {
+            text-decoration-style: solid;
+            text-decoration-thickness: 2px;
+            font-weight: 700;
+        }
+    }
+}
+
+.with-title {
+    span {
+        font-size: 12px;
+        font-weight: light;
+        color: #000;
+        margin-bottom: 4px;
+    }
+
+    mat-select {
+        margin: 0;
+    }
+}
+
+
+::ng-deep {
+    .mat-select-value {
+        color: #333333;
+        font-weight: bolder;
+    }
+    .mat-button-toggle {
+        background-color: rgba(224, 224, 224, 0.8);
+        &.mat-button-toggle-checked {
+            background-color: rgba(255, 255, 255, 0.8);
+            font-weight: bolder;
+        }
+        .mat-button-toggle-label-content {
+            line-height: inherit;
+            color: #333;                    
+        }
+    }
+}
+
+.indent {
+    padding-left: 16px;
+}
+h2 {
+    padding: 12px 0;
+    font-weight: 600;
+    border-top: #ccc solid 1px;
+    border-bottom: #ccc solid 1px;
+    margin: 12px 0;
+}
+mat-accordion {
+    display: block;
+    margin-top: 16px;
+}
+
+
+

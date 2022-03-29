@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './filters-control.component.html',
   styleUrls: ['./filters-control.component.less']
 })
-export class FiltersControlComponent implements OnInit {
+export class FiltersControlComponent {
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

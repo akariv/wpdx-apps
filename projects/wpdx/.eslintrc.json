@@ -11,26 +11,25 @@
       "parserOptions": {
         "project": [
           "projects/wpdx/tsconfig.app.json",
-          "projects/wpdx/tsconfig.spec.json",
-          "projects/wpdx/e2e/tsconfig.json"
+          "projects/wpdx/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },
       "rules": {
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ],
         "@angular-eslint/directive-selector": [
           "error",
           {
             "type": "attribute",
             "prefix": "app",
             "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
           }
         ]
       }

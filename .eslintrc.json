@@ -10,27 +10,31 @@
       ],
       "parserOptions": {
         "project": [
-          "tsconfig.json",
-          "e2e/tsconfig.json"
+          "tsconfig.json"
         ],
         "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "@typescript-eslint/naming-convention": [
+        "@angular-eslint/directive-selector": [
           "error",
           {
-            "selector": "variableLike",
-            "format": ["camelCase", "UPPER_CASE"],
-            "leadingUnderscore": "allow",
-            "trailingUnderscore": "allow"
+            "type": "attribute",
+            "prefix": "app",
+            "style": "camelCase"
           }
         ],
-        "no-underscore-dangle": "off"
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
+          }
+        ]
       }
     },
     {
