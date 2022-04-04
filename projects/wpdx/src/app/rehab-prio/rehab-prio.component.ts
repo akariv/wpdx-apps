@@ -62,7 +62,6 @@ export class RehabPrioComponent implements OnInit {
       }),
       map(([resultsRehabPrio, resultsNC]: any) => [resultsRehabPrio.rows, resultsNC.rows])
     ).subscribe(([resultsRehabPrio, resultsNC]) => {
-      this.rpState.mode = this.rpState.mode;
       if (this.rpState.mode === 'rehab-prio'){
         this.rpState.top10 = resultsRehabPrio;
         if (this.rpState.map) {
@@ -187,7 +186,7 @@ export class RehabPrioComponent implements OnInit {
 
   queryUINC(bounds){
     const sql = `
-    select "NAME_0", "NAME_1", "NAME_2", "NAME_4", population, lat_deg, lon_deg
+    select "NAME_0", "NAME_1", "NAME_2", "NAME_3", "NAME_4", population, lat_deg, lon_deg
     from new_constructions
     where ${this.queryNCWhere(bounds)}
     order by population DESC nulls last
@@ -318,7 +317,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   set popupProperties(value) {
-    //console.log('PPP', value);
+    console.log('PPP', value);
     if (value.total_pop) {
       const baseQuery = `select
         sum(total_pop) as total_pop,
@@ -327,7 +326,9 @@ export class RehabPrioComponent implements OnInit {
         sum(uncharted_pop) as uncharted_pop,
         sum(served_pop) as served_pop,
         sum(func_waterpoints) as func_waterpoints,
-        sum(non_func_waterpoints) as non_func_waterpoints
+        sum(non_func_waterpoints) as non_func_waterpoints,
+        sum(staleness_uncharted) as staleness_uncharted,
+        count(1) as count
         from adm_analysis
         where adm_level='best' and
       `;
