@@ -4,7 +4,7 @@ import { StateService } from '../../common-components/state.service';
 import { DbService } from '../../db.service';
 import { RpStateService } from '../rp-state.service';
 
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { forkJoin, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -152,6 +152,7 @@ export class AdmPopupComponent implements OnChanges {
 
 
   ngOnChanges(): void {
+    this.selectedSection = this.popupProperties.NAME_4 ? 4 : (this.popupProperties.NAME_3 ? 3 : (this.popupProperties.NAME_2 ? 2 : (this.popupProperties.NAME_1 ? 1 : 0)));
     this.getInstallYearData();
     this.getStateData();
     this.getData('water_source_clean').subscribe(data => { this.source_data = data; });
