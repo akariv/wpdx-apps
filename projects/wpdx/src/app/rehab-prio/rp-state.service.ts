@@ -24,6 +24,7 @@ export class RpStateService {
     this.state.defaultValue('any_waterpoints', true);
     this.state.defaultValue('show_population_density', false);
     this.state.defaultValue('show_landcover', false);
+    this.state.defaultValue('show_adm_borders', false);
     this.state.defaultValue('show_point_counts', false);
     this.state.defaultValue('adman_view', 'unserved');
     this.state.defaultValue('show_adman_pies', true);
@@ -215,5 +216,12 @@ export class RpStateService {
 
   get show_landcover() {
     return this.state.getProp('show_landcover');
+  }
+  set show_adm_borders(value) {
+    this.state.setProp('show_adm_borders', value);
+  }
+
+  get show_adm_borders() {
+    return this.state.getProp('show_adm_borders');
   }
 }

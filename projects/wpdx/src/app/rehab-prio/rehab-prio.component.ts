@@ -191,8 +191,8 @@ export class RehabPrioComponent implements OnInit {
     where ${this.queryNCWhere(bounds)}
     order by population DESC nulls last
     limit 15
-    `
-    return sql
+    `;
+    return sql;
   }
 
   queryDL(bounds, fields) {
@@ -251,7 +251,7 @@ export class RehabPrioComponent implements OnInit {
       'lon_deg <= ' + bounds.getEast(),
     ];
     if (this.state.props.country_name){
-      terms.push(`"NAME_0" = '${this.state.props.country_name}'`)
+      terms.push(`"NAME_0" = '${this.state.props.country_name}'`);
     }
     if (this.state.props.adm1) {
       terms.push(`"NAME_1" = '${this.state.props.adm1}'`);
@@ -655,6 +655,7 @@ export class RehabPrioComponent implements OnInit {
     // ADM Analysis / Staleness
     const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
     const admanLevel= props.adman_level || 'best';
+    const admBorders = props.mode === 'adman' ? false : (props.mode === 'staleness' ? false : (this.rpState.show_adm_borders));
     let prop: any = [];
     let visibility = 'visible';
     this.colorRange = [];
@@ -755,6 +756,18 @@ export class RehabPrioComponent implements OnInit {
         this.rpState.map.setLayoutProperty(layer.id, 'visibility', this.rpState.show_landcover ? 'visible' : 'none');
       }
     });
+
+    if (admBorders){
+      this.rpState.map.setFilter('adm-analysis-borders', ['all',
+      ... admanFilt]);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color','#5D3FD3');
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 0.2);
+      this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'visible');
+    } else if (!admanView){
+      this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'none');
+    }
+
+
   }
 
   gotoPoint(point) {
