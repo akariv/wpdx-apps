@@ -84,15 +84,17 @@ export class PieComponent implements OnChanges, AfterViewInit {
         'translate(' + this.width/2 + ',' + (i *40) + ')')
       .attr('class', 'legend');
 
+
     legendG.append('rect') // make a matching color rect
+      .attr('y', 10)
       .attr('width', 20)
       .attr('height', 20)
       .attr('fill', (d, i) => this.colors(i));
 
     legendG.append('text') // add the text
-      .text((d) => d.value + '  ' + d.data.name)
-      .style('font-size', 20)
-      .attr('y', 20)
+      .text((d) => d.value.toLocaleString('en-US') + '  ' + d.data.name)
+      .style('font-size', 35)
+      .attr('y', 30)
       .attr('x', 22);
 
   }
@@ -100,11 +102,13 @@ export class PieComponent implements OnChanges, AfterViewInit {
 
 
   ngOnChanges(): void {
+    // console.log(this.data);
     if (!this.svgElement?.nativeElement) {
       return;
     }
     this.createSvg();
     this.createColors();
+    this.data = this.data.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0));
     this.drawChart();
   }
 
