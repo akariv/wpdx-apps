@@ -33,8 +33,8 @@ export class AdmSelectorComponent implements OnInit {
         this.countryNameOptions = levels;
       });
     } else {
-      this.db.fetchAdmLevels().subscribe((results: any) => {
-        this.processDBResults(results.rows);
+      this.db.fetchAdmLevels().subscribe((rows: any[]) => {
+        this.processDBResults(rows);
       });
     }
   }
@@ -89,14 +89,14 @@ export class AdmSelectorComponent implements OnInit {
       if (!item.value) {
         console.log('BAD VALUE FOR', valueField, item);
       }
-      if (!item.bounds) {
-        item.bounds = [
-          item.lon_min,
-          item.lat_min,
-          item.lon_max,
-          item.lat_max,
-        ];
-      }
+      // if (!item.bounds) {
+      //   item.bounds = [
+      //     item.lon_min,
+      //     item.lat_min,
+      //     item.lon_max,
+      //     item.lat_max,
+      //   ];
+      // }
       delete item[valueField];
       ret[key].push(item);
     }
