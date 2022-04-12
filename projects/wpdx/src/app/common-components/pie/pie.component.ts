@@ -14,11 +14,11 @@ export class PieComponent implements OnChanges, AfterViewInit {
   chartId;
   svg;
   mySvg;
-  margin = 25;
-  width = 650;
-  height = 350;
+  margin = 5;
+  width = 0;
+  height = 0;
 
-  radius = Math.min(this.width, this.height) / 2 - this.margin;
+  radius = 0;
   colors;
 
   constructor() { }
@@ -28,14 +28,14 @@ export class PieComponent implements OnChanges, AfterViewInit {
     this.mySvg = d3
       .select(this.svgElement.nativeElement)
       .append('svg')
-      .attr('viewBox', `0 0 ${this.width} ${this.height}`);
-      // .attr('width', this.width)
-      //.attr('height', this.height)
+      .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+      .attr('width', this.width)
+      .attr('height', this.height)
     this.svg = this.mySvg
       .append('g')
       .attr(
         'transform',
-        'translate(' + this.width / 4 + ',' + this.height / 2 + ')'
+        'translate(' + (this.radius + this.margin) + ',' + this.height / 2 + ')'
       );
   }
 
@@ -51,17 +51,7 @@ export class PieComponent implements OnChanges, AfterViewInit {
     const pie = d3.pie<any>().value((d: any) => Number(d.value));
     const dataReady = pie(data);
 
-    const outerArc = d3
-    .arc()
-    .innerRadius(this.radius * 0.9)
-    .outerRadius(this.radius * 0.9);
-
-    const arc = d3
-      .arc()
-      .innerRadius(this.radius * 0.5) // This is the size of the donut hole
-      .outerRadius(this.radius * 0.8);
-
-      this.svg
+    this.svg
       .selectAll('pieces')
       .data(dataReady)
       .enter()
@@ -81,20 +71,20 @@ export class PieComponent implements OnChanges, AfterViewInit {
       .data(pie(data))
       .enter().append('g')
       .attr('transform', (d,i) =>
-        'translate(' + this.width/2 + ',' + (i *40) + ')')
+        'translate(' + (this.radius * 2 + this.margin * 2) + ',' + (i * 18) + ')')
       .attr('class', 'legend');
 
 
     legendG.append('rect') // make a matching color rect
       .attr('y', 10)
-      .attr('width', 20)
-      .attr('height', 20)
+      .attr('width', 16)
+      .attr('height', 16)
       .attr('fill', (d, i) => this.colors(i));
 
     legendG.append('text') // add the text
       .text((d) => d.value.toLocaleString('en-US') + '  ' + d.data.name)
-      .style('font-size', 35)
-      .attr('y', 30)
+      .style('font-size', 14)
+      .attr('y', 24)
       .attr('x', 22);
 
   }
@@ -103,9 +93,14 @@ export class PieComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(): void {
     // console.log(this.data);
-    if (!this.svgElement?.nativeElement) {
+    const el: HTMLElement = this.svgElement?.nativeElement
+    if (!el) {
       return;
     }
+    this.width = el.offsetWidth;
+    this.height = el.offsetHeight;
+    this.radius = this.height * 0.4 - this.margin;
+    console.log('PIE', this.width, this.height);
     this.createSvg();
     this.createColors();
     this.data = this.data.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0));
