@@ -259,6 +259,14 @@
                 <mat-slide-toggle [(ngModel)]='rpState.show_population_density'>Pop. Density</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_landcover'>Roads & Buildings</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adm_borders'>Show Adm Borders</mat-slide-toggle>
+                <div class='with-title' *ngIf='rpState.mode === "new_constructions"'>
+                    <span>Limit New Construction:</span>
+                    <mat-button-toggle-group [(ngModel)]="rpState.nc_limit" aria-label="ADM Level" appearance='Legacy'>
+                        <mat-button-toggle value="50" [disableRipple]='true'>50</mat-button-toggle>
+                        <mat-button-toggle value="100" [disableRipple]='true'>100</mat-button-toggle>
+                        <mat-button-toggle value="all" [disableRipple]='true'>All</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>
