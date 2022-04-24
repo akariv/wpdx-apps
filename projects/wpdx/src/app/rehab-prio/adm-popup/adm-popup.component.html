@@ -22,7 +22,7 @@
     <ng-container *ngIf ='selectedSection >= 0 && admPopupSections[selectedSection]'>
         <h2>{{admPopupSections[selectedSection].title}}</h2>
         <p>
-            <mat-icon>water_drop</mat-icon><label>{{admPopupSections[selectedSection].func_waterpoints + admPopupSections[selectedSection].non_func_waterpoints}} water points ({{admPopupSections[selectedSection].func_waterpoints}} functional)</label>
+            <mat-icon>water_drop</mat-icon><label>{{admPopupSections[selectedSection].func_waterpoints + admPopupSections[selectedSection].non_func_waterpoints | number:'1.0-0'}} water points ({{admPopupSections[selectedSection].func_waterpoints | number:'1.0-0'}} functional)</label>
         </p>
         <p>
             <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[selectedSection].total_pop | number:'1.0-0'}} ppl 
