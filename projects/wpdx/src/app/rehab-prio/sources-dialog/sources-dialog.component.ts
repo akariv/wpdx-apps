@@ -34,7 +34,7 @@ export class SourcesDialogComponent implements OnInit {
              max(created_timestamp) as created,
              array_agg(distinct source) as sources,
              array_agg(distinct clean_country_name) as countries
-      from wpdx_plus
+      from wpdx_enhanced
       where ${where}
       group by 1, 2 order by 3 desc
     `;

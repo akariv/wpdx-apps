@@ -176,7 +176,7 @@ export class RehabPrioComponent implements OnInit {
     const sql = `
       select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
             criticality, pressure
-      from wpdx_plus
+      from wpdx_enhanced
       where ${this.queryWhere(bounds)}
       order by ${this.rpState.sort_by} nulls last
       limit 15
@@ -198,7 +198,7 @@ export class RehabPrioComponent implements OnInit {
   queryDL(bounds, fields) {
     return `
       select ${fields.join(',')}
-      from wpdx_plus
+      from wpdx_enhanced
       where ${this.queryWhere(bounds)}
       order by ${this.rpState.sort_by} nulls last
     `;
@@ -270,7 +270,7 @@ export class RehabPrioComponent implements OnInit {
 
   queryWhere(bounds) {
     const terms = [
-      'is_latest', 'wpdx_id is not null',
+      // 'is_latest', 'wpdx_id is not null',
       'lat_deg >= ' + bounds.getSouth(),
       'lat_deg <= ' + bounds.getNorth(),
       'lon_deg >= ' + bounds.getWest(),
@@ -389,7 +389,7 @@ export class RehabPrioComponent implements OnInit {
       this._popupProperties = value;
       return;
     }
-    const query = `select * from wpdx_plus where wpdx_id='${value.wpdx_id}' and is_latest`;
+    const query = `select * from wpdx_enhanced where wpdx_id='${value.wpdx_id}'`;// and is_latest`;
     this._popupProperties = value;
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {

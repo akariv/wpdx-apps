@@ -12,11 +12,10 @@ export class DbService {
 
   constructor(private http: HttpClient) {}
 
-  query(sql, cache?, page?, page_size?) {
-    sql = btoa(sql)
-    let key = btoa(sql)
+  query(raw_sql, cache?, page?, page_size?) {
+    const sql = btoa(raw_sql)
+    let key = sql;
     const params: any = {
-      query: sql,
     };
     if (page) {
       key += `/${page}`;
@@ -29,7 +28,7 @@ export class DbService {
     if (cache && this.cache[key]) {
       return from([this.cache[key]]);
     }
-    return this.http.get('https://upload.waterpointdata.org/api/db/query', {params}).pipe(
+    return this.http.get('https://upload.waterpointdata.org/api/db/query?query=' + encodeURIComponent(sql), {params}).pipe(
       tap((result) => {
         if (cache) {
           this.cache[key] = result;

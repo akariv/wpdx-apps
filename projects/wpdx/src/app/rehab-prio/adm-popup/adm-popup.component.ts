@@ -41,7 +41,7 @@ export class AdmPopupComponent implements OnChanges {
 
     const baseQuery = `select
         install_year
-        from wpdx_plus
+        from wpdx_enhanced
       `;
 
       const queries: string[] = [];
