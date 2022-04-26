@@ -58,7 +58,7 @@
             </mat-expansion-panel>
             <mat-expansion-panel [expanded]="viz === 1" (opened)="setViz(1)"  *ngIf='state_data[selectedSection] && state_data[selectedSection].length'>
                 <mat-expansion-panel-header>
-                    <mat-panel-title>Water Point Statuses</mat-panel-title>
+                    <mat-panel-title>Water Point Status</mat-panel-title>
                 </mat-expansion-panel-header>
                 <app-pie [data]='state_data[selectedSection]'></app-pie>
             </mat-expansion-panel>
