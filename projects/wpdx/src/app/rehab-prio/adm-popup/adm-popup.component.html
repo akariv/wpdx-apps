@@ -33,13 +33,13 @@
         <ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>
             <div class='indent'>
                 <p>
-                    <mat-icon>people</mat-icon><label>Served:</label>&nbsp;{{(admPopupSections[selectedSection].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].served_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
+                    <mat-icon>people</mat-icon><label>Rural Pop with Basic Access:</label>&nbsp;{{(admPopupSections[selectedSection].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].served_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
                 </p>
                 <p>
-                    <mat-icon>people</mat-icon><label>Unserved:</label>&nbsp;{{(admPopupSections[selectedSection].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].unserved_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
+                    <mat-icon>people</mat-icon><label>Rural Pop without Basic Access:</label>&nbsp;{{(admPopupSections[selectedSection].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].unserved_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
                 </p>
                 <p>
-                    <mat-icon>people</mat-icon><label>Unknown:</label>&nbsp;{{admPopupSections[selectedSection].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].uncharted_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
+                    <mat-icon>people</mat-icon><label>Uncharted Rural Pop:</label>&nbsp;{{admPopupSections[selectedSection].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].uncharted_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
                 </p>
             </div>
         </ng-container>
