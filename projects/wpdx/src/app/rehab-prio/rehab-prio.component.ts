@@ -280,7 +280,7 @@ export class RehabPrioComponent implements OnInit {
       terms.push('rehab_priority > 0');
     }
     if (!this.rpState.show_urban_waterpoints) {
-      terms.push('not is_urban');
+      terms.push('not (is_urban is TRUE)');
     }
     if (this.rpState.source_filter) {
       terms.push(`source='${this.rpState.source_filter}'`);
