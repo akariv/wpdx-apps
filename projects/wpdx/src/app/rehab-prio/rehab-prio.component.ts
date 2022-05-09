@@ -57,7 +57,7 @@ export class RehabPrioComponent implements OnInit {
       filter(b => !!b),
       switchMap((bounds) => {
         const rehabPrio = this.db.query(this.queryUI(bounds));
-        const newConstructions = this.db.query(this.queryUINC(bounds, 15));
+        const newConstructions = this.db.query(this.queryUINC(bounds, this.rpState.nc_limit));
         this.rpState.top10 = [];
         return forkJoin([rehabPrio, newConstructions]);
       }),
@@ -91,7 +91,11 @@ export class RehabPrioComponent implements OnInit {
           }
         }
       } else if (this.rpState.mode === 'new_constructions'){
-        this.rpState.top10 = resultsNC;
+        console.log(resultsNC);
+        if (resultsNC) {
+          this.rpState.top10 = resultsNC.slice(0, 15);
+          this.minPopNC = resultsNC.at(-1).population;
+        }
       }
     });
   }
@@ -196,15 +200,6 @@ export class RehabPrioComponent implements OnInit {
     return sql;
   }
 
-  queryUINC2( limit){
-    const sql = `
-    select "NAME_0", "NAME_1", "NAME_2", "NAME_3", "NAME_4", population, lat_deg, lon_deg
-    from new_constructions
-    order by population DESC nulls last
-    limit ${limit}
-    `;
-    return sql;
-  }
 
   queryDL(bounds, fields) {
     return `
@@ -570,14 +565,6 @@ export class RehabPrioComponent implements OnInit {
       }" fill="${color}" />`;
   }
 
-  getMinNCData(nc_limit){
-    return this.db.query(this.queryUINC2(nc_limit)).pipe(
-      map((results => {
-        const val = results.rows.at(-1).population;
-        return val
-      }))
-    );
-  }
 
   updateState(props, bounds, userBounds) {
     // Fit map to bounds in state
@@ -737,19 +724,10 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     // New constructions
-    
-    const nc_limit = props.nc_limit;
-    if (nc_limit === 'all'){
-      this.minPopNC = '';
-    } else {
-      
-      const x = parseInt(nc_limit);
-      this.getMinNCData(x).subscribe(data => this.minPopNC = data);
-      console.log(this.minPopNC);
-      
-    }
+
     var minConstructionFilt = []
-    if (this.minPopNC !== ''){
+    if (props.nc_limit !== '20'){
+      console.log(this.minPopNC);
       minConstructionFilt =  [[
         '>=',
         ['get', 'population'],
@@ -788,6 +766,10 @@ export class RehabPrioComponent implements OnInit {
           ]);
         }
       } else {
+        for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
+          this.rpState.map.setFilter(layer,
+            null);
+        }
         for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
           this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
           this.rpState.map.setFilter(layer,
