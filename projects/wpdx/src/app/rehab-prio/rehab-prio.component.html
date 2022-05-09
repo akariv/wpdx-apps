@@ -136,7 +136,7 @@
             </button>
             <button mat-menu-item (click)='downloadNCData()'>
                 <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
-                <span>New Construction Analysis</span>
+                <span>Service Gap Identification Analysis</span>
             </button>
         </mat-menu>
     </ng-container>
@@ -241,7 +241,7 @@
                     </ng-container>
                     <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
                     <ng-container *ngIf='preview'>
-                        <mat-option value="new_constructions">New Construction Priority Analysis</mat-option>  
+                        <mat-option value="new_constructions">Service Gap Identification Analysis</mat-option>  
                         <mat-option value="staleness">Data Quality Score</mat-option>  
                     </ng-container>
                 </mat-select>
@@ -359,7 +359,7 @@
                 <div class='legend-item'>
                     <img src='assets/img/unclustered.png'>
                     <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>New Construction Point</span></span>
+                        <span><mat-icon [inline]='true'>west</mat-icon><span>Service Gap Identification Point</span></span>
                         <span><mat-icon [inline]='true'>west</mat-icon><span>1 km Radius Covered by This Point</span></span>                        
                         <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point</span></span>
                     </div>
