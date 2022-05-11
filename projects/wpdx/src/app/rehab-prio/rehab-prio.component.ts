@@ -96,11 +96,11 @@ export class RehabPrioComponent implements OnInit {
           }
         }
       } else if (this.rpState.mode === 'new_constructions'){
-        console.log(resultsNC);
         if (resultsNC) {
           if (resultsNC.length > 0){
             this.rpState.top10 = resultsNC.slice(0, 15);
             this.minPopNC = resultsNC.at(-1).population;
+            this.updateState(this.rpState.state.props, this.rpState.state.bounds, this.rpState.state.userBounds)
           }
         }
       }
