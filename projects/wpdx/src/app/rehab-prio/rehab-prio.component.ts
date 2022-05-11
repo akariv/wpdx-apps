@@ -44,7 +44,7 @@ export class RehabPrioComponent implements OnInit {
   colorRange: string[] = [];
   legendOpen = true;
   showTable = false;
-  minPopNC = '';
+  minPopNC: Number = null;
 
   constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
@@ -57,7 +57,12 @@ export class RehabPrioComponent implements OnInit {
       filter(b => !!b),
       switchMap((bounds) => {
         const rehabPrio = this.db.query(this.queryUI(bounds));
-        const newConstructions = this.db.query(this.queryUINC(bounds, this.rpState.nc_limit));
+        let newConstructions;
+        if (this.rpState.nc_limit !== 0){
+          newConstructions = this.db.query(this.queryUINC(bounds, this.rpState.nc_limit));
+        } else {
+          newConstructions = this.db.query(this.queryUINC(bounds, 15));
+        }
         this.rpState.top10 = [];
         return forkJoin([rehabPrio, newConstructions]);
       }),
@@ -93,8 +98,10 @@ export class RehabPrioComponent implements OnInit {
       } else if (this.rpState.mode === 'new_constructions'){
         console.log(resultsNC);
         if (resultsNC) {
-          this.rpState.top10 = resultsNC.slice(0, 15);
-          this.minPopNC = resultsNC.at(-1).population;
+          if (resultsNC.length > 0){
+            this.rpState.top10 = resultsNC.slice(0, 15);
+            this.minPopNC = resultsNC.at(-1).population;
+          }
         }
       }
     });
@@ -725,8 +732,8 @@ export class RehabPrioComponent implements OnInit {
 
     // New constructions
 
-    var minConstructionFilt = []
-    if (props.nc_limit !== '20'){
+    let minConstructionFilt = []
+    if (props.nc_limit !== 0){
       console.log(this.minPopNC);
       minConstructionFilt =  [[
         '>=',
@@ -755,30 +762,17 @@ export class RehabPrioComponent implements OnInit {
         ]]
       };
       
-      if (minConstructionFilt){
-        for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
-          this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
-          this.rpState.map.setFilter(layer,
-            ['all',
-            ...admanFilt,
-            ...newConstFilt[layer],
-            ...minConstructionFilt
-          ]);
-        }
-      } else {
-        for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
-          this.rpState.map.setFilter(layer,
-            null);
-        }
-        for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
-          this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
-          this.rpState.map.setFilter(layer,
-            ['all',
-            ...admanFilt,
-            ...newConstFilt[layer],
-          ]);
-        }
+      
+      for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
+        this.rpState.map.setFilter(layer,
+          ['all',
+          ...admanFilt,
+          ...newConstFilt[layer],
+          ...minConstructionFilt
+        ]);
       }
+      
     } else {
       for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
