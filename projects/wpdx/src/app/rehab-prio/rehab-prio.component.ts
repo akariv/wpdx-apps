@@ -333,23 +333,29 @@ export class RehabPrioComponent implements OnInit {
         where adm_level='best' and
       `;
       const queries: string[] = [];
-      if (value.NAME_1) {
+      if (value.NAME_0) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}'`);
       }
-      if (value.NAME_2) {
+      if (value.NAME_1) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
       }
-      if (value.NAME_3) {
+      if (value.NAME_2) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}'`);
       }
-      if (value.NAME_4) {
+      if (value.NAME_3) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
+      }
+      if (value.NAME_4) {
+        queries.push(`${baseQuery}
+          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+          "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}' and
+          "NAME_4"='${this.fq(value.NAME_4)}'`);
       }
       //console.log(queries);
       this.admPopupSections = [value];
