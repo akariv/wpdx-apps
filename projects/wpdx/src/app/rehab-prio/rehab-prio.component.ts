@@ -596,8 +596,14 @@ export class RehabPrioComponent implements OnInit {
       )]);
     }
     if (props.source_filter) {
+      let source = props.source_filter;
+      let op = '==';
+      if (source[0] === '!') {
+        source = source.slice(1);
+        op = '!=';
+      }
       filt.push(
-        ['==', ['get', 'source'], ['literal', props.source_filter]]
+        [op, ['get', 'source'], ['literal', source]]
       );
     }
     if (props.tech) {
