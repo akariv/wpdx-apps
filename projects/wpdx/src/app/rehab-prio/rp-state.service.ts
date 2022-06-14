@@ -31,6 +31,7 @@ export class RpStateService {
     this.state.defaultValue('show_adman_labels', true);
     this.state.defaultValue('mode', 'basic');
     this.state.defaultValue('adman_level', 'best');
+    this.state.defaultValue('nc_limit', 0);
   }
 
   navigateToAdm(state) {
@@ -144,6 +145,14 @@ export class RpStateService {
 
   get adman_level() {
     return this.state.getProp('adman_level');
+  }
+
+  set nc_limit(value) {
+    this.state.setProp('nc_limit', value);
+  }
+
+  get nc_limit() {
+    return this.state.getProp('nc_limit');
   }
 
   get adman_view_name() {

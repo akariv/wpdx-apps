@@ -44,6 +44,7 @@ export class RehabPrioComponent implements OnInit {
   colorRange: string[] = [];
   legendOpen = true;
   showTable = false;
+  minPopNC: Number = null;
 
   constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
@@ -56,7 +57,12 @@ export class RehabPrioComponent implements OnInit {
       filter(b => !!b),
       switchMap((bounds) => {
         const rehabPrio = this.db.query(this.queryUI(bounds));
-        const newConstructions = this.db.query(this.queryUINC(bounds));
+        let newConstructions;
+        if (this.rpState.nc_limit !== 0){
+          newConstructions = this.db.query(this.queryUINC(bounds, this.rpState.nc_limit));
+        } else {
+          newConstructions = this.db.query(this.queryUINC(bounds, 15));
+        }
         this.rpState.top10 = [];
         return forkJoin([rehabPrio, newConstructions]);
       }),
@@ -90,7 +96,13 @@ export class RehabPrioComponent implements OnInit {
           }
         }
       } else if (this.rpState.mode === 'new_constructions'){
-        this.rpState.top10 = resultsNC;
+        if (resultsNC) {
+          if (resultsNC.length > 0){
+            this.rpState.top10 = resultsNC.slice(0, 15);
+            this.minPopNC = resultsNC.at(-1).population;
+            this.updateState(this.rpState.state.props, this.rpState.state.bounds, this.rpState.state.userBounds)
+          }
+        }
       }
     });
   }
@@ -184,16 +196,17 @@ export class RehabPrioComponent implements OnInit {
     return sql;
   }
 
-  queryUINC(bounds){
+  queryUINC(bounds, limit){
     const sql = `
     select "NAME_0", "NAME_1", "NAME_2", "NAME_3", "NAME_4", population, lat_deg, lon_deg
     from new_constructions
     where ${this.queryNCWhere(bounds)}
     order by population DESC nulls last
-    limit 15
+    limit ${limit}
     `;
     return sql;
   }
+
 
   queryDL(bounds, fields) {
     return `
@@ -565,6 +578,7 @@ export class RehabPrioComponent implements OnInit {
       }" fill="${color}" />`;
   }
 
+
   updateState(props, bounds, userBounds) {
     // Fit map to bounds in state
     if (bounds && !userBounds) {
@@ -729,6 +743,16 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     // New constructions
+
+    let minConstructionFilt = []
+    if (props.nc_limit !== 0){
+      console.log(this.minPopNC);
+      minConstructionFilt =  [[
+        '>=',
+        ['get', 'population'],
+        this.minPopNC
+      ]];
+    }
     if (props.mode === 'new_constructions') {
       const newConstFilt = {
         'nc-points': [[
@@ -742,20 +766,25 @@ export class RehabPrioComponent implements OnInit {
           ['get', 'clustered'],
           true
         ]],
-        'nc-heatmap': [[
+        'nc-heatmap':
+         [[
           '!=',
           ['get', 'clustered'],
           true
         ]]
       };
+      
+      
       for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
         this.rpState.map.setFilter(layer,
           ['all',
           ...admanFilt,
-          ...newConstFilt[layer]
+          ...newConstFilt[layer],
+          ...minConstructionFilt
         ]);
       }
+      
     } else {
       for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
@@ -781,6 +810,8 @@ export class RehabPrioComponent implements OnInit {
 
 
   }
+
+  
 
   gotoPoint(point) {
     this.addCircle(point);
