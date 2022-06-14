@@ -71,21 +71,21 @@ export class PieComponent implements OnChanges, AfterViewInit {
       .data(pie(data))
       .enter().append('g')
       .attr('transform', (d,i) =>
-        'translate(' + (this.radius * 2 + this.margin * 2) + ',' + (i * 18) + ')')
+        'translate(' + (this.radius * 2 + this.margin * 2) + ',' + (i * 16) + ')')
       .attr('class', 'legend');
 
 
     legendG.append('rect') // make a matching color rect
       .attr('y', 10)
-      .attr('width', 16)
-      .attr('height', 16)
+      .attr('width', 14)
+      .attr('height', 14)
       .attr('fill', (d, i) => this.colors(i));
 
     legendG.append('text') // add the text
       .text((d) => d.value.toLocaleString('en-US') + '  ' + d.data.name)
-      .style('font-size', 14)
-      .attr('y', 24)
-      .attr('x', 22);
+      .style('font-size', '12px')
+      .attr('y', 21)
+      .attr('x', 20);
 
   }
 
