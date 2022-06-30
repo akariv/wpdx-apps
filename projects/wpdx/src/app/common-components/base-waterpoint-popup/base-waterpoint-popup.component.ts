@@ -10,5 +10,4 @@ export class BaseWaterpointPopupComponent {
   @Input() popupProperties: any;
 
   constructor() { }
-
 }

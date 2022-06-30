@@ -578,7 +578,6 @@ export class RehabPrioComponent implements OnInit {
       }" fill="${color}" />`;
   }
 
-
   updateState(props, bounds, userBounds) {
     // Fit map to bounds in state
     if (bounds && !userBounds) {
@@ -809,9 +808,7 @@ export class RehabPrioComponent implements OnInit {
     }
 
 
-  }
-
-  
+  } 
 
   gotoPoint(point) {
     this.addCircle(point);
@@ -873,5 +870,10 @@ export class RehabPrioComponent implements OnInit {
 
   openAttributeFilterDialog() {
     this.dialog.open(AttributeFilterDialogComponent);
+  }
+
+  statusColor(field: string) {
+    console.log('statusColor', field, this.popupProperties[field]);
+    return this.popupProperties[field] === 'Yes' ? 'blue' : 'red';
   }
 }

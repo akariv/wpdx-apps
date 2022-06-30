@@ -1,5 +1,5 @@
 <app-airtable-layout
-    [id]='preview ? "explorer" : "rehab-prio"'
+    [id]='"explorer"'
     [interactionLayers]='["adm-analysis", "rehab-priority-text", "all-waterpoints", "nc-points", "nc-labels"]'
     [filters]='filterConfiguration'
     [popupProperties]='popupProperties'
@@ -162,6 +162,16 @@
                     <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
                 </p>    
             </ng-container>
+            <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
+                <p>
+                    <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
+                </p>
+                <app-spark-line [popupProperties]='popupProperties' *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
+                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
+                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
+                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
+                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
+            </ng-container>        
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
             <p *ngIf='popupProperties.population > 0'>
@@ -236,14 +246,10 @@
                 <span>Decision Support Tool:</span>
                 <mat-select [(value)]='rpState.mode'>
                     <mat-option value="basic">View Water Points</mat-option>
-                    <ng-container *ngIf='preview'>
-                        <mat-option value="adman">Adm Region Analysis</mat-option>
-                    </ng-container>
+                    <mat-option value="adman">Adm Region Analysis</mat-option>
                     <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
-                    <ng-container *ngIf='preview'>
-                        <mat-option value="new_constructions">Service Gap Identification Analysis</mat-option>  
-                        <mat-option value="staleness">Data Quality Score</mat-option>  
-                    </ng-container>
+                    <mat-option value="new_constructions">Service Gap Identification Analysis</mat-option>  
+                    <mat-option value="staleness">Data Quality Score</mat-option>  
                 </mat-select>
             </div>
             <ng-container *ngIf='rpState.mode === "basic"'>
@@ -326,18 +332,10 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <strong>Map Symbols:</strong>
-                <div class='legend-item'>
-                    <img src='assets/img/basic-functional.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                    </div>
-                </div>
-                <div class='legend-item'>
-                    <img src='assets/img/basic-non-functional.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
-                    </div>
-                </div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#185caf"'></span><span>Functional Water Point</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Non-Functional Water Point</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"hsl(0, 0%, 77%)"'></span><span>Unknown Water Point</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"hsl(0, 0%, 15%)"'></span><span>Abandoned Water Point</span></div>
                 <ng-container *ngIf='rpState.show_population_density'>
                     <strong>Population Density</strong>
                     <div class='legend-item'><span class='legend-color' style='background-color: #6495ED'></span><span>High</span></div>
