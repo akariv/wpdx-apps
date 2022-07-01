@@ -246,6 +246,9 @@
                     </ng-container>
                 </mat-select>
             </div>
+            <div>
+                <app-search-bar (state)='rpState.navigateToAdm($event)'></app-search-bar>
+            </div>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_urban'>Urban Areas</mat-slide-toggle>
