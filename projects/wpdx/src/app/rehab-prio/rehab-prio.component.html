@@ -250,6 +250,7 @@
                     <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
                     <mat-option value="new_constructions">Service Gap Identification Analysis</mat-option>  
                     <mat-option value="staleness">Data Quality Score</mat-option>  
+                    <mat-option *ngIf='preview' value="risk-index">Predicted Risk Index</mat-option>  
                 </mat-select>
             </div>
             <ng-container *ngIf='rpState.mode === "basic"'>
@@ -324,6 +325,14 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "staleness"'>
                 <strong>Data Quality</strong>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>High</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Low</span></div>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "risk-index"'>
+                <strong>Risk Index</strong>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>High</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>

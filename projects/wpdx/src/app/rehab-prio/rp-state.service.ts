@@ -64,6 +64,8 @@ export class RpStateService {
       this.title.setTitle('WPdx Decision Support Tools - Administrative Region Analysis');
     } else if (value === 'staleness') {
       this.title.setTitle('WPdx Decision Support Tools - Data Staleness Analysis');
+    } else if (value === 'risk-index') {
+      this.title.setTitle('WPdx Decision Support Tools - Predicted Risk Index Analysis');
     } else if (value === 'new_constructions') {
       this.title.setTitle('WPdx Decision Support Tools - New Construction Analysis');
     } else {

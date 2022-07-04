@@ -677,8 +677,16 @@ export class RehabPrioComponent implements OnInit {
       }
     }
 
-    // ADM Analysis / Staleness
-    const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
+    // ADM Analysis / Staleness / Risk index
+    const admanView = 
+        props.mode === 'adman' ? 
+            props.adman_view : (
+              props.mode === 'staleness' ? 
+              'staleness' : (
+                props.mode === 'risk-index' ?
+                  'risk-index' : ''
+              )
+            );
     const admanLevel= props.adman_level || 'best';
     const admBorders = props.mode === 'adman' ? false : (props.mode === 'staleness' ? false : (this.rpState.show_adm_borders));
     let prop: any = [];
@@ -700,6 +708,9 @@ export class RehabPrioComponent implements OnInit {
       // prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
+    } else if (admanView === 'risk-index') {
+      prop = ['get', 'percent_risk_index'];
+      this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
     } else {
       prop = null;
       visibility = 'none';
