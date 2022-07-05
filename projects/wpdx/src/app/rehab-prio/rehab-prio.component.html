@@ -196,8 +196,7 @@
             </p>
         </ng-container>
         <ng-container *ngIf='popupProperties.total_pop'> 
-            <app-adm-popup [popupProperties]='popupProperties' [admPopupSections]='admPopupSections' *ngIf='rpState.mode === "adman"'>
-
+            <app-adm-popup [popupProperties]='popupProperties' [admPopupSections]='admPopupSections' *ngIf='rpState.mode === "adman" || rpState.mode === "risk-index"'>
             </app-adm-popup>
             
             <ng-container *ngIf='rpState.mode === "staleness"'> 
@@ -275,7 +274,7 @@
                     </mat-button-toggle-group>
                 </div>
             </ng-container>
-            <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
+            <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness" || rpState.mode === "risk-index"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <div class='with-title'>
@@ -333,11 +332,11 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'>
                 <strong>Risk Index</strong>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>High</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>Improving</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>Stable</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Low</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Deteriorating</span></div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <strong>Map Symbols:</strong>

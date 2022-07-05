@@ -12,8 +12,12 @@ export class DbService {
 
   constructor(private http: HttpClient) {}
 
+  b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
+  }
+
   query(raw_sql, cache?, page?, page_size?) {
-    const sql = btoa(raw_sql)
+    const sql = this.b64EncodeUnicode(raw_sql)
     let key = sql;
     const params: any = {
     };

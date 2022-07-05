@@ -42,6 +42,7 @@ export class RehabPrioComponent implements OnInit {
   markersOnScreen: any = {};
   admPopupSections: any[] = [];
   colorRange: string[] = [];
+  borderColor: string = '';
   legendOpen = true;
   showTable = false;
   minPopNC: Number = null;
@@ -341,6 +342,7 @@ export class RehabPrioComponent implements OnInit {
         sum(func_waterpoints) as func_waterpoints,
         sum(non_func_waterpoints) as non_func_waterpoints,
         sum(staleness_uncharted) as staleness_uncharted,
+        sum(staleness_count) as staleness_count,
         count(1) as count
         from adm_analysis
         where adm_level='best' and
@@ -692,6 +694,7 @@ export class RehabPrioComponent implements OnInit {
     let prop: any = [];
     let visibility = 'visible';
     this.colorRange = [];
+    this.borderColor = null;
     if (admanView === 'served') {
       prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
       // this.colorRange = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c']; // Blue-Green
@@ -710,11 +713,14 @@ export class RehabPrioComponent implements OnInit {
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else if (admanView === 'risk-index') {
       prop = ['get', 'predicted_risk_index'];
-      this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
+      this.colorRange = ['#3182bd', '#9ecae1', 'rgba(255, 255, 255, 0)', '#fc9272', '#de2d26'];
+      this.borderColor = '#ccc';
+      // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
     } else {
       prop = null;
       visibility = 'none';
     }
+    this.borderColor = this.borderColor || this.colorRange[4];
     if (prop) {
       const interpolate = ['interpolate-hcl', ['linear'], prop,
         0, ['to-color', this.colorRange[0]],
@@ -725,7 +731,7 @@ export class RehabPrioComponent implements OnInit {
       ];
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', 0.7);
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', interpolate);
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', ['to-color', this.colorRange[4]]);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', ['to-color', this.borderColor]);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
     }
     const admanFilt = [];
@@ -884,7 +890,6 @@ export class RehabPrioComponent implements OnInit {
   }
 
   statusColor(field: string) {
-    console.log('statusColor', field, this.popupProperties[field]);
     return this.popupProperties[field] === 'Yes' ? 'blue' : 'red';
   }
 }
