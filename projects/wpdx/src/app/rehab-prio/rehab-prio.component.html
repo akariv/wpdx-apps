@@ -246,9 +246,6 @@
                     </ng-container>
                 </mat-select>
             </div>
-            <div>
-                <app-search-bar (state)='rpState.navigateToAdm($event)'></app-search-bar>
-            </div>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <mat-slide-toggle [(ngModel)]='rpState.all_waterpoints'>Functional Points</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.show_urban'>Urban Areas</mat-slide-toggle>
@@ -291,6 +288,9 @@
                     Coverage Summary
                 </mat-slide-toggle>
             </ng-container>
+        </div>
+        <div class='search-bar'>
+            <app-search-bar (state)='rpState.navigateToAdm($event)'></app-search-bar>
         </div>
         <div class='legend' [class.open]='legendOpen'>
             <span class='legend-control' (click)='legendOpen = !legendOpen'>
@@ -369,5 +369,7 @@
                 </div>
             </ng-container>
         </div>
+        
+        
     </div>
 </app-airtable-layout>
