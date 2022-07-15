@@ -96,6 +96,9 @@ export class SearchBarComponent implements OnInit{
       this.options.push(option);
     }
     for (const item of adm3){
+      if (item.clean_adm3 === '-'){
+        continue;
+      }
       const option = {
         'display': item.clean_adm3 + ', ' + item.clean_adm2 +', '+ item.clean_adm1 + ', ' + item.clean_country_name,
         'state': {
@@ -110,6 +113,9 @@ export class SearchBarComponent implements OnInit{
       this.options.push(option);
     }
     for (const item of adm4) {
+      if (item.clean_adm4 === '-'){
+        continue;
+      }
       const option = {
         'display': item.clean_adm4 + ', ' + item.clean_adm3 + ', ' + item.clean_adm2 +', '+ item.clean_adm1 + ', ' + item.clean_country_name,
         'state': {
