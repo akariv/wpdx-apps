@@ -29,7 +29,7 @@ import { BarComponent } from './bar/bar.component';
 import { StalenessPopupBarComponent } from './staleness-popup-bar/staleness-popup-bar.component';
 import { PieComponent } from './pie/pie.component';
 import { SparkLineComponent } from './spark-line/spark-line.component';
-import { SearchBarComponent } from './search-bar/search-bar.component';
+import { AdmSearchBarComponent } from './adm-search-bar/adm-search-bar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 export { StateService } from './state.service';
@@ -54,7 +54,7 @@ export { StateService } from './state.service';
     StalenessPopupBarComponent,
     SparkLineComponent,
     PieComponent,
-    SearchBarComponent
+    AdmSearchBarComponent
   ],
   imports: [
     CommonModule,
@@ -89,7 +89,7 @@ export { StateService } from './state.service';
     StalenessPopupBarComponent,
     SparkLineComponent,
     PieComponent,
-    SearchBarComponent
+    AdmSearchBarComponent
   ]
 })
 export class CommonComponentsModule { }

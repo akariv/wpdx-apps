@@ -8,25 +8,25 @@ import {map, startWith} from 'rxjs/operators';
 import { filter } from 'd3';
 
 @Component({
-  selector: 'app-search-bar',
-  templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.less']
+  selector: 'app-adm-search-bar',
+  templateUrl: './adm-search-bar.component.html',
+  styleUrls: ['./adm-search-bar.component.less']
 })
-export class SearchBarComponent implements OnInit{
+export class AdmSearchBarComponent implements OnInit{
 
   @Output() state = new EventEmitter<any>();
 
-  myControl = new FormControl('');
+  searchBarControlForm = new FormControl('');
   options = [];
   filteredOptions: Observable<string[]>;
   
-  constructor(private http: HttpClient, private db: DbService, private stateSvc: StateService) {
+  constructor(private db: DbService) {
   }
 
   ngOnInit(): void {
     this.db.fetchAdmLevels().subscribe((rows: any[]) => {
       this.processDBResults(rows);
-      this.filteredOptions = this.myControl.valueChanges.pipe(
+      this.filteredOptions = this.searchBarControlForm.valueChanges.pipe(
         startWith(''),
         map(value => this._filter(value || '')),
       );
@@ -37,7 +37,7 @@ export class SearchBarComponent implements OnInit{
   private _filter(value: string): string[] {
     
     const filterValue = value.toLowerCase();
-    const splittedValue = filterValue.split(" "); 
+    const splittedValue = filterValue.split(' '); 
     let filteredArray = this.options;
     for (const val of splittedValue){
       filteredArray = filteredArray.filter(option => option.display.toLowerCase().includes(val));
