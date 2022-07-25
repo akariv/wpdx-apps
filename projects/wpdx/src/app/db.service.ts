@@ -68,4 +68,32 @@ export class DbService {
       })
     );
   }
+
+  fetchByAdmLevel(adm_level){
+    const query = `
+      SELECT "NAME_0" as clean_country_name,
+             "NAME_1" as clean_adm1, 
+             "NAME_2" as clean_adm2,
+             "NAME_3" as clean_adm3, 
+             "NAME_4" as clean_adm4,
+             bounds
+      FROM adm_analysis
+      WHERE adm_level = '${adm_level}'
+      ORDER BY 1,2,3,4,5
+    `;
+    return forkJoin([0, 1].map((i) => this.query(query, true, i, 10000))).pipe(
+      map((results) => {
+        const ret: any[] = [];
+        if (results[0].pages === 1){
+          ret.push(...results[0].rows);
+        } else {
+          for (const result of results) {
+            ret.push(...result.rows);
+          }
+        }
+        return ret;
+      })
+    );
+  }
+
 }
