@@ -4,8 +4,8 @@ import { RehabPrioPreviewComponent } from './rehab-prio-preview/rehab-prio-previ
 import { RehabPrioComponent } from './rehab-prio.component';
 
 const routes: Routes = [
-  { path: '', component: RehabPrioPreviewComponent },
-  { path: 'rehab-prio', component: RehabPrioComponent }
+  { path: '', component: RehabPrioComponent },
+  { path: 'preview', component: RehabPrioPreviewComponent }
 ];
 
 @NgModule({

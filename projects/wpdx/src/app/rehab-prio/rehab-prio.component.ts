@@ -42,8 +42,10 @@ export class RehabPrioComponent implements OnInit {
   markersOnScreen: any = {};
   admPopupSections: any[] = [];
   colorRange: string[] = [];
+  borderColor: string = '';
   legendOpen = true;
   showTable = false;
+  minPopNC: Number = null;
 
   constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
     this.db.fetchAdmLevels().subscribe();
@@ -56,7 +58,12 @@ export class RehabPrioComponent implements OnInit {
       filter(b => !!b),
       switchMap((bounds) => {
         const rehabPrio = this.db.query(this.queryUI(bounds));
-        const newConstructions = this.db.query(this.queryUINC(bounds));
+        let newConstructions;
+        if (this.rpState.nc_limit !== 0){
+          newConstructions = this.db.query(this.queryUINC(bounds, this.rpState.nc_limit));
+        } else {
+          newConstructions = this.db.query(this.queryUINC(bounds, 15));
+        }
         this.rpState.top10 = [];
         return forkJoin([rehabPrio, newConstructions]);
       }),
@@ -90,7 +97,13 @@ export class RehabPrioComponent implements OnInit {
           }
         }
       } else if (this.rpState.mode === 'new_constructions'){
-        this.rpState.top10 = resultsNC;
+        if (resultsNC) {
+          if (resultsNC.length > 0){
+            this.rpState.top10 = resultsNC.slice(0, 15);
+            this.minPopNC = resultsNC.at(-1).population;
+            this.updateState(this.rpState.state.props, this.rpState.state.bounds, this.rpState.state.userBounds)
+          }
+        }
       }
     });
   }
@@ -184,16 +197,17 @@ export class RehabPrioComponent implements OnInit {
     return sql;
   }
 
-  queryUINC(bounds){
+  queryUINC(bounds, limit){
     const sql = `
     select "NAME_0", "NAME_1", "NAME_2", "NAME_3", "NAME_4", population, lat_deg, lon_deg
     from new_constructions
     where ${this.queryNCWhere(bounds)}
     order by population DESC nulls last
-    limit 15
+    limit ${limit}
     `;
     return sql;
   }
+
 
   queryDL(bounds, fields) {
     return `
@@ -328,28 +342,35 @@ export class RehabPrioComponent implements OnInit {
         sum(func_waterpoints) as func_waterpoints,
         sum(non_func_waterpoints) as non_func_waterpoints,
         sum(staleness_uncharted) as staleness_uncharted,
+        sum(staleness_count) as staleness_count,
         count(1) as count
         from adm_analysis
         where adm_level='best' and
       `;
       const queries: string[] = [];
-      if (value.NAME_1) {
+      if (value.NAME_0) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}'`);
       }
-      if (value.NAME_2) {
+      if (value.NAME_1) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
       }
-      if (value.NAME_3) {
+      if (value.NAME_2) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}'`);
       }
-      if (value.NAME_4) {
+      if (value.NAME_3) {
         queries.push(`${baseQuery}
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
+      }
+      if (value.NAME_4) {
+        queries.push(`${baseQuery}
+          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+          "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}' and
+          "NAME_4"='${this.fq(value.NAME_4)}'`);
       }
       //console.log(queries);
       this.admPopupSections = [value];
@@ -590,8 +611,14 @@ export class RehabPrioComponent implements OnInit {
       )]);
     }
     if (props.source_filter) {
+      let source = props.source_filter;
+      let op = '==';
+      if (source[0] === '!') {
+        source = source.slice(1);
+        op = '!=';
+      }
       filt.push(
-        ['==', ['get', 'source'], ['literal', props.source_filter]]
+        [op, ['get', 'source'], ['literal', source]]
       );
     }
     if (props.tech) {
@@ -652,13 +679,22 @@ export class RehabPrioComponent implements OnInit {
       }
     }
 
-    // ADM Analysis / Staleness
-    const admanView = props.mode === 'adman' ? props.adman_view : (props.mode === 'staleness' ? 'staleness' : '');
+    // ADM Analysis / Staleness / Risk index
+    const admanView = 
+        props.mode === 'adman' ? 
+            props.adman_view : (
+              props.mode === 'staleness' ? 
+              'staleness' : (
+                props.mode === 'risk-index' ?
+                  'risk-index' : ''
+              )
+            );
     const admanLevel= props.adman_level || 'best';
     const admBorders = props.mode === 'adman' ? false : (props.mode === 'staleness' ? false : (this.rpState.show_adm_borders));
     let prop: any = [];
     let visibility = 'visible';
     this.colorRange = [];
+    this.borderColor = null;
     if (admanView === 'served') {
       prop = ['+', ['get', 'pct_served'], ['get', 'pct_urban']];
       // this.colorRange = ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c']; // Blue-Green
@@ -675,10 +711,16 @@ export class RehabPrioComponent implements OnInit {
       // prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
+    } else if (admanView === 'risk-index') {
+      prop = ['get', 'predicted_risk_index'];
+      this.colorRange = ['#3182bd', '#9ecae1', 'rgba(255, 255, 255, 0)', '#fc9272', '#de2d26'];
+      this.borderColor = '#ccc';
+      // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
     } else {
       prop = null;
       visibility = 'none';
     }
+    this.borderColor = this.borderColor || this.colorRange[4];
     if (prop) {
       const interpolate = ['interpolate-hcl', ['linear'], prop,
         0, ['to-color', this.colorRange[0]],
@@ -689,7 +731,7 @@ export class RehabPrioComponent implements OnInit {
       ];
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-opacity', 0.7);
       this.rpState.map.setPaintProperty('adm-analysis', 'fill-color', interpolate);
-      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', ['to-color', this.colorRange[4]]);
+      this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-color', ['to-color', this.borderColor]);
       this.rpState.map.setPaintProperty('adm-analysis-borders', 'line-opacity', 1);
     }
     const admanFilt = [];
@@ -717,6 +759,16 @@ export class RehabPrioComponent implements OnInit {
     this.rpState.map.setPaintProperty('adm-analysis-labels', 'icon-opacity', this.rpState.show_adman_labels ? 1 : 0);
 
     // New constructions
+
+    let minConstructionFilt = []
+    if (props.nc_limit !== 0){
+      console.log(this.minPopNC);
+      minConstructionFilt =  [[
+        '>=',
+        ['get', 'population'],
+        this.minPopNC
+      ]];
+    }
     if (props.mode === 'new_constructions') {
       const newConstFilt = {
         'nc-points': [[
@@ -730,20 +782,25 @@ export class RehabPrioComponent implements OnInit {
           ['get', 'clustered'],
           true
         ]],
-        'nc-heatmap': [[
+        'nc-heatmap':
+         [[
           '!=',
           ['get', 'clustered'],
           true
         ]]
       };
+      
+      
       for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
         this.rpState.map.setFilter(layer,
           ['all',
           ...admanFilt,
-          ...newConstFilt[layer]
+          ...newConstFilt[layer],
+          ...minConstructionFilt
         ]);
       }
+      
     } else {
       for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap-clustered', 'nc-heatmap']) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
@@ -768,7 +825,7 @@ export class RehabPrioComponent implements OnInit {
     }
 
 
-  }
+  } 
 
   gotoPoint(point) {
     this.addCircle(point);
@@ -830,5 +887,9 @@ export class RehabPrioComponent implements OnInit {
 
   openAttributeFilterDialog() {
     this.dialog.open(AttributeFilterDialogComponent);
+  }
+
+  statusColor(field: string) {
+    return this.popupProperties[field] === 'Yes' ? 'blue' : 'red';
   }
 }
