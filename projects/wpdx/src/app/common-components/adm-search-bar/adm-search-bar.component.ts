@@ -3,7 +3,7 @@ import { DbService } from '../../db.service';
 import { StateService } from '../state.service';
 import { HttpClient } from '@angular/common/http';
 import {FormControl} from '@angular/forms';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { filter } from 'd3';
 
@@ -24,27 +24,21 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.db.fetchByAdmLevel('adm0').subscribe((rows: any[]) => {
-      this.processDBResults(rows);
-      this.db.fetchByAdmLevel('adm1').subscribe((rows: any[]) => {
+    forkJoin([
+      this.db.fetchByAdmLevel('adm0'),
+      this.db.fetchByAdmLevel('adm1'),
+      this.db.fetchByAdmLevel('adm2'),
+      this.db.fetchByAdmLevel('adm3'),
+      this.db.fetchByAdmLevel('adm4'),
+    ]).subscribe((results) => {
+      results.forEach(rows => {
         this.processDBResults(rows);
-        this.db.fetchByAdmLevel('adm2').subscribe((rows: any[]) => {
-          this.processDBResults(rows);
-          this.db.fetchByAdmLevel('adm3').subscribe((rows: any[]) => {
-            this.processDBResults(rows);
-            this.db.fetchByAdmLevel('best').subscribe((rows: any[]) => {
-              this.processDBResults(rows);
-              this.filteredOptions = this.searchBarControlForm.valueChanges.pipe(
-                startWith(''),
-                map(value => this._filter(value || '')),
-              );
-            })
-          })
-        })
-      }) 
+        this.filteredOptions = this.searchBarControlForm.valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value || '')),
+        );
+      });
     });
-
-    
   }
 
   private _filter(value: string): string[] {

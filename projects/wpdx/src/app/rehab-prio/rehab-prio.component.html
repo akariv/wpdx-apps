@@ -9,6 +9,9 @@
     (filterSelected)='nav = $event'
 >
     <ng-container ngProjectAs='.menu'>
+        <div class='search-bar'>
+            <app-adm-search-bar (state)='rpState.navigateToAdm($event)'></app-adm-search-bar>
+        </div>
         <div class='filtering-for' *ngIf='state.props.country_name'>
             <mat-icon class='filtering-remove' (click)='state.props.country_name = state.props.adm1 = state.props.adm2 = state.props.adm3 = state.props.adm4 = null; state.bump()'>highlight_off</mat-icon>
             <label>Region Filter:</label>
@@ -302,9 +305,6 @@
                     Coverage Summary
                 </mat-slide-toggle>
             </ng-container>
-        </div>
-        <div class='search-bar'>
-            <app-adm-search-bar (state)='rpState.navigateToAdm($event)'></app-adm-search-bar>
         </div>
         <div class='legend' [class.open]='legendOpen'>
             <span class='legend-control' (click)='legendOpen = !legendOpen'>
