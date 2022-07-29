@@ -1,0 +1,18 @@
+
+<div *ngFor='let photo of photoList; let i = index'>
+    <ng-container *ngIf='i === currentPhotoIndex'>
+        <div *ngIf='photo.photo_lnk' class='current-photo'>
+            <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
+        </div>
+    </ng-container>
+    <ng-container *ngIf='i < currentPhotoIndex'>
+        <div *ngIf='photo.photo_lnk' class='left'>
+            <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
+        </div>
+    </ng-container>
+    <ng-container *ngIf='i > currentPhotoIndex'>
+        <div *ngIf='photo.photo_lnk' class='right'>
+            <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
+        </div>
+    </ng-container>   
+</div>
