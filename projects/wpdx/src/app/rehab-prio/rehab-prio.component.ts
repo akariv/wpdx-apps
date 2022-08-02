@@ -134,6 +134,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   downloadData() {
+    this.sendGAEvent('download-rehab-prio');
     window.open(this.downloadUrl(), '_blank');
   }
 
@@ -163,14 +164,21 @@ export class RehabPrioComponent implements OnInit {
     });
   }
 
+  sendGAEvent(name) {
+    if (window['gtag']) {
+      const gtag = window['gtag'] as any;
+      gtag('event', name, {
+        debug_mode: true
+      });
+    }
+  }
+
   downloadADMUrl() {
-    const bounds = this.state.bounds;
-    //console.log('QQQ', this.queryDLADM(fields));
     return this.db.download(this.queryDLADM(this.downloadADMFields(true)), 'xlsx', 'adm-regions', this.downloadADMFields());
   }
 
   downloadADMData() {
-    //console.log(this.queryDLADM(this.downloadADMFields(true)));
+    this.sendGAEvent('download-adm-analysis');
     window.open(this.downloadADMUrl(), '_blank');
   }
 
@@ -182,6 +190,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   downloadNCData(){
+    this.sendGAEvent('download-new-construction');
     window.open(this.downloadNCUrl(), '_blank');
   }
 
