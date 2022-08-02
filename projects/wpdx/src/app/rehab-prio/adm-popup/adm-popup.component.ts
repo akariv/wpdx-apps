@@ -26,7 +26,6 @@ export class AdmPopupComponent implements OnChanges {
   _lastPopupProperties: any = null;
 
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
-    this.db.fetchAdmLevels().subscribe();
   }
 
   tickFormat(num: any){
@@ -161,6 +160,17 @@ export class AdmPopupComponent implements OnChanges {
       this.getData('water_tech_category').subscribe(data => { this.tech_data = data; });;
       this.getData('management_clean').subscribe(data => { this.management_data = data; });;
       this._lastPopupProperties = this.popupProperties;
+    }
+    for (const section of this.admPopupSections) {
+      if (!section.predictedFunctional) {
+        section.predictedFunctional = [];
+        section.predictedNonFunctional = [];
+        const total = section.count;
+        for (let i = 0; i < 10; i++) {
+          section.predictedFunctional.push(section[`predicted_functional_${i}y`]);
+          section.predictedNonFunctional.push(total - section[`predicted_functional_${i}y`]);
+        }
+      }
     }
   }
 

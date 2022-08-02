@@ -170,11 +170,15 @@
                     <p>
                         <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
                     </p>
-                    <app-spark-line [popupProperties]='popupProperties' *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
-                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
-                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
-                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
-                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
+                    <app-spark-line [popupProperties]='popupProperties' 
+                        [fields]='["yesPredictions:blue", "noPredictions:red"]'
+                        *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
+                    <div class='predictions'>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
+                    </div>
                 </ng-container>     
             </ng-container>   
         </app-base-waterpoint-popup>

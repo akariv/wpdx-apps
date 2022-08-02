@@ -1,6 +1,6 @@
 <div>
     <p class='adm-location'>
-        <span class='adm-label' [class.active]='selectedSection === 0' (click)='selectedSection = 0'>{{admPopupSections[admPopupSections.length-1].NAME_0}}</span>
+        <span class='adm-label' [class.active]='selectedSection === 0' (click)='selectedSection = 0'>{{popupProperties.NAME_0}}</span>
         <ng-container *ngIf='popupProperties.NAME_1'>
             &nbsp;&gt;&nbsp;
             <span class='adm-label' [class.active]='selectedSection === 1' (click)='selectedSection = 1'>{{popupProperties.NAME_1}}</span>
@@ -46,9 +46,14 @@
         
         <ng-container *ngIf='rpState.mode === "risk-index"'>
             <p>
-                <mat-icon>bolt</mat-icon><label>Risk Index:</label>&nbsp;{{admPopupSections[selectedSection].risk_index | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>, of which</ng-container>
+                <mat-icon>bolt</mat-icon><label>Risk Index:</label>&nbsp;{{admPopupSections[selectedSection].predicted_risk_index * 100 | number:'1.0-0'}}
             </p>
-    
+            <p>
+                <mat-icon>tips_and_updates</mat-icon><label>Prediction of number of Functional/Non-Functional Points</label>
+            </p>
+            <app-spark-line [popupProperties]='admPopupSections[selectedSection]' 
+                            [fields]='["predictedFunctional:blue", "predictedNonFunctional:red"]'
+                            *ngIf='admPopupSections[selectedSection].predictedFunctional'></app-spark-line>
         </ng-container>
 
         <mat-accordion>

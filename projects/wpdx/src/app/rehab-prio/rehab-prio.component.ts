@@ -48,7 +48,6 @@ export class RehabPrioComponent implements OnInit {
   minPopNC: Number = null;
 
   constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
-    this.db.fetchAdmLevels().subscribe();
   }
 
   ngOnInit(): void {
@@ -343,50 +342,40 @@ export class RehabPrioComponent implements OnInit {
     console.log('PPP', value);
     if (value.total_pop) {
       const baseQuery = `select
-        sum(total_pop) as total_pop,
-        sum(rural_pop) as rural_pop,
-        sum(unserved_pop) as unserved_pop,
-        sum(uncharted_pop) as uncharted_pop,
-        sum(served_pop) as served_pop,
-        sum(func_waterpoints) as func_waterpoints,
-        sum(non_func_waterpoints) as non_func_waterpoints,
-        sum(staleness_uncharted) as staleness_uncharted,
-        sum(staleness_count) as staleness_count,
-        sum(predicted_functional_0y) as predicted_functional_0y,
-        sum(predicted_functional_1y) as predicted_functional_1y,
-        sum(predicted_functional_2y) as predicted_functional_2y,
-        sum(predicted_functional_3y) as predicted_functional_3y,
-        sum(predicted_functional_4y) as predicted_functional_4y,
-        sum(predicted_functional_5y) as predicted_functional_5y,
-        sum(predicted_functional_6y) as predicted_functional_6y,
-        sum(predicted_functional_7y) as predicted_functional_7y,
-        sum(predicted_functional_8y) as predicted_functional_8y,
-        sum(predicted_functional_9y) as predicted_functional_9y,
-        count(1) as count
+        total_pop, rural_pop, unserved_pop, uncharted_pop, served_pop,
+        func_waterpoints, non_func_waterpoints, staleness_uncharted, staleness_count,
+        predicted_functional_0y, predicted_functional_1y, predicted_functional_2y,
+        predicted_functional_3y, predicted_functional_4y, predicted_functional_5y,
+        predicted_functional_6y, predicted_functional_7y, predicted_functional_8y,
+        predicted_functional_9y, predicted_risk_index, staleness_count as count
         from adm_analysis
-        where adm_level='best' and
+        where 
       `;
       const queries: string[] = [];
       if (value.NAME_0) {
         queries.push(`${baseQuery}
-          "NAME_0"='${this.fq(value.NAME_0)}'`);
+          adm_level='adm0' and "NAME_0"='${this.fq(value.NAME_0)}'`);
       }
       if (value.NAME_1) {
         queries.push(`${baseQuery}
-          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
+          adm_level='adm1' and "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
       }
       if (value.NAME_2) {
         queries.push(`${baseQuery}
-          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+          adm_level='adm2' and 
+          "NAME_0"='${this.fq(value.NAME_0)}' and 
+          "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}'`);
       }
       if (value.NAME_3) {
         queries.push(`${baseQuery}
+          adm_level='adm3' and 
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
       }
       if (value.NAME_4) {
         queries.push(`${baseQuery}
+          adm_level='adm4' and 
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}' and
           "NAME_4"='${this.fq(value.NAME_4)}'`);
@@ -395,31 +384,37 @@ export class RehabPrioComponent implements OnInit {
       this.admPopupSections = [value];
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
         //console.log(value);
-        if (queries.length > 3) {
+        this.admPopupSections = [];
+        if (queries.length > 4 && results[4].rows?.length > 0) {
+          // value.level3 = results[2].rows[0];
+          this.admPopupSections.unshift(
+            Object.assign({title: 'ADM Level 4: ' + value.NAME_3}, results[4].rows[0])
+          );
+        }
+        if (queries.length > 3 && results[3].rows?.length > 0) {
           // value.level3 = results[2].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[3].rows[0])
           );
         }
-        if (queries.length > 2) {
+        if (queries.length > 2 && results[2].rows?.length > 0) {
           // value.level2 = results[1].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[2].rows[0])
           );
         }
-        if (queries.length > 1) {
+        if (queries.length > 1 && results[1].rows?.length > 0) {
           // value.level1 = results[0].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[1].rows[0])
           );
         }
-        if (queries.length > 0) {
+        if (queries.length > 0 && results[0].rows?.length > 0) {
           // value.level1 = results[0].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
-        this.admPopupSections = this.admPopupSections.slice();
       });
 
       this._popupProperties = value;

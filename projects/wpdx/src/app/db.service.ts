@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, from } from 'rxjs';
+import { forkJoin, from, ReplaySubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 @Injectable({
@@ -9,14 +9,23 @@ import { map, tap } from 'rxjs/operators';
 export class DbService {
 
   cache: any = {};
+  fetchAdmLevelsResult = new ReplaySubject(1);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.fetchAdmLevels().subscribe(
+      (result) => {
+        this.fetchAdmLevelsResult.next(result);
+        this.fetchAdmLevelsResult.complete();
+      }
+    );
+  }
 
   b64EncodeUnicode(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
   }
 
   query(raw_sql, cache?, page?, page_size?) {
+    // console.log('QUERYING', raw_sql);
     const sql = this.b64EncodeUnicode(raw_sql)
     let key = sql;
     const params: any = {
