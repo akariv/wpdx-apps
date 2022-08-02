@@ -44,6 +44,13 @@
             </div>
         </ng-container>
         
+        <ng-container *ngIf='rpState.mode === "risk-index"'>
+            <p>
+                <mat-icon>bolt</mat-icon><label>Risk Index:</label>&nbsp;{{admPopupSections[selectedSection].risk_index | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>, of which</ng-container>
+            </p>
+    
+        </ng-container>
+
         <mat-accordion>
             <mat-expansion-panel [expanded]="viz === 0" (opened)="setViz(0)"  *ngIf='install_year_data[selectedSection] && install_year_data[selectedSection].length'>
                 <mat-expansion-panel-header>

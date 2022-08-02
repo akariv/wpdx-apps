@@ -352,6 +352,16 @@ export class RehabPrioComponent implements OnInit {
         sum(non_func_waterpoints) as non_func_waterpoints,
         sum(staleness_uncharted) as staleness_uncharted,
         sum(staleness_count) as staleness_count,
+        sum(predicted_functional_0y) as predicted_functional_0y,
+        sum(predicted_functional_1y) as predicted_functional_1y,
+        sum(predicted_functional_2y) as predicted_functional_2y,
+        sum(predicted_functional_3y) as predicted_functional_3y,
+        sum(predicted_functional_4y) as predicted_functional_4y,
+        sum(predicted_functional_5y) as predicted_functional_5y,
+        sum(predicted_functional_6y) as predicted_functional_6y,
+        sum(predicted_functional_7y) as predicted_functional_7y,
+        sum(predicted_functional_8y) as predicted_functional_8y,
+        sum(predicted_functional_9y) as predicted_functional_9y,
         count(1) as count
         from adm_analysis
         where adm_level='best' and
@@ -722,7 +732,7 @@ export class RehabPrioComponent implements OnInit {
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else if (admanView === 'risk-index') {
       prop = ['get', 'predicted_risk_index'];
-      this.colorRange = ['#3182bd', '#9ecae1', 'rgba(255, 255, 255, 0)', '#fc9272', '#de2d26'];
+      this.colorRange = ['#3182bd', '#9ecae1', 'rgba(255, 255, 255, 0.5)', '#fc9272', '#de2d26'];
       this.borderColor = '#ccc';
       // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
     } else {

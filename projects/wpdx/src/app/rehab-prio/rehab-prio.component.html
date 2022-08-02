@@ -165,16 +165,18 @@
                     <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
                 </p>    
             </ng-container>
-            <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
-                <p>
-                    <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
-                </p>
-                <app-spark-line [popupProperties]='popupProperties' *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
-            </ng-container>        
+            <ng-container *ngIf='rpState.mode === "risk-index"'> 
+                <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
+                    <p>
+                        <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
+                    </p>
+                    <app-spark-line [popupProperties]='popupProperties' *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
+                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
+                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
+                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
+                    <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
+                </ng-container>     
+            </ng-container>   
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
             <p *ngIf='popupProperties.population > 0'>
