@@ -1,18 +1,16 @@
+<!-- <p (click) = 'moveLeft()'>left</p>
+<p (click)='moveRight()'>right</p> -->
 
-<div *ngFor='let photo of photoList; let i = index'>
-    <ng-container *ngIf='i === currentPhotoIndex'>
-        <div *ngIf='photo.photo_lnk' class='current-photo'>
+
+<div class='photo-gallery' *ngIf='photoList[currentPhotoIndex].photo_lnk'>
+    <div *ngFor='let photo of photoList; let i = index'>
+        <div *ngIf='photo.photo_lnk' [class.current-photo]='i === currentPhotoIndex' [class.left]='i < currentPhotoIndex' [class.right]='i > currentPhotoIndex'>
             <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
-        </div>
-    </ng-container>
-    <ng-container *ngIf='i < currentPhotoIndex'>
-        <div *ngIf='photo.photo_lnk' class='left'>
-            <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
-        </div>
-    </ng-container>
-    <ng-container *ngIf='i > currentPhotoIndex'>
-        <div *ngIf='photo.photo_lnk' class='right'>
-            <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
-        </div>
-    </ng-container>   
+        </div>      
+</div>
+    
+</div>
+<div *ngIf='photoList[currentPhotoIndex].photo_lnk'>
+    <mat-icon (click) ='moveLeft()'>arrow_back</mat-icon>
+    <mat-icon (click)='moveRight()' class='forward'>arrow_forward</mat-icon>
 </div>
