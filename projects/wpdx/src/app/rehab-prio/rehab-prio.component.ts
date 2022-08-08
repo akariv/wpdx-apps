@@ -415,7 +415,6 @@ export class RehabPrioComponent implements OnInit {
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {
         this._popupProperties = results.rows[0];
-        console.log(this._popupProperties);
         const noPredictions = [];
         const yesPredictions = [];
         for (let i = 0; i < 10; i++){

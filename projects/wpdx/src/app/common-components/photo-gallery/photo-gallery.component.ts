@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { max } from 'd3';
 
 @Component({
   selector: 'app-photo-gallery',
@@ -20,8 +19,6 @@ export class PhotoGalleryComponent implements OnInit {
   ngOnInit(): void {
     this.photoList = Object.values(this.photo_lnks);
     this.maxIndex = this.photoList.length;
-    console.log(this.photoList);
-
   }
 
   moveRight(){
