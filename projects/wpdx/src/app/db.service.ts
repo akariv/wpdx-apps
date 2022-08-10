@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, from } from 'rxjs';
+import { forkJoin, from, ReplaySubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 @Injectable({
@@ -9,14 +9,23 @@ import { map, tap } from 'rxjs/operators';
 export class DbService {
 
   cache: any = {};
+  fetchAdmLevelsResult = new ReplaySubject(1);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.fetchAdmLevels().subscribe(
+      (result) => {
+        this.fetchAdmLevelsResult.next(result);
+        this.fetchAdmLevelsResult.complete();
+      }
+    );
+  }
 
   b64EncodeUnicode(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
   }
 
   query(raw_sql, cache?, page?, page_size?) {
+    // console.log('QUERYING', raw_sql);
     const sql = this.b64EncodeUnicode(raw_sql)
     let key = sql;
     const params: any = {
@@ -72,4 +81,32 @@ export class DbService {
       })
     );
   }
+
+  fetchByAdmLevel(adm_level){
+    const query = `
+      SELECT "NAME_0" as clean_country_name,
+             "NAME_1" as clean_adm1, 
+             "NAME_2" as clean_adm2,
+             "NAME_3" as clean_adm3, 
+             "NAME_4" as clean_adm4,
+             bounds
+      FROM adm_analysis
+      WHERE adm_level = '${adm_level}'
+      ORDER BY 1,2,3,4,5
+    `;
+    return forkJoin([0, 1].map((i) => this.query(query, true, i, 10000))).pipe(
+      map((results) => {
+        const ret: any[] = [];
+        if (results[0].pages === 1){
+          ret.push(...results[0].rows);
+        } else {
+          for (const result of results) {
+            ret.push(...result.rows);
+          }
+        }
+        return ret;
+      })
+    );
+  }
+
 }

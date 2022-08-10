@@ -23,9 +23,9 @@ export class AdmPopupComponent implements OnChanges {
   management_data = [];
   selectedSection = 0;
   viz = 0;
+  _lastPopupProperties: any = null;
 
   constructor(private db: DbService, private state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
-    this.db.fetchAdmLevels().subscribe();
   }
 
   tickFormat(num: any){
@@ -86,8 +86,8 @@ export class AdmPopupComponent implements OnChanges {
 
   getDataQuery(value, attribute){
     const values = [value.NAME_1, value.NAME_2, value.NAME_3, value.NAME_4];
-    let baseQuery = `select ${attribute} as name, count(${attribute}) from
-    wpdx_plus`;
+    let baseQuery = `select ${attribute} as name, count(1) from
+    wpdx_enhanced`;
     const queries: string[] = [];
     if (value.NAME_0){
       baseQuery = `${baseQuery} where clean_country_name='${this.fq(value.NAME_0)}'`;
@@ -107,7 +107,7 @@ export class AdmPopupComponent implements OnChanges {
           const x = [];
           for (const val of result.rows){
             if (val.count > 0){
-              x.push({name: val.name, value:val.count});
+              x.push({name: val.name || 'Unknown', value:val.count});
             }
           }
           dataArray.push(x);
@@ -152,12 +152,26 @@ export class AdmPopupComponent implements OnChanges {
 
 
   ngOnChanges(): void {
-    this.selectedSection = this.popupProperties.NAME_4 ? 4 : (this.popupProperties.NAME_3 ? 3 : (this.popupProperties.NAME_2 ? 2 : (this.popupProperties.NAME_1 ? 1 : 0)));
-    this.getInstallYearData();
-    this.getStateData();
-    this.getData('water_source_category').subscribe(data => { this.source_data = data; });
-    this.getData('water_tech_category').subscribe(data => { this.tech_data = data; });;
-    this.getData('management_clean').subscribe(data => { this.management_data = data; });;
+    if (this._lastPopupProperties !== this.popupProperties) {
+      this.selectedSection = this.popupProperties.NAME_4 ? 4 : (this.popupProperties.NAME_3 ? 3 : (this.popupProperties.NAME_2 ? 2 : (this.popupProperties.NAME_1 ? 1 : 0)));
+      this.getInstallYearData();
+      this.getStateData();
+      this.getData('water_source_category').subscribe(data => { this.source_data = data; });
+      this.getData('water_tech_category').subscribe(data => { this.tech_data = data; });;
+      this.getData('management_clean').subscribe(data => { this.management_data = data; });;
+      this._lastPopupProperties = this.popupProperties;
+    }
+    for (const section of this.admPopupSections) {
+      if (!section.predictedFunctional) {
+        section.predictedFunctional = [];
+        section.predictedNonFunctional = [];
+        const total = section.count;
+        for (let i = 0; i < 10; i++) {
+          section.predictedFunctional.push(section[`predicted_functional_${i}y`]);
+          section.predictedNonFunctional.push(total - section[`predicted_functional_${i}y`]);
+        }
+      }
+    }
   }
 
   setViz(viz){

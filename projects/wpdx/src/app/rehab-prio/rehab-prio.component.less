@@ -232,8 +232,35 @@ mat-label {
         }
     }
 
+  .search-bar {
+        display: flex;
+        flex-flow: column;
+        align-items: stretch;
+        align-self: flex-start;
+        padding: 8px;
+        gap: 4px;
+        
+        background-color: rgba(255, 255, 255, 0.85);        
+        backdrop-filter: blur(5px);
+        .nice-shadow;
+        margin-top: 8px;
+        margin-left: 8px;
+        position: relative;
+    }
 }
 
+.predictions {
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: space-around;
+
+    .legend-item {
+        flex-flow: column;
+        gap: 4px;
+    }
+}
 .map-popup {
     .popup-styling;
     .indent {

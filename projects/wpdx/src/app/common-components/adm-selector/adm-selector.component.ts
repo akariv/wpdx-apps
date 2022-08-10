@@ -33,7 +33,7 @@ export class AdmSelectorComponent implements OnInit {
         this.countryNameOptions = levels;
       });
     } else {
-      this.db.fetchAdmLevels().subscribe((rows: any[]) => {
+      this.db.fetchAdmLevelsResult.subscribe((rows: any[]) => {
         this.processDBResults(rows);
       });
     }

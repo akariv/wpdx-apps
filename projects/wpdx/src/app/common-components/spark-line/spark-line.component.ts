@@ -9,6 +9,7 @@ import * as d3 from 'd3';
 export class SparkLineComponent implements OnChanges, AfterViewInit {
 
   @Input() popupProperties;
+  @Input() fields: string[];
   @ViewChild('chart') svgElement: ElementRef;
   svg;
 
@@ -20,10 +21,6 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
   innerHeight = this.height - this.margin.top - this.margin.bottom;
   dataCount = 9;
   
-  functionalProb = [0.1, 0.3, 0.1, 0.7, 0.8, 1, 0, 0.5, 0.1, 0.2];
-
-  non_functionalProb = [0.2, 0.4, 0.5, 1, 0.7, 0.9, 0.8, 0.2, 0, 1]
-
   constructor() { }
 
   createSvg(): void{
@@ -38,9 +35,11 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
   }
 
   drawLine(){
-    // const data = d3.range(this.dataCount).map( d => Math.random());
-    const x = d3.scaleLinear().domain([0,this.dataCount]).range([0, this.innerWidth]);
-    const y = d3.scaleLinear().domain([0, 100]).range([this.innerHeight, 0]);
+    const x = d3.scaleLinear().domain([0, this.dataCount]).range([0, this.innerWidth]);
+    const fieldNames = this.fields.map(f => f.split(':')[0]);
+    const maxes = fieldNames.map(f => d3.max(this.popupProperties[f] as number[]));
+    const maxValue: number = d3.max([d3.max(maxes), 100]);
+    const y = d3.scaleLinear().domain([0, maxValue]).range([this.innerHeight, 0]);
     const line: any = d3.line()
           .x((d: any, i: any) => x(i))
           .y((d: any) => y(d));
@@ -49,23 +48,24 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
       .attr('transform', 'translate(0,' + this.innerHeight + ')')
       .call(d3.axisBottom(x).tickFormat((x) => x === 0 ? 'today' : `+${x}y`));
 
-    this.svg.append('g')
-      .call(d3.axisLeft(y).tickValues([0, 25, 50, 75, 100]));
-    
-    if (this.popupProperties.yesPredictions){
-      this.svg.append('path').datum(this.popupProperties.yesPredictions)
-      .attr('fill', 'none')
-      .attr('stroke', 'blue')
-      .attr('stroke-width', 1)
-      .attr('d', line);
+    const yAxis = d3.axisLeft(y);
+    if (maxValue === 100) {
+      yAxis.tickValues([0, 25, 50, 75, 100]);
     }
+    this.svg.append('g').call(yAxis);
     
-    if (this.popupProperties.noPredictions){
-      this.svg.append('path').datum(this.popupProperties.noPredictions)
-      .attr('fill', 'none')
-      .attr('stroke', 'red')
-      .attr('stroke-width', 1)
-      .attr('d', line);
+    for (const field of this.fields) {
+      const parts = field.split(':');
+      const fieldName = parts[0];
+      const color = parts[1];
+      if (this.popupProperties[fieldName]) {
+        this.svg.append('path')
+          .datum(this.popupProperties[fieldName])
+          .attr('fill', 'none')
+          .attr('stroke', color)
+          .attr('stroke-width', 1)
+          .attr('d', line);
+      }
     }
   }
 

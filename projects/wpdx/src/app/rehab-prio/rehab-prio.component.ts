@@ -48,7 +48,6 @@ export class RehabPrioComponent implements OnInit {
   minPopNC: Number = null;
 
   constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
-    this.db.fetchAdmLevels().subscribe();
   }
 
   ngOnInit(): void {
@@ -134,6 +133,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   downloadData() {
+    this.sendGAEvent('download-rehab-prio');
     window.open(this.downloadUrl(), '_blank');
   }
 
@@ -163,14 +163,21 @@ export class RehabPrioComponent implements OnInit {
     });
   }
 
+  sendGAEvent(name) {
+    if (window['gtag']) {
+      const gtag = window['gtag'] as any;
+      gtag('event', name, {
+        debug_mode: true
+      });
+    }
+  }
+
   downloadADMUrl() {
-    const bounds = this.state.bounds;
-    //console.log('QQQ', this.queryDLADM(fields));
     return this.db.download(this.queryDLADM(this.downloadADMFields(true)), 'xlsx', 'adm-regions', this.downloadADMFields());
   }
 
   downloadADMData() {
-    //console.log(this.queryDLADM(this.downloadADMFields(true)));
+    this.sendGAEvent('download-adm-analysis');
     window.open(this.downloadADMUrl(), '_blank');
   }
 
@@ -182,6 +189,7 @@ export class RehabPrioComponent implements OnInit {
   }
 
   downloadNCData(){
+    this.sendGAEvent('download-new-construction');
     window.open(this.downloadNCUrl(), '_blank');
   }
 
@@ -334,40 +342,40 @@ export class RehabPrioComponent implements OnInit {
     console.log('PPP', value);
     if (value.total_pop) {
       const baseQuery = `select
-        sum(total_pop) as total_pop,
-        sum(rural_pop) as rural_pop,
-        sum(unserved_pop) as unserved_pop,
-        sum(uncharted_pop) as uncharted_pop,
-        sum(served_pop) as served_pop,
-        sum(func_waterpoints) as func_waterpoints,
-        sum(non_func_waterpoints) as non_func_waterpoints,
-        sum(staleness_uncharted) as staleness_uncharted,
-        sum(staleness_count) as staleness_count,
-        count(1) as count
+        total_pop, rural_pop, unserved_pop, uncharted_pop, served_pop,
+        func_waterpoints, non_func_waterpoints, staleness_uncharted, staleness_count,
+        predicted_functional_0y, predicted_functional_1y, predicted_functional_2y,
+        predicted_functional_3y, predicted_functional_4y, predicted_functional_5y,
+        predicted_functional_6y, predicted_functional_7y, predicted_functional_8y,
+        predicted_functional_9y, predicted_risk_index, staleness_count as count
         from adm_analysis
-        where adm_level='best' and
+        where 
       `;
       const queries: string[] = [];
       if (value.NAME_0) {
         queries.push(`${baseQuery}
-          "NAME_0"='${this.fq(value.NAME_0)}'`);
+          adm_level='adm0' and "NAME_0"='${this.fq(value.NAME_0)}'`);
       }
       if (value.NAME_1) {
         queries.push(`${baseQuery}
-          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
+          adm_level='adm1' and "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}'`);
       }
       if (value.NAME_2) {
         queries.push(`${baseQuery}
-          "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
+          adm_level='adm2' and 
+          "NAME_0"='${this.fq(value.NAME_0)}' and 
+          "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}'`);
       }
       if (value.NAME_3) {
         queries.push(`${baseQuery}
+          adm_level='adm3' and 
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}'`);
       }
       if (value.NAME_4) {
         queries.push(`${baseQuery}
+          adm_level='adm4' and 
           "NAME_0"='${this.fq(value.NAME_0)}' and "NAME_1"='${this.fq(value.NAME_1)}' and 
           "NAME_2"='${this.fq(value.NAME_2)}' and "NAME_3"='${this.fq(value.NAME_3)}' and
           "NAME_4"='${this.fq(value.NAME_4)}'`);
@@ -376,31 +384,37 @@ export class RehabPrioComponent implements OnInit {
       this.admPopupSections = [value];
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
         //console.log(value);
-        if (queries.length > 3) {
+        this.admPopupSections = [];
+        if (queries.length > 4 && results[4].rows?.length > 0) {
+          // value.level3 = results[2].rows[0];
+          this.admPopupSections.unshift(
+            Object.assign({title: 'ADM Level 4: ' + value.NAME_3}, results[4].rows[0])
+          );
+        }
+        if (queries.length > 3 && results[3].rows?.length > 0) {
           // value.level3 = results[2].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 3: ' + value.NAME_3}, results[3].rows[0])
           );
         }
-        if (queries.length > 2) {
+        if (queries.length > 2 && results[2].rows?.length > 0) {
           // value.level2 = results[1].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 2: ' + value.NAME_2}, results[2].rows[0])
           );
         }
-        if (queries.length > 1) {
+        if (queries.length > 1 && results[1].rows?.length > 0) {
           // value.level1 = results[0].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 1: ' + value.NAME_1}, results[1].rows[0])
           );
         }
-        if (queries.length > 0) {
+        if (queries.length > 0 && results[0].rows?.length > 0) {
           // value.level1 = results[0].rows[0];
           this.admPopupSections.unshift(
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
-        this.admPopupSections = this.admPopupSections.slice();
       });
 
       this._popupProperties = value;
@@ -712,7 +726,7 @@ export class RehabPrioComponent implements OnInit {
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else if (admanView === 'risk-index') {
       prop = ['get', 'predicted_risk_index'];
-      this.colorRange = ['#3182bd', '#9ecae1', 'rgba(255, 255, 255, 0)', '#fc9272', '#de2d26'];
+      this.colorRange = ['#3182bd', '#9ecae1', '#ffffff', '#fc9272', '#de2d26'];
       this.borderColor = '#ccc';
       // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
     } else {

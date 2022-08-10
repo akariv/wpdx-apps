@@ -1,0 +1,16 @@
+<form>
+    <mat-form-field appearance="outline">
+      <mat-label>Search region</mat-label>
+      <input type="text"
+             placeholder="Pick one"
+             aria-label="Number"
+             matInput
+             [formControl]="searchBarControlForm"
+             [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.display" (onSelectionChange)="sendState(option.state)">
+        {{option.display}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>

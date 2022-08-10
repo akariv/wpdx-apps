@@ -9,6 +9,9 @@
     (filterSelected)='nav = $event'
 >
     <ng-container ngProjectAs='.menu'>
+        <div class='search-bar'>
+            <app-adm-search-bar (state)='rpState.navigateToAdm($event)'></app-adm-search-bar>
+        </div>
         <div class='filtering-for' *ngIf='state.props.country_name'>
             <mat-icon class='filtering-remove' (click)='state.props.country_name = state.props.adm1 = state.props.adm2 = state.props.adm3 = state.props.adm4 = null; state.bump()'>highlight_off</mat-icon>
             <label>Region Filter:</label>
@@ -162,16 +165,22 @@
                     <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
                 </p>    
             </ng-container>
-            <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
-                <p>
-                    <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
-                </p>
-                <app-spark-line [popupProperties]='popupProperties' *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
-                <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
-            </ng-container>        
+            <ng-container *ngIf='rpState.mode === "risk-index"'> 
+                <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
+                    <p>
+                        <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
+                    </p>
+                    <app-spark-line [popupProperties]='popupProperties' 
+                        [fields]='["yesPredictions:blue", "noPredictions:red"]'
+                        *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
+                    <div class='predictions'>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
+                    </div>
+                </ng-container>     
+            </ng-container>   
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
             <p *ngIf='popupProperties.population > 0'>
@@ -332,11 +341,11 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'>
                 <strong>Risk Index</strong>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>Improving</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>Stable</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>High Risk</span></div>
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Deteriorating</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>Stable</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
+                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>Low Risk</span></div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <strong>Map Symbols:</strong>
@@ -395,5 +404,7 @@
                 </ng-container>
             </ng-container>
         </div>
+        
+        
     </div>
 </app-airtable-layout>
