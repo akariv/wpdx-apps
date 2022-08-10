@@ -1,12 +1,12 @@
 
-<div class='photo-gallery' *ngIf='photoList[currentPhotoIndex].photo_lnk'>
+<div *ngIf='photoList.length > 0' class='photo-gallery'>
     <div *ngFor='let photo of photoList; let i = index'>
-        <div *ngIf='photo.photo_lnk' [class.current-photo]='i === currentPhotoIndex' [class.left]='i < currentPhotoIndex' [class.right]='i > currentPhotoIndex'>
-            <img [src]='photo.photo_lnk' (error)='$event.target.style.display="none"'>
-        </div>      
+        <div *ngIf='photo.photo_lnk?true:removePhoto(i)' [class.current-photo]='i === currentPhotoIndex' [class.left]='i < currentPhotoIndex' [class.right]='i > currentPhotoIndex'>
+            <img [src]='photo.photo_lnk' (error)='removePhoto(i)'>
+        </div>  
+    </div>    
 </div>
-    
-</div>
+
 <div *ngIf='photoList.length > 1'>
     <mat-icon (click) ='moveLeft()'>arrow_back</mat-icon>
     <mat-icon (click)='moveRight()' class='forward'>arrow_forward</mat-icon>

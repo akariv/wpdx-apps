@@ -35,4 +35,8 @@ export class PhotoGalleryComponent implements OnInit {
     }
   }
 
+  removePhoto(index) {
+    this.photoList.splice(index, 1);
+  }
+
 }
