@@ -838,6 +838,13 @@ export class RehabPrioComponent implements OnInit {
       this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'none');
     }
 
+    // Risk index
+    if (props.mode === 'risk-index') {
+      this.rpState.map.setLayoutProperty('all-waterpoints-risk', 'visibility', 'visible');
+    } else {
+      this.rpState.map.setLayoutProperty('all-waterpoints-risk', 'visibility', 'none');
+    }
+
 
   } 
 
