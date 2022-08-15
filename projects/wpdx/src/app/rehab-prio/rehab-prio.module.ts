@@ -22,7 +22,8 @@ import { RegionFilterDialogComponent } from './region-filter-dialog/region-filte
 import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 import { SourcesDialogComponent } from './sources-dialog/sources-dialog.component';
 import { AdmPopupComponent } from './adm-popup/adm-popup.component';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
@@ -52,6 +53,8 @@ import { AdmPopupComponent } from './adm-popup/adm-popup.component';
     MatMenuModule,
     MatDialogModule,
     MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
   ]
 })
 export class RehabPrioModule { }

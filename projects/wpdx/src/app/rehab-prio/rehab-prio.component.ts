@@ -841,6 +841,17 @@ export class RehabPrioComponent implements OnInit {
 
   } 
 
+  gotoPointFromId(id) {
+    const query = `select * from wpdx_enhanced where wpdx_id='${id}'`;
+    if (id !== undefined){
+      this.db.query(query).subscribe((results) => {
+        if (results.rows.length > 0){
+          this.gotoPoint(results.rows[0]);
+        }     
+      });
+    }  
+  }
+
   gotoPoint(point) {
     this.addCircle(point);
     this.rpState.map.flyTo({
