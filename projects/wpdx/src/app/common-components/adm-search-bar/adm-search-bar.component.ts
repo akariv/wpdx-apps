@@ -31,6 +31,7 @@ export class AdmSearchBarComponent implements OnInit{
       this.db.fetchByAdmLevel('adm3'),
       this.db.fetchByAdmLevel('adm4'),
     ]).subscribe((results) => {
+      console.log('GOT RESULTS', results);
       results.forEach(rows => {
         this.processDBResults(rows);
         this.filteredOptions = this.searchBarControlForm.valueChanges.pipe(
@@ -42,7 +43,6 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   private _filter(value: string): string[] {
-    
     const filterValue = value.toLowerCase();
     const splittedValue = filterValue.split(' '); 
     let filteredArray = this.options;
@@ -76,6 +76,7 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   sendState(state) {
+    console.log('SELECTED', state);
     this.state.next(state);
   }
 }

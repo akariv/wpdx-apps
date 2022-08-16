@@ -443,6 +443,40 @@ export class RehabPrioComponent implements OnInit {
           this._popupProperties.yesPredictions = null;
           this._popupProperties.noPredictions = null;
         }
+        const positivePE = [];
+        const negativePE = [];
+        for (const pe of (this._popupProperties.prediction_explanations || [])) {
+          const field = pe.f;
+          let value = this._popupProperties[field];
+          if (value === null) {
+            value = '<empty>';
+          } else {
+            try {
+              value = parseInt(value, 10);
+              value = value.toLocaleString();
+            } catch (e) {
+              try {
+                value = parseFloat(value).toFixed(2);
+              } catch (e1) {
+              }
+            }
+          }
+          if ((pe.s > 0) === (pe.l === this._popupProperties.predicted_status_0y)) {
+            positivePE.push({
+              field,
+              value,
+              weight: '+++'.slice(0, pe.q.length)
+            });
+          } else {
+            negativePE.push({
+              field,
+              value,
+              weight: '---'.slice(0, pe.q.length)
+            });
+          }
+        }
+        this._popupProperties.positivePE = positivePE;
+        this._popupProperties.negativePE = negativePE;
         this.addCircle(value);
       }
     });
@@ -725,7 +759,7 @@ export class RehabPrioComponent implements OnInit {
       // prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
-    } else if (admanView === 'risk-index') {
+    } else if (admanView === 'risk-index' && props.show_adm) {
       prop = ['get', 'predicted_risk_index'];
       this.colorRange = ['#3182bd', '#9ecae1', '#ffffff', '#fc9272', '#de2d26'];
       this.borderColor = '#ccc';
@@ -844,8 +878,7 @@ export class RehabPrioComponent implements OnInit {
     } else {
       this.rpState.map.setLayoutProperty('all-waterpoints-risk', 'visibility', 'none');
     }
-
-
+    console.log('all-waterpoints-risk', this.rpState.map.getLayoutProperty('all-waterpoints-risk', 'visibility'));
   } 
 
   gotoPoint(point) {

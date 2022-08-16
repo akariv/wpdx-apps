@@ -32,6 +32,7 @@ export class RpStateService {
     this.state.defaultValue('mode', 'basic');
     this.state.defaultValue('adman_level', 'best');
     this.state.defaultValue('nc_limit', 0);
+    this.state.defaultValue('show_adm', true);
   }
 
   navigateToAdm(state) {
@@ -234,5 +235,13 @@ export class RpStateService {
 
   get show_adm_borders() {
     return this.state.getProp('show_adm_borders');
+  }
+
+  get show_adm() {
+    return this.state.getProp('show_adm');
+  }
+
+  set show_adm(value) {
+    this.state.setProp('show_adm', value);
   }
 }

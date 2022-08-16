@@ -166,6 +166,48 @@
                 </p>    
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'> 
+                <p>
+                    <mat-icon>tips_and_updates</mat-icon><label>We predict this point is now
+                        <strong *ngIf='popupProperties.predicted_status_0y === "Yes"'>Functional</strong>
+                        <strong *ngIf='popupProperties.predicted_status_0y === "No"'>Non-Functional</strong>
+                    </label>
+                </p>
+                <div class='prediction-explanations'>
+                    <div *ngIf='popupProperties.positivePE && popupProperties.positivePE.length'>
+                        <label>mostly because:</label>
+                        <table>
+                            <thead>
+                                <th>Field</th>
+                                <th>Value</th>
+                                <th>Weight</th>    
+                            </thead>
+                            <tbody>
+                                <tr *ngFor='let pe of popupProperties.positivePE'>
+                                    <td>{{pe.field}}</td>
+                                    <td>{{pe.value}}</td>
+                                    <td>{{pe.weight}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf='popupProperties.negativePE && popupProperties.negativePE.length'>
+                        <label>even though:</label>
+                        <table>
+                            <thead>
+                                <th>Field</th>
+                                <th>Value</th>
+                                <th>Weight</th>    
+                            </thead>
+                            <tbody>
+                                <tr *ngFor='let pe of popupProperties.negativePE'>
+                                    <td>{{pe.field}}</td>
+                                    <td>{{pe.value}}</td>
+                                    <td>{{pe.weight}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
                     <p>
                         <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
@@ -284,7 +326,7 @@
                 </div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness" || rpState.mode === "risk-index"'>
-                <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_adm'>Show ADM Regions</mat-slide-toggle>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <div class='with-title'>
                     <span>Show  Administrative Level:</span>
@@ -341,11 +383,13 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'>
                 <strong>Risk Index</strong>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>High Risk</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>Stable</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
-                <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>Low Risk</span></div>
+                <ng-container *ngIf='rpState.show_adm'>
+                    <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>High Risk</span></div>
+                    <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
+                    <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>Stable</span></div>
+                    <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[1]'></span><span>&nbsp;</span></div>
+                    <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[0]'></span><span>Low Risk</span></div>    
+                </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "basic"'>
                 <strong>Map Symbols:</strong>
