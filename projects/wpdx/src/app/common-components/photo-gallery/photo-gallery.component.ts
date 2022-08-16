@@ -18,6 +18,9 @@ export class PhotoGalleryComponent implements OnInit {
 
   ngOnInit(): void {
     this.photoList = Object.values(this.photo_lnks);
+    this.photoList = this.photoList.filter((obj) => {
+      return obj.photo_lnk;
+    })
     this.maxIndex = this.photoList.length;
   }
 
