@@ -53,6 +53,7 @@
             </p>
             <app-spark-line [popupProperties]='admPopupSections[selectedSection]' 
                             [fields]='["predictedFunctional:blue", "predictedNonFunctional:red"]'
+                            [percent]='false'
                             *ngIf='admPopupSections[selectedSection].predictedFunctional'></app-spark-line>
         </ng-container>
 

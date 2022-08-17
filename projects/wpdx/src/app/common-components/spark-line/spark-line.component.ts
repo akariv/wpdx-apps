@@ -10,6 +10,7 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
 
   @Input() popupProperties;
   @Input() fields: string[];
+  @Input() percent = true;
   @ViewChild('chart') svgElement: ElementRef;
   svg;
 
@@ -38,7 +39,8 @@ export class SparkLineComponent implements OnChanges, AfterViewInit {
     const x = d3.scaleLinear().domain([0, this.dataCount]).range([0, this.innerWidth]);
     const fieldNames = this.fields.map(f => f.split(':')[0]);
     const maxes = fieldNames.map(f => d3.max(this.popupProperties[f] as number[]));
-    const maxValue: number = d3.max([d3.max(maxes), 100]);
+    let maxValue: number = d3.max(maxes);
+    maxValue = this.percent ? d3.max([maxValue, 100]) : maxValue;
     const y = d3.scaleLinear().domain([0, maxValue]).range([this.innerHeight, 0]);
     const line: any = d3.line()
           .x((d: any, i: any) => x(i))
