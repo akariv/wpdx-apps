@@ -325,8 +325,13 @@
                     </mat-button-toggle-group>
                 </div>
             </ng-container>
-            <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness" || rpState.mode === "risk-index"'>
+            <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness"'>
+                <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "risk-index"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adm'>Show ADM Regions</mat-slide-toggle>
+            </ng-container>
+            <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness" || rpState.mode === "risk-index"'>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
                 <div class='with-title'>
                     <span>Show  Administrative Level:</span>
