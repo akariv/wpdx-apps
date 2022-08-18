@@ -11,17 +11,7 @@ mat-icon {
 }
 .forward {
     left: 300px;
-}
-
-img {
-    margin-top: 32px;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    flex: 0 0 auto;
-    align-self: center;
-    .nice-shadow;
-}   
+}  
 
 .photo-gallery{
     position: relative;
@@ -30,26 +20,29 @@ img {
     overflow: hidden;
 }
 
-.current-photo{
+.photo {
     position: absolute;
     top: 0;
     transition: transform 0.25s;
-    transform: translateX(0);
-}
 
-.left {
-    position: absolute;
-    transform: translateX(-100%);
-    top: 0;
-    transition: transform 0.25s;
+    img {
+        margin-top: 32px;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        flex: 0 0 auto;
+        align-self: center;
+        .nice-shadow;
+    } 
 
+    &.current-photo{
+        transform: translateX(0);
+    }
 
-}
-
-.right {
-    position: absolute;
-    transform: translateX(100%);
-    top: 0;
-    transition: transform 0.25s;
-
+    &.left {
+        transform: translateX(-100%);
+    }
+    &.right {
+        transform: translateX(100%);
+    }
 }
