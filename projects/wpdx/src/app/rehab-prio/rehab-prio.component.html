@@ -172,7 +172,7 @@
                         <strong *ngIf='popupProperties.predicted_status_0y === "No"'>Non-Functional</strong>
                     </label>
                 </p>
-                <div class='prediction-explanations'>
+                <!-- <div class='prediction-explanations'>
                     <div *ngIf='popupProperties.positivePE && popupProperties.positivePE.length'>
                         <label>mostly because:</label>
                         <table>
@@ -207,21 +207,21 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'>
+                </div> -->
+                <!-- <ng-container *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'> -->
                     <p>
                         <mat-icon>tips_and_updates</mat-icon><label>Prediction of point being Functional/Non-Functional</label>
                     </p>
-                    <app-spark-line [popupProperties]='popupProperties' 
+                    <!-- <app-spark-line [popupProperties]='popupProperties' 
                         [fields]='["yesPredictions:blue", "noPredictions:red"]'
-                        *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line>
+                        *ngIf='popupProperties.noPredictions && popupProperties.yesPredictions'></app-spark-line> -->
                     <div class='predictions'>
                         <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_0y")'></span><span>Today</span></div>
-                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_1y")'></span><span>In 1 year</span></div>
-                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
-                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>    
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_2y")'></span><span>In 2 years</span></div>
+                        <!-- <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_3y")'></span><span>In 3 years</span></div>
+                        <div class='legend-item standalone'><span class='legend-color' [style.background-color]='statusColor("predicted_status_9y")'></span><span>In 9 years</span></div>     -->
                     </div>
-                </ng-container>     
+                <!-- </ng-container>      -->
             </ng-container>   
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
@@ -387,8 +387,14 @@
                 <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>Low</span></div>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'>
-                <strong>Risk Index</strong>
+                <strong>Predicted Water Point Status</strong>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#185caf"'></span><span>Functional</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#f8b225"'></span><span>Needs Maintenance</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Needs Repairs</span></div>
+
                 <ng-container *ngIf='rpState.show_adm'>
+                    <br/>
+                    <strong>Risk Index for ADM Regions</strong>
                     <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[4]'></span><span>High Risk</span></div>
                     <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[3]'></span><span>&nbsp;</span></div>
                     <div class='legend-item'><span class='legend-color' [style.background-color]='colorRange[2]'></span><span>Stable</span></div>

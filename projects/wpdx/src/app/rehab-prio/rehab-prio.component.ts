@@ -344,10 +344,8 @@ export class RehabPrioComponent implements OnInit {
       const baseQuery = `select
         total_pop, rural_pop, unserved_pop, uncharted_pop, served_pop,
         func_waterpoints, non_func_waterpoints, staleness_uncharted, staleness_count,
-        predicted_functional_0y, predicted_functional_1y, predicted_functional_2y,
-        predicted_functional_3y, predicted_functional_4y, predicted_functional_5y,
-        predicted_functional_6y, predicted_functional_7y, predicted_functional_8y,
-        predicted_functional_9y, predicted_risk_index, staleness_count as count
+        predicted_functional_0y, predicted_functional_2y,
+        predicted_risk_index, staleness_count as count
         from adm_analysis
         where 
       `;
@@ -415,6 +413,7 @@ export class RehabPrioComponent implements OnInit {
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
+        // console.log('admPopupSections', this.admPopupSections);
       });
 
       this._popupProperties = value;
@@ -452,11 +451,15 @@ export class RehabPrioComponent implements OnInit {
             value = '<empty>';
           } else {
             try {
-              value = parseInt(value, 10);
-              value = value.toLocaleString();
+              if (Number.isFinite(parseInt(value, 10))) {
+                value = parseInt(value, 10);
+                value = value.toLocaleString();
+              }
             } catch (e) {
               try {
-                value = parseFloat(value).toFixed(2);
+                if (Number.isFinite(parseFloat(value))) {
+                  value = parseFloat(value).toFixed(2);
+                }
               } catch (e1) {
               }
             }
@@ -760,7 +763,7 @@ export class RehabPrioComponent implements OnInit {
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else if (admanView === 'risk-index' && props.show_adm) {
-      prop = ['get', 'predicted_risk_index'];
+      prop = ['-', ['literal', 0.5], ['/', ['get', 'predicted_risk_index'], ['literal', 2]]];
       this.colorRange = ['#3182bd', '#9ecae1', '#ffffff', '#fc9272', '#de2d26'];
       this.borderColor = '#ccc';
       // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
@@ -878,7 +881,6 @@ export class RehabPrioComponent implements OnInit {
     } else {
       this.rpState.map.setLayoutProperty('all-waterpoints-risk', 'visibility', 'none');
     }
-    console.log('all-waterpoints-risk', this.rpState.map.getLayoutProperty('all-waterpoints-risk', 'visibility'));
   } 
 
   gotoPoint(point) {

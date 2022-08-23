@@ -46,15 +46,19 @@
         
         <ng-container *ngIf='rpState.mode === "risk-index"'>
             <p>
-                <mat-icon>bolt</mat-icon><label>Risk Index:</label>&nbsp;{{admPopupSections[selectedSection].predicted_risk_index * 100 | number:'1.0-0'}}
+                <mat-icon>bolt</mat-icon><label>Risk Index:</label>&nbsp;{{50 - admPopupSections[selectedSection].predicted_risk_index * 50 | number:'1.0-0'}}
             </p>
             <p>
-                <mat-icon>tips_and_updates</mat-icon><label>Prediction of number of Functional/Non-Functional Points</label>
+                <mat-icon>tips_and_updates</mat-icon><label>Predicted # of Functional Points:</label>
             </p>
-            <app-spark-line [popupProperties]='admPopupSections[selectedSection]' 
+            <ul>
+                <li><label>Today:</label> {{ admPopupSections[selectedSection].predicted_functional_0y | number:'1.0-0'}}</li>
+                <li><label>In 2 Years:</label>{{ admPopupSections[selectedSection].predicted_functional_2y | number:'1.0-0'}}</li> 
+            </ul>
+            <!-- <app-spark-line [popupProperties]='admPopupSections[selectedSection]' 
                             [fields]='["predictedFunctional:blue", "predictedNonFunctional:red"]'
                             [percent]='false'
-                            *ngIf='admPopupSections[selectedSection].predictedFunctional'></app-spark-line>
+                            *ngIf='admPopupSections[selectedSection].predictedFunctional'></app-spark-line> -->
         </ng-container>
 
         <mat-accordion>

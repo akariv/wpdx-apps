@@ -166,7 +166,7 @@ export class AdmPopupComponent implements OnChanges {
         section.predictedFunctional = [];
         section.predictedNonFunctional = [];
         const total = section.count;
-        for (let i = 0; i < 10; i++) {
+        for (const i of [0, 2]) {
           section.predictedFunctional.push(section[`predicted_functional_${i}y`]);
           section.predictedNonFunctional.push(total - section[`predicted_functional_${i}y`]);
         }
