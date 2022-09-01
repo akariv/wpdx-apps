@@ -388,9 +388,11 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'>
                 <strong>Predicted Water Point Status</strong>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#66a2ea"'></span><span>Newly Functional</span></div>
                 <div class='legend-item'><span class='legend-color round' [style.background-color]='"#185caf"'></span><span>Functional</span></div>
-                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#f8b225"'></span><span>Needs Maintenance</span></div>
-                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Needs Repairs</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#f8b225"'></span><span>Maintenance Recommended</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Repair Recommended</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#ff0000"'></span><span>Newly Non-functional</span></div>
 
                 <ng-container *ngIf='rpState.show_adm'>
                     <br/>
