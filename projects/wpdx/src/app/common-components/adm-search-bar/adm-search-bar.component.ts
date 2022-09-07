@@ -15,6 +15,7 @@ import { filter } from 'd3';
 export class AdmSearchBarComponent implements OnInit{
 
   @Output() state = new EventEmitter<any>();
+  @Output() wpdx_id = new EventEmitter<any>();
 
   searchBarControlForm = new FormControl('');
   options = [];
@@ -43,6 +44,11 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   private _filter(value: string): string[] {
+    const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
+    if (regex.test(value)) {
+      const option = {'display': 'Go to point', 'state': value};
+      return [option];
+    }
     const filterValue = value.toLowerCase();
     const splittedValue = filterValue.split(' '); 
     let filteredArray = this.options;
@@ -76,7 +82,11 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   sendState(state) {
-    console.log('SELECTED', state);
-    this.state.next(state);
+    const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
+    if (regex.test(state)) {
+      this.wpdx_id.next(state);
+    } else {    
+      this.state.next(state);
+    }
   }
 }
