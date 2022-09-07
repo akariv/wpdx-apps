@@ -20,7 +20,8 @@ export class AdmSearchBarComponent implements OnInit{
   searchBarControlForm = new FormControl('');
   options = [];
   filteredOptions: Observable<string[]>;
-  
+  wpdx_id_regex = /^([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}$/;
+
   constructor(private db: DbService) {
   }
 
@@ -44,9 +45,12 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   private _filter(value: string): any[] {
-    const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
-    if (regex.test(value)) {
-      const option = {'display': 'Go to point', 'state': value};
+    if (this.wpdx_id_regex.test(value)) {
+      const option = {
+        display: `Go to point&nbsp;&nbsp;<strong><em>${value}</em></strong>`, 
+        value,
+        state: value
+      };
       return [option];
     }
     const filterValue = value.toLowerCase();
@@ -82,8 +86,7 @@ export class AdmSearchBarComponent implements OnInit{
   }
 
   sendState(state) {
-    const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
-    if (regex.test(state)) {
+    if (this.wpdx_id_regex.test(state)) {
       this.wpdx_id.next(state);
     } else {    
       this.state.next(state);

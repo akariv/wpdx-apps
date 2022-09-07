@@ -3,7 +3,7 @@ import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
 import { Point } from 'geojson';
 
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, timer } from 'rxjs';
 import { debounceTime, filter, map, switchMap, tap, windowWhen } from 'rxjs/operators';
 import { DbService } from '../db.service';
 import { StateService } from '../common-components/common-components.module';
@@ -887,6 +887,9 @@ export class RehabPrioComponent implements OnInit {
       this.db.query(query).subscribe((results) => {
         if (results.rows.length > 0){
           this.gotoPoint(results.rows[0]);
+          timer(3000).subscribe(() => {
+            this.popupProperties = results.rows[0];
+          });
         }     
       });
     }  
