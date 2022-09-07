@@ -43,7 +43,7 @@ export class AdmSearchBarComponent implements OnInit{
     });
   }
 
-  private _filter(value: string): string[] {
+  private _filter(value: string): any[] {
     const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
     if (regex.test(value)) {
       const option = {'display': 'Go to point', 'state': value};
