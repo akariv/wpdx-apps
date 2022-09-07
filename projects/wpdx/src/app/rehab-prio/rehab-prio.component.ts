@@ -344,10 +344,8 @@ export class RehabPrioComponent implements OnInit {
       const baseQuery = `select
         total_pop, rural_pop, unserved_pop, uncharted_pop, served_pop,
         func_waterpoints, non_func_waterpoints, staleness_uncharted, staleness_count,
-        predicted_functional_0y, predicted_functional_1y, predicted_functional_2y,
-        predicted_functional_3y, predicted_functional_4y, predicted_functional_5y,
-        predicted_functional_6y, predicted_functional_7y, predicted_functional_8y,
-        predicted_functional_9y, predicted_risk_index, staleness_count as count
+        predicted_functional_0y, predicted_functional_2y,
+        predicted_risk_index, staleness_count as count
         from adm_analysis
         where 
       `;
@@ -415,6 +413,7 @@ export class RehabPrioComponent implements OnInit {
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
+        // console.log('admPopupSections', this.admPopupSections);
       });
 
       this._popupProperties = value;
@@ -429,7 +428,6 @@ export class RehabPrioComponent implements OnInit {
     this.db.query(query).subscribe((results) => {
       if (results.rows && results.rows.length) {
         this._popupProperties = results.rows[0];
-        console.log(this._popupProperties);
         const noPredictions = [];
         const yesPredictions = [];
         for (let i = 0; i < 10; i++){
@@ -443,6 +441,44 @@ export class RehabPrioComponent implements OnInit {
           this._popupProperties.yesPredictions = null;
           this._popupProperties.noPredictions = null;
         }
+        const positivePE = [];
+        const negativePE = [];
+        for (const pe of (this._popupProperties.prediction_explanations || [])) {
+          const field = pe.f;
+          let value = this._popupProperties[field];
+          if (value === null) {
+            value = '<empty>';
+          } else {
+            try {
+              if (Number.isFinite(parseInt(value, 10))) {
+                value = parseInt(value, 10);
+                value = value.toLocaleString();
+              }
+            } catch (e) {
+              try {
+                if (Number.isFinite(parseFloat(value))) {
+                  value = parseFloat(value).toFixed(2);
+                }
+              } catch (e1) {
+              }
+            }
+          }
+          if ((pe.s > 0) === (pe.l === this._popupProperties.predicted_status_0y)) {
+            positivePE.push({
+              field,
+              value,
+              weight: '+++'.slice(0, pe.q.length)
+            });
+          } else {
+            negativePE.push({
+              field,
+              value,
+              weight: '---'.slice(0, pe.q.length)
+            });
+          }
+        }
+        this._popupProperties.positivePE = positivePE;
+        this._popupProperties.negativePE = negativePE;
         this.addCircle(value);
       }
     });
@@ -725,8 +761,8 @@ export class RehabPrioComponent implements OnInit {
       // prop = ['-', ['literal', 1], ['/', ['get', 'staleness'], ['literal', 100]]];
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
-    } else if (admanView === 'risk-index') {
-      prop = ['get', 'predicted_risk_index'];
+    } else if (admanView === 'risk-index' && props.show_adm) {
+      prop = ['-', ['literal', 0.5], ['/', ['get', 'predicted_risk_index'], ['literal', 2]]];
       this.colorRange = ['#3182bd', '#9ecae1', '#ffffff', '#fc9272', '#de2d26'];
       this.borderColor = '#ccc';
       // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
@@ -776,7 +812,6 @@ export class RehabPrioComponent implements OnInit {
 
     let minConstructionFilt = []
     if (props.nc_limit !== 0){
-      console.log(this.minPopNC);
       minConstructionFilt =  [[
         '>=',
         ['get', 'population'],
@@ -838,7 +873,12 @@ export class RehabPrioComponent implements OnInit {
       this.rpState.map.setLayoutProperty('adm-analysis-borders', 'visibility', 'none');
     }
 
-
+    // Risk index
+    if (props.mode === 'risk-index') {
+      this.rpState.map.setLayoutProperty('all-waterpoints-risk', 'visibility', 'visible');
+    } else {
+      this.rpState.map.setLayoutProperty('all-waterpoints-risk', 'visibility', 'none');
+    }
   } 
 
   gotoPointFromId(id) {

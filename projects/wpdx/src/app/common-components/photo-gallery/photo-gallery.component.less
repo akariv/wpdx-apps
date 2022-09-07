@@ -1,0 +1,48 @@
+@import '../common.less';
+@import '../popup-contents.less';
+
+mat-icon {
+    cursor: pointer;
+    position: relative;
+    top: -200px;
+    top: -250px;
+    background-color: whitesmoke;
+    border-radius: 30%;
+}
+.forward {
+    left: 300px;
+}  
+
+.photo-gallery{
+    position: relative;
+    height: 500px;
+    display: block;
+    overflow: hidden;
+}
+
+.photo {
+    position: absolute;
+    top: 0;
+    transition: transform 0.25s;
+
+    img {
+        margin-top: 32px;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        flex: 0 0 auto;
+        align-self: center;
+        .nice-shadow;
+    } 
+
+    &.current-photo{
+        transform: translateX(0);
+    }
+
+    &.left {
+        transform: translateX(-100%);
+    }
+    &.right {
+        transform: translateX(100%);
+    }
+}

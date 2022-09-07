@@ -32,6 +32,7 @@ export class AdmSearchBarComponent implements OnInit{
       this.db.fetchByAdmLevel('adm3'),
       this.db.fetchByAdmLevel('adm4'),
     ]).subscribe((results) => {
+      console.log('GOT RESULTS', results);
       results.forEach(rows => {
         this.processDBResults(rows);
         this.filteredOptions = this.searchBarControlForm.valueChanges.pipe(
@@ -42,7 +43,7 @@ export class AdmSearchBarComponent implements OnInit{
     });
   }
 
-  private _filter(value: string) {
+  private _filter(value: string): string[] {
     const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
     if (regex.test(value)) {
       const option = {'display': 'Go to point', 'state': value};
@@ -84,7 +85,8 @@ export class AdmSearchBarComponent implements OnInit{
     const regex = /([A-Z]|[0-9]){8}\+([A-Z]|[0-9]){3}/;
     if (regex.test(state)) {
       this.wpdx_id.next(state);
-    } 
-    this.state.next(state);
+    } else {    
+      this.state.next(state);
+    }
   }
 }

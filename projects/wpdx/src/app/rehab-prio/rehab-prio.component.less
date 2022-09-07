@@ -273,6 +273,36 @@ mat-label {
             margin-top: 0;
         }
     }
+
+    .prediction-explanations {
+        padding: 0 48px;
+        margin-bottom: 32px;
+        width: 100%;
+        > div {
+            margin-top: 24px;
+            width: 100%;
+            table {
+                width: 100%;
+                th {
+                    text-align: right;
+                    &:nth-child(1) {
+                        text-align: left;
+                    }
+                }
+                tbody tr td {
+                    &:nth-child(2) {
+                        width: 30%;
+                        text-align: right;
+                    }
+                    &:nth-child(3) {
+                        width: 20%;
+                        text-align: right;
+                        font-family: monospace;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .data-table {
