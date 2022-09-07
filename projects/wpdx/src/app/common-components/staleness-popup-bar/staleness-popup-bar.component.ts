@@ -6,25 +6,23 @@ import * as d3 from 'd3';
   templateUrl: './staleness-popup-bar.component.html',
   styleUrls: ['./staleness-popup-bar.component.less']
 })
-export class StalenessPopupBarComponent  {
+export class StalenessPopupBarComponent implements OnChanges {
 
   @Input() popupProperties: any;
 
+  data: any[] = [];
+
   constructor() { }
 
-  getData(popup: any){
-    const x = [
-      {name: 'Under 5', count: popup.age_under_5},
-      {name: 'Under 10', count: popup.age_under_10},
-      {name: 'Under 15', count: popup.age_under_15},
-      {name: 'Above 15', count: popup.age_above_15},
-    ];
-    let data = Array(x[0].count).fill(3);
-    data = data.concat(Array(x[1].count).fill(7));
-    data = data.concat(Array(x[2].count).fill(13));
-    data = data.concat(Array(x[3].count).fill(17));
+  ngOnChanges() {
+    if (this.popupProperties) {
+      this.data = [
+        [3, this.popupProperties.age_under_5],
+        [7, this.popupProperties.age_under_10],
+        [13, this.popupProperties.age_under_15],
+        [17, this.popupProperties.age_above_15],
+      ];
 
-    return data;
+    }
   }
-
 }

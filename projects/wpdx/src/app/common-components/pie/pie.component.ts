@@ -92,20 +92,16 @@ export class PieComponent implements OnChanges, AfterViewInit {
 
 
   ngOnChanges(): void {
-    // console.log(this.data);
     const el: HTMLElement = this.svgElement?.nativeElement;
-    console.log(el);
     if (!el) {
       return;
     }
     this.width = el.offsetWidth;
     this.height = el.offsetHeight;
     this.radius = this.height * 0.4 - this.margin;
-    console.log('PIE', this.width, this.height);
     this.createSvg();
     this.createColors();
     this.data = this.data.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0));
-    console.log('Data', this.data);
     this.drawChart();
   }
 

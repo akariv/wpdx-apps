@@ -813,7 +813,6 @@ export class RehabPrioComponent implements OnInit {
 
     let minConstructionFilt = []
     if (props.nc_limit !== 0){
-      console.log(this.minPopNC);
       minConstructionFilt =  [[
         '>=',
         ['get', 'population'],

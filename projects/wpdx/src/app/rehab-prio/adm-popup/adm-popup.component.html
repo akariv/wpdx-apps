@@ -68,8 +68,8 @@
                 </mat-expansion-panel-header>
                 <app-bar [data]='install_year_data[selectedSection]'
                         xAxisTitle='Install Year' yAxisTitle='# Water Points'
-                        [min]='install_year_data[selectedSection][0]'
-                        [max]='install_year_data[selectedSection][install_year_data[selectedSection].length-1]'
+                        [min]='install_year_data[selectedSection][0][0]'
+                        [max]='install_year_data[selectedSection][install_year_data[selectedSection].length-1][0] + 1'
                         color='#ffd580'>
                 </app-bar>
             </mat-expansion-panel>

@@ -40,35 +40,35 @@ export class AdmPopupComponent implements OnChanges {
   getInstallYearQuery(value){
 
     const baseQuery = `select
-        install_year
+        install_year, count(1) as count
         from wpdx_enhanced
       `;
 
       const queries: string[] = [];
       if (value.NAME_0) {
         queries.push(`${baseQuery}
-          where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' order by install_year`);
+          where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' group by 1 order by 1`);
       }
       if (value.NAME_1) {
         queries.push(`${baseQuery}
           where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' 
-          and clean_adm1='${this.fq(value.NAME_1)}' order by install_year`);
+          and clean_adm1='${this.fq(value.NAME_1)}' group by 1 order by 1`);
       }
       if (value.NAME_2) {
         queries.push(`${baseQuery}
           where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
-                clean_adm2='${this.fq(value.NAME_2)}' order by install_year`);
+                clean_adm2='${this.fq(value.NAME_2)}' group by 1 order by 1`);
       }
       if (value.NAME_3) {
         queries.push(`${baseQuery}
           where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' and 
-                clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' order by install_year`);
+                clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' group by 1 order by 1`);
       }
       if (value.NAME_4) {
         queries.push(`${baseQuery}
           where install_year is not NULL and clean_country_name='${this.fq(value.NAME_0)}' and clean_adm1='${this.fq(value.NAME_1)}' 
           and clean_adm2='${this.fq(value.NAME_2)}' and clean_adm3='${this.fq(value.NAME_3)}' 
-          and clean_adm4='${this.fq(value.NAME_4)}' order by install_year`);
+          and clean_adm4='${this.fq(value.NAME_4)}' group by 1 order by 1`);
       }
 
     return queries;
@@ -126,7 +126,7 @@ export class AdmPopupComponent implements OnChanges {
         const x = [];
         if (result.rows){
           for (const val of result.rows){
-            x.push(+val.install_year);
+            x.push([+val.install_year, val.count]);
           }
         }
         this.install_year_data.push(x);
