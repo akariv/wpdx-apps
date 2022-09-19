@@ -419,30 +419,37 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "rehab-prio"'>
                 <strong>Map Symbols:</strong>
-                <div class='legend-item'>
-                    <img src='assets/img/functional.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
+                <ng-container *ngIf='rpState.show_point_counts'>
+                    <div class='legend-item'>
+                        <img src='assets/img/functional.png'>
+                        <div class='legend-label'>
+                            <span><mat-icon [inline]='true'>west</mat-icon><span>Functional Water Point</span></span>
+                            <span><mat-icon [inline]='true'>west</mat-icon><span>Population Assigned to this Point</span></span>
+                        </div>
                     </div>
-                </div>
-                <div class='legend-item'>
-                    <img src='assets/img/non-functional.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
+                    <div class='legend-item'>
+                        <img src='assets/img/non-functional.png'>
+                        <div class='legend-label'>
+                            <span><mat-icon [inline]='true'>west</mat-icon><span>Non-Functional Water Point</span></span>                        
+                            <span><mat-icon [inline]='true'>west</mat-icon><span>Users who would gain access<br/>by this Point if rehabilitated</span></span>
+                        </div>
                     </div>
-                </div>
-                <div class='legend-item'>
-                    <img src='assets/img/selected.png'>
-                    <div class='legend-label'>
-                        <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
+                    <div class='legend-item'>
+                        <img src='assets/img/selected.png'>
+                        <div class='legend-label'>
+                            <span><mat-icon [inline]='true'>west</mat-icon><span>Top 15 priority (based on the parameters selected in the Data Table)</span></span>
+                        </div>
                     </div>
-                </div>
-                <ng-container *ngIf='rpState.show_population_density'>
-                    <strong>Population Density</strong>
-                    <div class='legend-item'><span class='legend-color' style='background-color: #6495ED'></span><span>High</span></div>
-                    <div class='legend-item'><span class='legend-color' style='background-color: #D3D3D3'></span><span>Low</span></div>
+                    <ng-container *ngIf='rpState.show_population_density'>
+                        <strong>Population Density</strong>
+                        <div class='legend-item'><span class='legend-color' style='background-color: #6495ED'></span><span>High</span></div>
+                        <div class='legend-item'><span class='legend-color' style='background-color: #D3D3D3'></span><span>Low</span></div>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf='!rpState.show_point_counts'>
+                    <div class='legend-item'><span class='legend-color round' [style.background-color]='"#185caf"'></span><span>Functional Water Point</span></div>
+                    <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Non-Functional Water Point</span></div>
+                    <div class='legend-item'><span class='legend-color round' [style.background-color]='"#eefe8b"'></span><span>Top 15 priority (based on the parameters selected in the Data Table)</span></div>    
                 </ng-container>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "new_constructions"'>
