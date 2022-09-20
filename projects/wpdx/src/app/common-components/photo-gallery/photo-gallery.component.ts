@@ -1,27 +1,28 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-photo-gallery',
   templateUrl: './photo-gallery.component.html',
   styleUrls: ['./photo-gallery.component.less']
 })
-export class PhotoGalleryComponent implements OnInit {
+export class PhotoGalleryComponent implements OnChanges {
 
-  @Input() photo_lnks: any;
+  @Input() history: any;
   currentPhotoIndex = 0;
-  photoList;
-  maxIndex;
+  photoList: any[] = [];
+  maxIndex = 0;
   
 
   constructor() { }
 
 
-  ngOnInit(): void {
-    this.photoList = Object.values(this.photo_lnks);
-    this.photoList = this.photoList.filter((obj) => {
-      return obj.photo_lnk;
-    })
-    this.maxIndex = this.photoList.length;
+  ngOnChanges(): void {
+    if (this.history) {
+      this.photoList = Object.values(this.history)
+        .map((obj: any) => obj.photo_lnk)
+        .filter((x) => !!x);
+      this.maxIndex = this.photoList.length; 
+    }
   }
 
   moveRight(){

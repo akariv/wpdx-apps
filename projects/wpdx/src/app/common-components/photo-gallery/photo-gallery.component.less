@@ -3,19 +3,20 @@
 
 mat-icon {
     cursor: pointer;
-    position: relative;
-    top: -200px;
-    top: -250px;
-    background-color: whitesmoke;
-    border-radius: 30%;
+    position: absolute;
+    top: 0px;
+    background-color: white;
+    border-radius: 4px;
+    left: 0;
+    &.forward {
+        left: auto;
+        right: 0;
+    }      
 }
-.forward {
-    left: 300px;
-}  
 
 .photo-gallery{
     position: relative;
-    height: 500px;
+    min-height: 500px;
     display: block;
     overflow: hidden;
 }

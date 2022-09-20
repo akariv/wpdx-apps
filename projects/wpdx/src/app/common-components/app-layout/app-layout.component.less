@@ -66,8 +66,13 @@
         z-index: 1;
         height: calc(100% - 180px);
         justify-content: flex-start;
+        pointer-events: none;
 
         ::ng-deep {
+            & > * {
+                pointer-events: all;
+            }
+
             .separator {
                 display: block;
                 height: 0px;

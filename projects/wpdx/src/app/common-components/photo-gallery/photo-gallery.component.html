@@ -1,12 +1,11 @@
 <div *ngIf='photoList.length > 0' class='photo-gallery'>
     <ng-container *ngFor='let photo of photoList; let i = index'>
         <div class='photo' [class.current-photo]='i === currentPhotoIndex' [class.left]='i < currentPhotoIndex' [class.right]='i > currentPhotoIndex'>
-            <img [src]='photo.photo_lnk' (error)='removePhoto(i)'>
+            <img [src]='photo' (error)='removePhoto(i)'>
         </div>  
     </ng-container>    
-</div>
-
-<div *ngIf='photoList.length > 1'>
-    <mat-icon (click) ='moveLeft()'>arrow_back</mat-icon>
-    <mat-icon (click)='moveRight()' class='forward'>arrow_forward</mat-icon>
+    <ng-container *ngIf='photoList.length > 1'>
+        <mat-icon (click) ='moveLeft()'>arrow_back</mat-icon>
+        <mat-icon (click)='moveRight()' class='forward'>arrow_forward</mat-icon>
+    </ng-container>
 </div>
