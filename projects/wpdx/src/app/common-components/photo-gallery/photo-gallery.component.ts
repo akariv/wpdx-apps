@@ -18,29 +18,29 @@ export class PhotoGalleryComponent implements OnChanges {
 
   ngOnChanges(): void {
     if (this.history) {
-      this.photoList = Object.values(this.history)
-        .map((obj: any) => obj.photo_lnk)
+      this.photoList = Object.keys(this.history)
+        .sort((a: string, b: string) => a.localeCompare(b))
+        .map((k: any) => this.history[k].photo_lnk)
         .filter((x) => !!x);
       this.maxIndex = this.photoList.length; 
     }
   }
 
   moveRight(){
-    const nextIndex = this.currentPhotoIndex + 1;
-    if (nextIndex < this.maxIndex){
-      this.currentPhotoIndex = nextIndex;
+    if (this.currentPhotoIndex < this.maxIndex - 1) {
+      this.currentPhotoIndex += 1;
     }
   }
   
   moveLeft(){
-    const prevIndex = this.currentPhotoIndex - 1;
-    if (prevIndex > -1){
-      this.currentPhotoIndex = prevIndex;
+    if (this.currentPhotoIndex > 0){
+      this.currentPhotoIndex -= 1;
     }
   }
 
-  removePhoto(index) {
-    this.photoList.splice(index, 1);
+  removePhoto(link) {
+    this.photoList = this.photoList.filter((x) => x !== link);
+    this.maxIndex = this.photoList.length;
   }
 
 }

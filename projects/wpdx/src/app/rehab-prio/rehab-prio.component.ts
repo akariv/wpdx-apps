@@ -381,7 +381,6 @@ export class RehabPrioComponent implements OnInit {
       //console.log(queries);
       this.admPopupSections = [value];
       forkJoin(queries.map(q => this.db.query(q))).subscribe(results => {
-        //console.log(value);
         this.admPopupSections = [];
         if (queries.length > 4 && results[4].rows?.length > 0) {
           // value.level3 = results[2].rows[0];
@@ -413,7 +412,6 @@ export class RehabPrioComponent implements OnInit {
             Object.assign({title: 'ADM Level 0: ' + value.NAME_0}, results[0].rows[0])
           );
         }
-        // console.log('admPopupSections', this.admPopupSections);
       });
 
       this._popupProperties = value;

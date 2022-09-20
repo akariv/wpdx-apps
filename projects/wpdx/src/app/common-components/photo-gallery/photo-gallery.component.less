@@ -4,18 +4,20 @@
 mat-icon {
     cursor: pointer;
     position: absolute;
-    top: 0px;
-    background-color: white;
+    top: 40px;
+    background-color: rgba(255,255,255,0.5);
     border-radius: 4px;
-    left: 0;
+    left: 8px;
     &.forward {
         left: auto;
-        right: 0;
-    }      
+        right: 8px;
+    }
+    font-size: 24px;
 }
 
 .photo-gallery{
     position: relative;
+    width: 100%;
     min-height: 500px;
     display: block;
     overflow: hidden;
@@ -24,6 +26,11 @@ mat-icon {
 .photo {
     position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     transition: transform 0.25s;
 
     img {
