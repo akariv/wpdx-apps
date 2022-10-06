@@ -385,7 +385,7 @@ export class RehabPrioComponent implements OnInit {
         if (queries.length > 4 && results[4].rows?.length > 0) {
           // value.level3 = results[2].rows[0];
           this.admPopupSections.unshift(
-            Object.assign({title: 'ADM Level 4: ' + value.NAME_3}, results[4].rows[0])
+            Object.assign({title: 'ADM Level 4: ' + value.NAME_4}, results[4].rows[0])
           );
         }
         if (queries.length > 3 && results[3].rows?.length > 0) {

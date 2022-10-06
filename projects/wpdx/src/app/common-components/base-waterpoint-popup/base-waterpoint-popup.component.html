@@ -20,10 +20,12 @@
         <label title='Report Date' i18n-title><mat-icon>edit_calendar</mat-icon></label>&nbsp;
         <span>Reported <b *ngIf='popupProperties.status_id === "Yes"'>as Functional</b><b *ngIf='popupProperties.status_id === "No"'>as Non-functional</b> at</span>&nbsp;
         <span>{{popupProperties.report_date}}</span>
-        <ng-container *ngIf='popupProperties.status_clean && popupProperties.status_clean !== "Functional" && popupProperties.status_clean !== "Non-Functional"'>
-            <br/>Full status: <b>{{popupProperties.status_clean}}</b>
-        </ng-container>
     </p>
+    <p *ngIf='popupProperties.status_clean && popupProperties.status_clean !== "Functional" && popupProperties.status_clean !== "Non-Functional"'>
+        <label title='Status Detail' i18n-title><mat-icon>add_box</mat-icon>Status Detail:</label>&nbsp;
+        <span>{{popupProperties.status_clean}}</span>
+    </p>
+
 </div>
 <ng-container *ngIf='popupProperties.history'>
     <app-photo-gallery [history] = 'popupProperties.history'></app-photo-gallery>
