@@ -5,6 +5,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import { ReplaySubject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { StateService } from '../state.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-map-layer',
@@ -30,10 +31,10 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
     'eth',
     'gha',
     'bfa',
-    'afg',
+    // 'afg',
     'bgd',
     'hti',
-    'ind',
+    // 'ind',
     'ken',
     'mwi',
     'mli',
@@ -67,6 +68,10 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
             zoom: 2
           });
           this._map.on('style.load', () => {
+            if (environment.suffix) {
+              console.log('ADDING EXTRA SOURCES', environment.suffix);
+              this.addExtraSources(this._map, environment.suffix);
+            }
             for (const layer of this.interactionLayers) {
               this._map.setLayoutProperty(layer, 'visibility', 'visible');
               this._map.on('click', layer, (e) => {
@@ -98,6 +103,7 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
             }
             const populationLayers: string[] = [];
             for (const country of this.COUNTRY_CODES) {
+              console.log('ADDING SOURCE FOR', country);
               this._map.addSource(`wpdx.pop_${country}`, {
                 type: 'raster', url: `mapbox://wpdx.pop_${country}`
               });
@@ -131,4 +137,48 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  setLayerSource(map: mapboxgl.Map, layerId: string, sourceLayer: string) {
+    console.log('SETTING LAYER SOURCE', layerId, sourceLayer);
+    const oldLayers = map.getStyle().layers || [];
+    const layerIndex = oldLayers.findIndex(l => l.id === layerId);
+    const layerDef: any = oldLayers[layerIndex];
+    const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
+    layerDef['source'] = sourceLayer;
+    layerDef['source-layer'] = sourceLayer;
+    map.removeLayer(layerId);
+    map.addLayer(layerDef, before);
+    console.log('SETTING LAYER SOURCE DONE');
+  }
+
+  addExtraSources(map: mapboxgl.Map, suffix: string) {
+    map.addSource('adm-analysis-labels' + suffix, {
+      type: 'vector',
+      url: 'mapbox://wpdx.28fz36ff' + suffix
+    });
+    map.addSource('adm-analysis-multi' + suffix, {
+      type: 'vector',
+      url: 'mapbox://wpdx.4q46ibni' + suffix
+    });
+    map.addSource('new_constructions' + suffix, {
+      type: 'vector',
+      url: 'mapbox://wpdx.4x8b5vhp' + suffix
+    });
+    map.addSource('datasets' + suffix, {
+      type: 'vector',
+      url: 'mapbox://wpdx.wpdx_plus_latest' + suffix
+    });
+    for (const layer of ['adm-analysis-labels']) {
+      this.setLayerSource(this._map, layer, 'adm-analysis-labels' + suffix);
+    }
+    for (const layer of ['adm-analysis-borders', 'adm-analysis']) {
+      this.setLayerSource(this._map, layer, 'adm-analysis-multi' + suffix);
+    }
+    for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap', 'nc-heatmap-clustered']) {
+      this.setLayerSource(this._map, layer, 'new_constructions' + suffix);
+    }
+    for (const layer of ['rehab-priority-circles', 'rehab-priority-text', 'all-waterpoints-photos', 'all-waterpoints',
+                         'rehab-priority-highlights', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap']) {
+      this.setLayerSource(this._map, layer, 'datasets' + suffix);
+    }
+  }
 }

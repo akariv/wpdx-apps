@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  suffix: null
+  suffix: '__private'
 };

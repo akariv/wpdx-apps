@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prod": "ng build --project wpdx"
+    "production": "ng build --project wpdx --configuration production",
+    "private": "ng build --project wpdx --configuration private"
   },
   "private": true,
   "dependencies": {
