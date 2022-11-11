@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  suffix: null
+  suffix: null,
+  endpoint: 'https://upload.waterpointdata.org',
 };

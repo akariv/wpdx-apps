@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, from, ReplaySubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class DbService {
     if (cache && this.cache[key]) {
       return from([this.cache[key]]);
     }
-    return this.http.get('https://upload.waterpointdata.org/api/db/query?query=' + encodeURIComponent(sql), {params}).pipe(
+    return this.http.get(environment.endpoint + '/api/db/query?query=' + encodeURIComponent(sql), {params}).pipe(
       tap((result) => {
         if (cache) {
           this.cache[key] = result;
@@ -52,7 +53,7 @@ export class DbService {
 
   download(sql, format, fileName, headers) {
     sql = encodeURIComponent(btoa(sql));
-    return 'https://upload.waterpointdata.org/api/db/download?query=' + sql +
+    return environment.endpoint + '/api/db/download?query=' + sql +
             '&format=' + format +
             '&filename=' + encodeURIComponent(fileName) +
             '&headers=' + encodeURIComponent(headers.join(';'));
