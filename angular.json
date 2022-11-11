@@ -108,6 +108,9 @@
           "configurations": {
             "production": {
               "browserTarget": "wpdx:build:production"
+            },
+            "private": {
+              "browserTarget": "wpdx:build:private"
             }
           }
         },

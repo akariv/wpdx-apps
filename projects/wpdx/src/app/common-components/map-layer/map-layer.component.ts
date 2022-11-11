@@ -68,8 +68,8 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
             zoom: 2
           });
           this._map.on('style.load', () => {
+            console.log('ADDING EXTRA SOURCES', environment.suffix);
             if (environment.suffix) {
-              console.log('ADDING EXTRA SOURCES', environment.suffix);
               this.addExtraSources(this._map, environment.suffix);
             }
             for (const layer of this.interactionLayers) {
