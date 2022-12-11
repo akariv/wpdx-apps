@@ -147,7 +147,7 @@
     <div class='map-popup'>
         <app-base-waterpoint-popup [popupProperties]='popupProperties' *ngIf='popupProperties.wpdx_id'>
             <p *ngIf='popupProperties.local_population > 0'>
-                <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
+                <mat-icon>people</mat-icon><label>Population in {{rehabPrioRadius/1000 | number:'1.0-1'}}km radius:</label>&nbsp;{{popupProperties.local_population | number:'1.0-0'}} ppl
             </p>
             <p *ngIf='popupProperties.usage_cap > 0'>
                 <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
@@ -227,7 +227,7 @@
         </app-base-waterpoint-popup>
         <ng-container *ngIf='popupProperties.population'>
             <p *ngIf='popupProperties.population > 0'>
-                <mat-icon>people</mat-icon><label>Population in 1km radius:</label>&nbsp;{{popupProperties.population | number:'1.0-0'}} ppl
+                <mat-icon>people</mat-icon><label>Population in {{rehabPrioRadius/1000 | number:'1.0-1'}}km radius:</label>&nbsp;{{popupProperties.population | number:'1.0-0'}} ppl
             </p>
             <p>
                 <label><mat-icon>place</mat-icon></label>

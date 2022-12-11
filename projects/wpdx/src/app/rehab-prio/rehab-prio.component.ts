@@ -14,6 +14,7 @@ import { RegionFilterDialogComponent } from './region-filter-dialog/region-filte
 import { AttributeFilterDialogComponent } from './attribute-filter-dialog/attribute-filter-dialog.component';
 import { SourcesDialogComponent } from './sources-dialog/sources-dialog.component';
 import { range } from 'd3';
+import { ServerParamsService } from '../server-params.service';
 
 @Component({
   selector: 'app-rehab-prio',
@@ -35,6 +36,7 @@ export class RehabPrioComponent implements OnInit {
     // {id: 'legend', title: 'Legend', icon: 'menu_book'},
   ];
   nav = '';
+  rehabPrioRadius = 1000;
 
   // Preview:
   preview = false;
@@ -47,7 +49,8 @@ export class RehabPrioComponent implements OnInit {
   showTable = false;
   minPopNC: Number = null;
 
-  constructor(private db: DbService, public state: StateService, public rpState: RpStateService, public dialog: MatDialog) {
+  constructor(private db: DbService, public state: StateService, public rpState: RpStateService, 
+              public dialog: MatDialog, private params: ServerParamsService) {
   }
 
   ngOnInit(): void {
@@ -105,11 +108,14 @@ export class RehabPrioComponent implements OnInit {
         }
       }
     });
+    this.params.params.subscribe((params: any) => {
+      this.rehabPrioRadius = params['rehab-priority-radius'] || this.rehabPrioRadius;
+    });
   }
 
   downloadFields(query=false) {
     return [
-      'report_date', 'wpdx_id', 'lat_deg', 'lon_deg', 'status_id', 'source', 'activity_id',
+      'report_date', 'wpdx_id', 'lat_deg', 'lon_deg', 'status_id', 'status_clean', 'source', 'activity_id',
       'install_year', 'installer', 'rehab_year', 'rehabilitator', 'management_clean', 'facility_type',
       'pay', 'status', 'orig_lnk', 'photo_lnk', 'data_lnk',
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'subjective_quality', 'scheme_id', 'notes',
@@ -907,7 +913,7 @@ export class RehabPrioComponent implements OnInit {
       return;
     }
     const _center = turf.point([point.lon_deg, point.lat_deg]);
-    const _circle = turf.circle(_center, 1, {steps: 80, units: 'kilometers'} as any);
+    const _circle = turf.circle(_center, this.rehabPrioRadius / 1000, {steps: 80, units: 'kilometers'} as any);
     this.circle_visible = true;
     this.rpState.map.addSource('circleData', {
       type: 'geojson',
