@@ -48,10 +48,11 @@ export class BarComponent implements OnChanges, AfterViewInit {
     }
     else {
       tickNumber = 10;
-      if (valueRange % 10 !== 0){
-        const res = valueRange % 10;
-        this.max = this.max + (10-res);
-      }
+    }
+    if (valueRange % tickNumber !== 0){
+      const res = valueRange % tickNumber;
+      this.max = this.max + (tickNumber-res);
+      valueRange = this.max - this.min;
     }
     const formatCount = d3.format(',.0f');
 
