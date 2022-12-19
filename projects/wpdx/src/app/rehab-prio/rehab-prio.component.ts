@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
-import { Point } from 'geojson';
 
 import { BehaviorSubject, forkJoin, timer } from 'rxjs';
 import { debounceTime, filter, map, switchMap, tap, windowWhen } from 'rxjs/operators';
@@ -529,29 +528,29 @@ export class RehabPrioComponent implements OnInit {
     // console.log('SORUCES', (this.rpState.map.getLayer('adm-analysis-labels') as mapboxgl.SymbolLayer)['source-layer']);
     this.rpState.map.on('render', () => {
       const newMarkers: any = {};
-      const features = this.rpState.show_adman_pies && this.rpState.mode === 'adman' ?
-          this.rpState.map.queryRenderedFeatures(null, {layers: ['adm-analysis-labels']})
+      const features: mapboxgl.MapboxGeoJSONFeature[] = this.rpState.show_adman_pies && this.rpState.mode === 'adman' ?
+          this.rpState.map.queryRenderedFeatures(null, {layers: ['adm-analysis']})
           : [];
       for (const feature of features) {
-        const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
         const props: any = feature.properties;
+        const coords: [number, number] = props.center ? (JSON.parse(props.center) as any).geometry.coordinates : null;
         const id = props.NAME_0 + props.NAME_1 + props.NAME_2 + props.NAME_3 + props.NAME_4;
 
-        if (props.pct_urban > 0.75) {
+        if (!coords || props.pct_urban > 0.75) {
           continue;
         }
         let marker = this.markers[id];
         if (!marker) {
           const el = this.createDonutChart(props);
-          el.addEventListener('click', (ev) => {
-            this.popupProperties = props;
-            this.popupProperties.coordinates = coords;
-            this.popupProperties.x = this.popupProperties.coordinates[0];
-            this.popupProperties.y = this.popupProperties.coordinates[1];
-            if (ev.stopPropagation) {
-              ev.stopPropagation();
-            }
-          });
+          // el.addEventListener('click', (ev) => {
+          //   this.popupProperties = props;
+          //   this.popupProperties.coordinates = coords;
+          //   this.popupProperties.x = this.popupProperties.coordinates[0];
+          //   this.popupProperties.y = this.popupProperties.coordinates[1];
+          //   if (ev.stopPropagation) {
+          //     ev.stopPropagation();
+          //   }
+          // });
           marker = this.markers[id] = new mapboxgl.Marker({
             element: el
           }).setLngLat(coords).setOffset([0, -30])

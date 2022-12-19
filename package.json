@@ -23,7 +23,7 @@
     "@angular/platform-browser": "~13.3.0",
     "@angular/platform-browser-dynamic": "~13.3.0",
     "@angular/router": "~13.3.0",
-    "@turf/turf": "^6.4.0",
+    "@turf/turf": "^6.5.0",
     "@types/d3": "^7.1.0",
     "@types/mapbox-gl": "^2.3.0",
     "@types/turf": "^3.5.32",
@@ -32,7 +32,6 @@
     "marked": "^2.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "turf": "^3.0.14",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
