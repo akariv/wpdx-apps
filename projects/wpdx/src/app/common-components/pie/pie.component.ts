@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-pie',
@@ -89,20 +90,20 @@ export class PieComponent implements OnChanges, AfterViewInit {
 
   }
 
-
-
   ngOnChanges(): void {
     const el: HTMLElement = this.svgElement?.nativeElement;
     if (!el) {
       return;
     }
-    this.width = el.offsetWidth;
-    this.height = el.offsetHeight;
-    this.radius = this.height * 0.4 - this.margin;
-    this.createSvg();
-    this.createColors();
-    this.data = this.data.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0));
-    this.drawChart();
+    timer(100).subscribe(() => {
+      this.width = el.offsetWidth;
+      this.height = el.offsetHeight;
+      this.radius = this.height * 0.4 - this.margin;
+      this.createSvg();
+      this.createColors();
+      this.data = this.data.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0));
+      this.drawChart();
+    });
   }
 
   ngAfterViewInit() {

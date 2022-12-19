@@ -148,15 +148,12 @@ export class AdmPopupComponent implements OnChanges {
     }
   }
 
-
-
-
   ngOnChanges(): void {
     if (this._lastPopupProperties !== this.popupProperties) {
       this.selectedSection = this.popupProperties.NAME_4 ? 4 : (this.popupProperties.NAME_3 ? 3 : (this.popupProperties.NAME_2 ? 2 : (this.popupProperties.NAME_1 ? 1 : 0)));
       this.getInstallYearData();
       this.getStateData();
-      this.getData('water_source_category').subscribe(data => { this.source_data = data; });
+      this.getData('water_source_clean').subscribe(data => { this.source_data = data; });
       this.getData('water_tech_category').subscribe(data => { this.tech_data = data; });;
       this.getData('management_clean').subscribe(data => { this.management_data = data; });;
       this._lastPopupProperties = this.popupProperties;

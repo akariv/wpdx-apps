@@ -533,7 +533,7 @@ export class RehabPrioComponent implements OnInit {
           : [];
       for (const feature of features) {
         const props: any = feature.properties;
-        const coords: [number, number] = props.center ? (JSON.parse(props.center) as any).geometry.coordinates : null;
+        const coords: [number, number] = props.center ? (JSON.parse(props.center) as any).coordinates : null;
         const id = props.NAME_0 + props.NAME_1 + props.NAME_2 + props.NAME_3 + props.NAME_4;
 
         if (!coords || props.pct_urban > 0.75) {
