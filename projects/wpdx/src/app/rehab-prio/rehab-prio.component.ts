@@ -304,7 +304,7 @@ export class RehabPrioComponent implements OnInit {
       'lon_deg <= ' + bounds.getEast(),
     ];
     if (!this.rpState.all_waterpoints) {
-      terms.push('rehab_priority > 0');
+      terms.push('rehab_priority is not null');
     }
     if (!this.rpState.show_urban_waterpoints) {
       terms.push('not (is_urban is TRUE)');
