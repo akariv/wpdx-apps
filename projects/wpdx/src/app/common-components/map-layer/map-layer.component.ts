@@ -31,10 +31,8 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
     'eth',
     'gha',
     'bfa',
-    // 'afg',
     'bgd',
     'hti',
-    // 'ind',
     'ken',
     'mwi',
     'mli',
@@ -42,6 +40,10 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
     'ssd',
     'tza',
     'zwe',
+  ];
+  NO_POP_COUNTRIES = [
+    'bfa',
+    'mli',
   ];
 
   _map: mapboxgl.Map;
@@ -103,10 +105,15 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
             }
             const populationLayers: string[] = [];
             for (const country of this.COUNTRY_CODES) {
-              console.log('ADDING SOURCE FOR', country);
-              this._map.addSource(`wpdx.pop_${country}`, {
-                type: 'raster', url: `mapbox://wpdx.pop_${country}`
-              });
+              console.log('ADDING SOURCE FOR', country);  
+              if (this.NO_POP_COUNTRIES.indexOf(country) > -1) {
+                continue;
+              }
+              const source_id = `wpdx.pop_${country}`;
+              const mapbox_source_id = `mapbox://${source_id}`;
+              this._map.addSource(source_id, {
+                type: 'raster', url: mapbox_source_id
+              });    
               const layerName = `population_${country}`;
               this._map.addLayer({
                 id: layerName,
