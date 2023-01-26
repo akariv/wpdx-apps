@@ -60,7 +60,7 @@
                         <td>{{row.water_tech_clean || 'Unknown' }}</td>
                         <td>{{row.local_population | number:'1.0-0' }}</td>
                         <td>{{row.assigned_population | number:'1.0-0' }}</td>
-                        <td>{{row.criticality * 100 | number:'1.0-1' }}%</td>
+                        <td>{{row.crucialness * 100 | number:'1.0-1' }}%</td>
                         <td>{{row.pressure * 100 | number:'1.0-1' }}%</td>
                     </tr>
                 </tbody>
@@ -142,6 +142,10 @@
                 <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
                 <span>Service Gap Identification Analysis</span>
             </button>
+            <button mat-menu-item (click)='downloadRiskIndexData()'>
+                <mat-icon aria-hidden="false" aria-label="download icon">file_download</mat-icon>
+                <span>Risk Index Analysis</span>
+            </button>
         </mat-menu>
     </ng-container>
     <div class='map-popup'>
@@ -153,8 +157,8 @@
                 <mat-icon>open_in_full</mat-icon><label>Usage Capacity for this Point:</label>&nbsp;{{popupProperties.usage_cap | number:'1.0-0'}} ppl
             </p>            
             <ng-container *ngIf='rpState.mode === "rehab-prio"'>
-                <p *ngIf='popupProperties.criticality > 0'>
-                    <mat-icon>warning</mat-icon><label>Crucialness:</label>&nbsp;{{popupProperties.criticality * 100 | number:'1.0-0'}}%
+                <p *ngIf='popupProperties.crucialness > 0'>
+                    <mat-icon>warning</mat-icon><label>Crucialness:</label>&nbsp;{{popupProperties.crucialness * 100 | number:'1.0-0'}}%
                 </p>
                 <p *ngIf='popupProperties.pressure > 0'>
                     <mat-icon>compress</mat-icon><label>Pressure:</label>&nbsp;{{popupProperties.pressure * 100 | number:'1.0-0'}}%
@@ -170,7 +174,7 @@
                 <p>
                     <mat-icon>tips_and_updates</mat-icon><label>We predict this point is now
                         <strong *ngIf='popupProperties.predicted_status_0y === "Yes"'>Functional</strong>
-                        <strong *ngIf='popupProperties.predicted_status_0y === "No"'>Non-Functional</strong>
+                        <strong *ngIf='popupProperties.predicted_status_0y !== "Yes"'>Non-Functional</strong>
                     </label>
                 </p>
                 <!-- <div class='prediction-explanations'>
@@ -392,8 +396,8 @@
                 <div class='legend-item'><span class='legend-color round' [style.background-color]='"#66a2ea"'></span><span>Newly Functional</span></div>
                 <div class='legend-item'><span class='legend-color round' [style.background-color]='"#185caf"'></span><span>Functional</span></div>
                 <div class='legend-item'><span class='legend-color round' [style.background-color]='"#f8b225"'></span><span>Maintenance Recommended</span></div>
-                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Repair Recommended</span></div>
-                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#ff0000"'></span><span>Newly Non-functional</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#8a0000"'></span><span>Non-Functional</span></div>
+                <div class='legend-item'><span class='legend-color round' [style.background-color]='"#ff0000"'></span><span>Newly Non-Functional</span></div>
 
                 <ng-container *ngIf='rpState.show_adm'>
                     <br/>

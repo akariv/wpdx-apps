@@ -116,8 +116,8 @@ export class RehabPrioComponent implements OnInit {
     return [
       'report_date', 'wpdx_id', 'lat_deg', 'lon_deg', 'status_id', 'status_clean', 'source', 'activity_id',
       'install_year', 'installer', 'rehab_year', 'rehabilitator', 'management_clean', 'facility_type',
-      'pay', 'status', 'orig_lnk', 'photo_lnk', 'data_lnk',
-      'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'subjective_quality', 'scheme_id', 'notes',
+      'pay_clean', 'status_clean', 'subjective_quality_clean', 'orig_lnk', 'photo_lnk', 'data_lnk',
+      'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'scheme_id', 'notes',
       'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
       'status_id', 'assigned_population', 'local_population',
       query ?
@@ -125,10 +125,7 @@ export class RehabPrioComponent implements OnInit {
         : 'rehab_priority',
       'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
       'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
-      query ?
-        'criticality as "crucialness"'
-        : 'crucialness',
-      'pressure', 'usage_cap',
+      'crucialness', 'pressure', 'usage_cap',
     ];
   }
 
@@ -198,10 +195,27 @@ export class RehabPrioComponent implements OnInit {
     window.open(this.downloadNCUrl(), '_blank');
   }
 
+  downloadRiskIndexUrl() {
+    const fields = [
+      'report_date', 'wpdx_id', 'lat_deg', 'lon_deg', 'status_id', 'status_clean', 'source', 'activity_id',
+      'install_year', 'installer', 'rehab_year', 'rehabilitator', 'management_clean', 'facility_type',
+      'pay_clean', 'status_clean', 'subjective_quality_clean', 'orig_lnk', 'photo_lnk', 'data_lnk',
+      'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'scheme_id', 'notes',
+      'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
+      'status_id', 'assigned_population', 'local_population',
+    ];
+    return this.db.download(this.queryRiskIndex(fields), 'xlsx', 'risk_index', fields);
+  }
+
+  downloadRiskIndexData(){
+    this.sendGAEvent('download-risk-index');
+    window.open(this.downloadRiskIndexUrl(), '_blank');
+  }
+
   queryUI(bounds) {
     const sql = `
       select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
-            criticality, pressure
+            crucialness, pressure
       from wpdx_enhanced
       where ${this.queryWhere(bounds)}
       order by ${this.rpState.sort_by} nulls last
