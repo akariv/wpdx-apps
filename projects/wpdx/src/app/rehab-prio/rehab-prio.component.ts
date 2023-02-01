@@ -326,7 +326,8 @@ export class RehabPrioComponent implements OnInit {
       terms.push('not (is_urban is TRUE)');
     }
     if (this.rpState.source_filter) {
-      terms.push(`source='${this.rpState.source_filter}'`);
+      const parts = this.rpState.source_filter.split(',').map(s => `'${s}'`).join(',');
+      terms.push(`source in (${parts})`);
     }
     if (this.state.props.country_name) {
       terms.push(`clean_country_name = '${this.state.props.country_name}'`);
