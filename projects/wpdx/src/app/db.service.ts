@@ -10,15 +10,22 @@ import { environment } from '../environments/environment';
 export class DbService {
 
   cache: any = {};
-  fetchAdmLevelsResult = new ReplaySubject(1);
+  private fetchAdmLevelsResult: ReplaySubject<any>;
 
   constructor(private http: HttpClient) {
-    this.fetchAdmLevels().subscribe(
-      (result) => {
-        this.fetchAdmLevelsResult.next(result);
-        this.fetchAdmLevelsResult.complete();
-      }
-    );
+  }
+
+  getFetchAdmLevelsResult() {
+    if (!this.fetchAdmLevelsResult) {
+      this.fetchAdmLevelsResult= new ReplaySubject(1);
+      this.fetchAdmLevels().subscribe(
+        (result) => {
+          this.fetchAdmLevelsResult.next(result);
+          this.fetchAdmLevelsResult.complete();
+        }
+      );
+    }
+    return this.fetchAdmLevelsResult;
   }
 
   b64EncodeUnicode(str) {
@@ -72,7 +79,7 @@ export class DbService {
       WHERE adm_level = 'best'
       ORDER BY 1,2,3,4,5
     `;
-    return forkJoin([0, 1].map((i) => this.query(query, true, i, 10000))).pipe(
+    return forkJoin([0, 1, 2, 3].map((i) => this.query(query, true, i, 10000))).pipe(
       map((results) => {
         const ret: any[] = [];
         for (const result of results) {
@@ -84,6 +91,7 @@ export class DbService {
   }
 
   fetchByAdmLevel(adm_level){
+    const level = adm_level[3];
     const query = `
       SELECT "NAME_0" as clean_country_name,
              "NAME_1" as clean_adm1, 
@@ -92,7 +100,7 @@ export class DbService {
              "NAME_4" as clean_adm4,
              bounds
       FROM adm_analysis
-      WHERE adm_level = '${adm_level}'
+      WHERE adm_level = '${adm_level}' and "NAME_${level}" is not null
       ORDER BY 1,2,3,4,5
     `;
     return forkJoin([0, 1].map((i) => this.query(query, true, i, 10000))).pipe(
