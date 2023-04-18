@@ -70,8 +70,8 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
             zoom: 2
           });
           this._map.on('style.load', () => {
-            console.log('ADDING EXTRA SOURCES', environment.suffix);
-            if (environment.suffix) {
+            if (!!environment.suffix) {
+              console.log('ADDING EXTRA SOURCES', environment.suffix);
               this.addExtraSources(this._map, environment.suffix);
             }
             for (const layer of this.interactionLayers) {
@@ -174,6 +174,11 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
       type: 'vector',
       url: 'mapbox://wpdx.wpdx_plus_latest' + suffix
     });
+    map.addSource('top_fixable_points' + suffix, {
+      type: 'vector',
+      url: 'mapbox://wpdx.tfp' + suffix
+    });
+
     for (const layer of ['adm-analysis-labels']) {
       this.setLayerSource(this._map, layer, 'adm-analysis-labels' + suffix);
     }
@@ -182,6 +187,9 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
     }
     for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap', 'nc-heatmap-clustered']) {
       this.setLayerSource(this._map, layer, 'new_constructions' + suffix);
+    }
+    for (const layer of ['tfp-points', 'tfp-labels']) {
+      this.setLayerSource(this._map, layer, 'top_fixable_points' + suffix);
     }
     for (const layer of ['rehab-priority-circles', 'rehab-priority-text', 'all-waterpoints-photos', 'all-waterpoints', 'all-waterpoints-risk',
                          'rehab-priority-highlights', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap']) {

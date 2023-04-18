@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  suffix: null,
+  suffix: '',
   endpoint: 'https://upload.waterpointdata.org',
 };
 

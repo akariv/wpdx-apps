@@ -23,7 +23,12 @@ import { ServerParamsService } from '../server-params.service';
 export class RehabPrioComponent implements OnInit {
 
   mapFilters = {
-    'all-waterpoints': []
+    'all-waterpoints': [],
+    'tfp-points': [[
+      '!=',
+      ['get', 'clustered'],
+      true
+    ]],
   };
   _popupProperties: any = {};
   circle_visible = false;
@@ -500,6 +505,15 @@ export class RehabPrioComponent implements OnInit {
         this._popupProperties.positivePE = positivePE;
         this._popupProperties.negativePE = negativePE;
         this.addCircle(value);
+        const tfpQuery = 'select * from top_fixable_points where wpdx_id=\'' + value.wpdx_id + '\'';
+        this.db.query(tfpQuery).subscribe((results) => {
+          if (results.rows && results.rows.length) {
+            const value = results.rows[0];
+            if (this._popupProperties.wpdx_id === value.wpdx_id && value.population) {
+              this._popupProperties.would_gain_access = value.population;
+            }
+          }
+        });
       }
     });
   }
@@ -711,16 +725,23 @@ export class RehabPrioComponent implements OnInit {
         'rehab-priority-popuplation-served',
         'rehab-priority-criticallity-heatmap',
       ]) {
-        const baseFilt = this.mapFilters[layer];
+        const baseFilt = this.mapFilters[layer] || [];
         const fullFilt = ['all', ...baseFilt, ...filt];
         this.rpState.map.setFilter(layer, fullFilt);
       }
       if (props.show_point_counts) {
         this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'visible');
+        this.rpState.map.setLayoutProperty('tfp-labels', 'visibility', 'none');
       } else {
         this.rpState.map.setLayoutProperty('rehab-priority-text', 'visibility', 'none');
+        this.rpState.map.setLayoutProperty('tfp-labels', 'visibility', 'visible');
       }
-      this.rpState.map.setLayoutProperty('rehab-priority-highlights', 'visibility', 'visible');
+      for (const layer of [
+        'rehab-priority-highlights',
+        'tfp-points',
+      ]) {
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
+      }
       this.update_heatmaps(props);
     } else {
       for (const layer of [
@@ -728,6 +749,8 @@ export class RehabPrioComponent implements OnInit {
         'rehab-priority-popuplation-served',
         'rehab-priority-criticallity-heatmap',
         'rehab-priority-highlights',
+        'tfp-points',
+        'tfp-labels',
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
       }
@@ -833,16 +856,16 @@ export class RehabPrioComponent implements OnInit {
 
     // New constructions
 
-    let minConstructionFilt = []
-    if (props.nc_limit !== 0){
-      minConstructionFilt =  [[
-        '>=',
-        ['get', 'population'],
-        this.minPopNC
-      ]];
-    }
     if (props.mode === 'new_constructions') {
-      const newConstFilt = {
+        let minConstructionFilt = []
+        if (props.nc_limit !== 0){
+          minConstructionFilt =  [[
+            '>=',
+            ['get', 'population'],
+            this.minPopNC
+          ]];
+        }
+        const newConstFilt = {
         'nc-points': [[
           '!=',
           ['get', 'clustered'],

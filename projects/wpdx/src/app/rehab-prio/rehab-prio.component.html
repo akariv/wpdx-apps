@@ -166,9 +166,12 @@
                 <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id === "Yes"'>
                     <mat-icon>people</mat-icon><label>Likely Current Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
                 </p>
+                <p *ngIf='popupProperties.would_gain_access > 0 && popupProperties.status_id !== "Yes"'>
+                    <mat-icon>people</mat-icon><label>Users who would Gain Access:</label>&nbsp;{{popupProperties.would_gain_access | number:'1.0-0'}} ppl
+                </p>
                 <p *ngIf='popupProperties.assigned_population > 0 && popupProperties.status_id !== "Yes"'>
-                    <mat-icon>people</mat-icon><label>Users who would gain access:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
-                </p>    
+                    <mat-icon>people</mat-icon><label>Potential Number of Users:</label>&nbsp;{{popupProperties.assigned_population | number:'1.0-0'}} ppl
+                </p>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'> 
                 <p>
