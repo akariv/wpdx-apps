@@ -15,6 +15,7 @@ export class RpStateService {
   sort_options = [
     {value: 'local_population desc', display: 'Sort by Local Pop.'},
     {value: 'assigned_population desc', display: 'Sort by Water Point Pop.'},
+    {value: 'would_gain_access desc', display: 'Sort by Pop. who Would Gain Access'},
     {value: 'crucialness desc', display: 'Sort by Crucialness'},
     {value: 'pressure desc', display: 'Sort by Pressure'},
   ];

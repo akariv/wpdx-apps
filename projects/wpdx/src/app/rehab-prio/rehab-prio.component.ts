@@ -24,11 +24,11 @@ export class RehabPrioComponent implements OnInit {
 
   mapFilters = {
     'all-waterpoints': [],
-    'tfp-labels': [
+    'tfp-labels': [[
       '>=',
       ['get', 'would_gain_access'],
       100
-    ],
+    ]],
   };
   _popupProperties: any = {};
   circle_visible = false;
@@ -124,7 +124,7 @@ export class RehabPrioComponent implements OnInit {
       'pay_clean', 'status_clean', 'subjective_quality_clean', 'orig_lnk', 'photo_lnk', 'data_lnk',
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'scheme_id', 'notes',
       'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
-      'status_id', 'assigned_population', 'local_population',
+      'status_id', 'assigned_population', 'local_population', 'would_gain_access',
       query ?
         'case when rehab_priority is null then NULL else RANK() OVER (order by rehab_priority desc nulls last) end as rehab_priority'
         : 'rehab_priority',
@@ -222,7 +222,7 @@ export class RehabPrioComponent implements OnInit {
   queryUI(bounds) {
     const sql = `
       select wpdx_id, lat_deg, lon_deg, status_id, assigned_population, local_population, water_source_clean, water_tech_clean, 
-            crucialness, pressure
+            crucialness, pressure, would_gain_access
       from wpdx_enhanced
       where ${this.queryWhere(bounds)}
       order by ${this.rpState.sort_by} nulls last
