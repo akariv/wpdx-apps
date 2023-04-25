@@ -24,11 +24,6 @@ export class RehabPrioComponent implements OnInit {
 
   mapFilters = {
     'all-waterpoints': [],
-    'tfp-points': [[
-      '!=',
-      ['get', 'clustered'],
-      true
-    ]],
   };
   _popupProperties: any = {};
   circle_visible = false;
