@@ -208,7 +208,7 @@ export class RehabPrioComponent implements OnInit {
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'scheme_id', 'notes',
       'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
       'status_id', 'assigned_population', 'local_population',
-      'prediction_status_0y', 'prediction_status_2y', 'predicted_category', 'predicted_high_risk',
+      'predicted_status_0y', 'predicted_status_2y', 'predicted_category', 'predicted_high_risk',
     ];
     const bounds = this.state.bounds;
     return this.db.download(this.queryDL(bounds, fields), 'xlsx', 'risk_index', fields);
