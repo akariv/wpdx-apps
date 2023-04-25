@@ -188,11 +188,8 @@ export class MapLayerComponent implements OnChanges, AfterViewInit {
     for (const layer of ['nc-points', 'nc-labels', 'nc-heatmap', 'nc-heatmap-clustered']) {
       this.setLayerSource(this._map, layer, 'new_constructions' + suffix);
     }
-    for (const layer of ['tfp-points', 'tfp-labels']) {
-      this.setLayerSource(this._map, layer, 'top_fixable_points' + suffix);
-    }
     for (const layer of ['rehab-priority-circles', 'rehab-priority-text', 'all-waterpoints-photos', 'all-waterpoints', 'all-waterpoints-risk',
-                         'rehab-priority-highlights', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap']) {
+                         'rehab-priority-highlights', 'rehab-priority-popuplation-served', 'rehab-priority-criticallity-heatmap', 'tfp-labels']) {
       this.setLayerSource(this._map, layer, 'datasets' + suffix);
     }
   }

@@ -24,6 +24,11 @@ export class RehabPrioComponent implements OnInit {
 
   mapFilters = {
     'all-waterpoints': [],
+    'tfp-labels': [
+      '>=',
+      ['get', 'would_gain_access'],
+      100
+    ],
   };
   _popupProperties: any = {};
   circle_visible = false;
@@ -500,15 +505,6 @@ export class RehabPrioComponent implements OnInit {
         this._popupProperties.positivePE = positivePE;
         this._popupProperties.negativePE = negativePE;
         this.addCircle(value);
-        const tfpQuery = 'select * from top_fixable_points where wpdx_id=\'' + value.wpdx_id + '\'';
-        this.db.query(tfpQuery).subscribe((results) => {
-          if (results.rows && results.rows.length) {
-            const value = results.rows[0];
-            if (this._popupProperties.wpdx_id === value.wpdx_id && value.population) {
-              this._popupProperties.would_gain_access = value.population;
-            }
-          }
-        });
       }
     });
   }
@@ -719,6 +715,7 @@ export class RehabPrioComponent implements OnInit {
         'rehab-priority-text',
         'rehab-priority-popuplation-served',
         'rehab-priority-criticallity-heatmap',
+        'tfp-labels',
       ]) {
         const baseFilt = this.mapFilters[layer] || [];
         const fullFilt = ['all', ...baseFilt, ...filt];
@@ -733,7 +730,7 @@ export class RehabPrioComponent implements OnInit {
       }
       for (const layer of [
         'rehab-priority-highlights',
-        'tfp-points',
+        // 'tfp-points',
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
       }
@@ -744,7 +741,7 @@ export class RehabPrioComponent implements OnInit {
         'rehab-priority-popuplation-served',
         'rehab-priority-criticallity-heatmap',
         'rehab-priority-highlights',
-        'tfp-points',
+        // 'tfp-points',
         'tfp-labels',
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
