@@ -61,7 +61,7 @@
                         <td>{{row.water_tech_clean || 'Unknown' }}</td>
                         <td>{{row.local_population | number:'1.0-0' }}</td>
                         <td>{{row.assigned_population | number:'1.0-0' }}</td>
-                        <td>{{row.would_gain_access | number:'1.0-0' }}</td>
+                        <td>{{(row.would_gain_access || null) | number:'1.0-0' }}</td>
                         <td>{{row.crucialness * 100 | number:'1.0-1' }}%</td>
                         <td>{{row.pressure * 100 | number:'1.0-1' }}%</td>
                     </tr>
