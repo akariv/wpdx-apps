@@ -34,6 +34,7 @@ export class RpStateService {
     this.state.defaultValue('adman_level', 'best');
     this.state.defaultValue('nc_limit', 0);
     this.state.defaultValue('show_adm', true);
+    this.state.defaultValue('sort_by', this.sort_options[2].value);
   }
 
   navigateToAdm(state) {
@@ -124,7 +125,7 @@ export class RpStateService {
   }
 
   get sort_by() {
-    return this.state.getProp('sort_by') || this.sort_options[2].value; // Sort by would gain access by default
+    return this.state.getProp('sort_by'); // Sort by would gain access by default
   }
 
   set show_point_counts(value) {
