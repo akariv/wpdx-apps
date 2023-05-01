@@ -124,7 +124,7 @@ export class RpStateService {
   }
 
   get sort_by() {
-    return this.state.getProp('sort_by') || this.sort_options[3].value; // Sort by would gain access by default
+    return this.state.getProp('sort_by') || this.sort_options[2].value; // Sort by would gain access by default
   }
 
   set show_point_counts(value) {
