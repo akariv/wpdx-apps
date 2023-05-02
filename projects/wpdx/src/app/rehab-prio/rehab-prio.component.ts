@@ -23,7 +23,6 @@ import { ServerParamsService } from '../server-params.service';
 export class RehabPrioComponent implements OnInit {
 
   mapFilters = {
-    'all-waterpoints': [],
     'tfp-labels': [[
       '>=',
       ['get', 'would_gain_access'],
@@ -749,19 +748,20 @@ export class RehabPrioComponent implements OnInit {
     }
     // Show water points
     if (props.any_waterpoints || this.rpState.mode === 'basic') {
-      this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
       for (const layer of [
-        'all-waterpoints'
+        'all-waterpoints', 
+        'all-waterpoints-risk'
       ]) {
-        const baseFilt = this.mapFilters[layer];
+        this.rpState.map.setLayoutProperty(layer, 'visibility', 'visible');
+        const baseFilt = this.mapFilters[layer] || [];
         const fullFilt = ['all', ...baseFilt, ...filt];
         this.rpState.map.setFilter(layer, fullFilt);
       }
-      this.rpState.map.setLayoutProperty('all-waterpoints', 'visibility', 'visible');
       this.rpState.map.setLayoutProperty('urban-areas', 'visibility', props.show_urban ? 'visible' : 'none');
     } else {
       for (const layer of [
-        'all-waterpoints', 'urban-areas'
+        'all-waterpoints', 'urban-areas', 
+        'all-waterpoints-risk'
       ]) {
         this.rpState.map.setLayoutProperty(layer, 'visibility', 'none');
       }
