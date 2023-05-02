@@ -154,7 +154,7 @@ export class RehabPrioComponent implements OnInit {
       'pct_rural_pop_without_basic_access',
       'pct_rural_pop_uncharted',
       'non_func_waterpoints', 'func_waterpoints', 'unknown_func_waterpoints',
-      'staleness', 'staleness_uncharted', 'average_report_age_years'
+      'staleness as staleness_score', 'staleness_uncharted as data_quality_score', 'average_report_age_years'
     ];
     return ret.map((f) => {
       if (f.indexOf(' as ') >= 0) {
