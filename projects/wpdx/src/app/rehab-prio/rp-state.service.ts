@@ -70,7 +70,7 @@ export class RpStateService {
     } else if (value === 'risk-index') {
       this.title.setTitle('WPdx Decision Support Tools - Predicted Risk Index Analysis');
     } else if (value === 'new_constructions') {
-      this.title.setTitle('WPdx Decision Support Tools - New Construction Analysis');
+      this.title.setTitle('WPdx Decision Support Tools - Service Gap Identification Analysis');
     } else {
       this.title.setTitle('WPdx Decision Support Tools');
     }

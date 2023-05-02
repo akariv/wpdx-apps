@@ -191,7 +191,7 @@ export class RehabPrioComponent implements OnInit {
     const fields = [
       'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4', 'population', 'lat_deg', 'lon_deg'
     ];
-    return this.db.download(this.queryNC(fields), 'xlsx', 'new_constructions', fields);
+    return this.db.download(this.queryNC(fields), 'xlsx', 'service-gap-identification', fields);
   }
 
   downloadNCData(){
