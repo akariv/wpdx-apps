@@ -370,7 +370,7 @@ export class RehabPrioComponent implements OnInit {
       const baseQuery = `select
         total_pop, rural_pop, unserved_pop, uncharted_pop, served_pop,
         func_waterpoints, non_func_waterpoints, staleness_uncharted, staleness_count,
-        predicted_functional_0y, predicted_functional_2y,
+        non_func_new_waterpoints, maintenance_waterpoints,
         predicted_risk_index, staleness_count as count
         from adm_analysis
         where 
@@ -800,7 +800,7 @@ export class RehabPrioComponent implements OnInit {
       this.colorRange = ['#54278f', '#756bb1', '#9e9ac8', '#cbc9e2', '#f2f0f7']; // Purples
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else if (admanView === 'risk-index' && props.show_adm) {
-      prop = ['-', ['literal', 0.5], ['/', ['get', 'predicted_risk_index'], ['literal', 2]]];
+      prop = ['get', 'predicted_risk_index'];
       this.colorRange = ['#3182bd', '#9ecae1', '#ffffff', '#fc9272', '#de2d26'];
       this.borderColor = '#ccc';
       // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds

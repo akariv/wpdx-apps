@@ -158,17 +158,6 @@ export class AdmPopupComponent implements OnChanges {
       this.getData('management_clean').subscribe(data => { this.management_data = data; });;
       this._lastPopupProperties = this.popupProperties;
     }
-    for (const section of this.admPopupSections) {
-      if (!section.predictedFunctional) {
-        section.predictedFunctional = [];
-        section.predictedNonFunctional = [];
-        const total = section.count;
-        for (const i of [0, 2]) {
-          section.predictedFunctional.push(section[`predicted_functional_${i}y`]);
-          section.predictedNonFunctional.push(total - section[`predicted_functional_${i}y`]);
-        }
-      }
-    }
   }
 
   setViz(viz){
