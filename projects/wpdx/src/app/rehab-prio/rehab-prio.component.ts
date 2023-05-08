@@ -123,13 +123,14 @@ export class RehabPrioComponent implements OnInit {
       'pay_clean', 'status_clean', 'subjective_quality_clean', 'orig_lnk', 'photo_lnk', 'data_lnk',
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'scheme_id', 'notes',
       'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
-      'status_id', 'assigned_population', 'local_population', 'would_gain_access',
+      'status_id',
+      'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
+      'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
+      'assigned_population as water_point_population', 'local_population', 'would_gain_access',
+      'crucialness', 'pressure', 'usage_cap',
       query ?
         'case when rehab_priority is null then NULL else RANK() OVER (order by rehab_priority desc nulls last) end as rehab_priority'
         : 'rehab_priority',
-      'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
-      'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
-      'crucialness', 'pressure', 'usage_cap',
     ];
   }
 
@@ -145,7 +146,7 @@ export class RehabPrioComponent implements OnInit {
 
   downloadADMFields(query=false){
     const ret = [
-      'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4',
+      'CC', 'NAME_0', 'NAME_1', 'NAME_2', 'NAME_3', 'NAME_4', 'adm_level',
       'total_pop', 'urban_pop', 'rural_pop', 'overcap_pop',
       'rural_pop_with_basic_access',
       'rural_pop_without_basic_access',
@@ -158,7 +159,11 @@ export class RehabPrioComponent implements OnInit {
     ];
     return ret.map((f) => {
       if (f.indexOf(' as ') >= 0) {
-        return f;
+        if (query) {
+          return f;
+        } else {
+          return f.split(' as ')[1];
+        }
       } else {
         if (query) {
           return `"${f}"`;
@@ -252,10 +257,12 @@ export class RehabPrioComponent implements OnInit {
   }
 
   queryDLADM(fields) {
+    const key = `coalesce("NAME_0", '') || ':' || coalesce("NAME_1", '') || ':' || coalesce("NAME_2", '') || ':' || coalesce("NAME_3", '') || ':' || coalesce("NAME_4", '')`;
     return `
+      with x as (select ${key} as _key, min(adm_level) as _adm_level from adm_analysis where ${this.queryADMWhere()} group by 1)
       select ${fields.join(',')}
-      from adm_analysis
-      where ${this.queryADMWhere()}
+      from adm_analysis    
+      inner join x on (${key}=_key and adm_level=_adm_level)
       order by 1,2,3,4,5,6 nulls last
     `;
   }
@@ -369,7 +376,8 @@ export class RehabPrioComponent implements OnInit {
     if (value.total_pop) {
       const baseQuery = `select
         total_pop, rural_pop, unserved_pop, uncharted_pop, served_pop,
-        func_waterpoints, non_func_waterpoints, staleness_uncharted, staleness_count,
+        func_waterpoints, non_func_waterpoints, unknown_func_waterpoints, 
+        staleness_uncharted, staleness_count,
         non_func_new_waterpoints, maintenance_waterpoints,
         predicted_risk_index, staleness_count as count
         from adm_analysis

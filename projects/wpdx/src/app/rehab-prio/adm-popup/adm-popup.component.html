@@ -22,7 +22,16 @@
     <ng-container *ngIf ='selectedSection >= 0 && admPopupSections[selectedSection]'>
         <h2>{{admPopupSections[selectedSection].title}}</h2>
         <p>
-            <mat-icon>water_drop</mat-icon><label>{{admPopupSections[selectedSection].staleness_count | number:'1.0-0'}} water points ({{admPopupSections[selectedSection].func_waterpoints | number:'1.0-0'}} functional)</label>
+            <mat-icon>water_drop</mat-icon><label>{{admPopupSections[selectedSection].staleness_count | number:'1.0-0'}} water points:</label>
+        </p>
+        <p class='indented'>
+            <span>- {{admPopupSections[selectedSection].func_waterpoints | number:'1.0-0'}} functional</span>
+        </p>
+        <p class='indented'>
+            <span>- {{admPopupSections[selectedSection].non_func_waterpoints | number:'1.0-0'}} non-functional</span>
+        </p>
+        <p class='indented'>
+            <span>- {{admPopupSections[selectedSection].unknown_func_waterpoints | number:'1.0-0'}} with status unknown</span>
         </p>
         <p>
             <mat-icon>people</mat-icon><label>Total Population:</label>&nbsp;{{admPopupSections[selectedSection].total_pop | number:'1.0-0'}} ppl 
@@ -31,17 +40,15 @@
             <mat-icon>people</mat-icon><label>Rural Population:</label>&nbsp;{{admPopupSections[selectedSection].rural_pop | number:'1.0-0'}} ppl<ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>, of which</ng-container>
         </p>
         <ng-container *ngIf='admPopupSections[selectedSection].rural_pop'>
-            <div class='indent'>
-                <p>
-                    <mat-icon>people</mat-icon><label>with Basic Access:</label>&nbsp;{{(admPopupSections[selectedSection].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].served_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
-                </p>
-                <p>
-                    <mat-icon>people</mat-icon><label>without Basic Access:</label>&nbsp;{{(admPopupSections[selectedSection].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].unserved_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
-                </p>
-                <p>
-                    <mat-icon>people</mat-icon><label>Uncharted areas:</label>&nbsp;{{admPopupSections[selectedSection].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].uncharted_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
-                </p>
-            </div>
+            <p class='indented'>
+                <label>- With Basic Access:</label>&nbsp;{{(admPopupSections[selectedSection].served_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].served_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
+            </p>
+            <p class='indented'>
+                <label>- Without Basic Access:</label>&nbsp;{{(admPopupSections[selectedSection].unserved_pop) | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].unserved_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
+            </p>
+            <p class='indented'>
+                <label>- Uncharted areas:</label>&nbsp;{{admPopupSections[selectedSection].uncharted_pop | number:'1.0-0'}} ppl ({{((admPopupSections[selectedSection].uncharted_pop/admPopupSections[selectedSection].rural_pop)*100).toFixed(2)+"%"}})
+            </p>
         </ng-container>
         
         <ng-container *ngIf='rpState.mode === "risk-index"'>

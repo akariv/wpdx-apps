@@ -7,29 +7,36 @@ mat-label {
     margin-top: 16px;
 }
 
-p.adm-location {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-    gap: 4px;
-    mat-icon {
-        width: auto;
-        height: auto;
+p {
+    &.indented {
+        padding-left: 32px;
+        margin: 0;
+        margin-bottom: 2px;
     }
+    &.adm-location {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        gap: 4px;
+        mat-icon {
+            width: auto;
+            height: auto;
+        }
 
-    .adm-label {
-        white-space: nowrap;
-        font-size: 15px;
-        font-weight: light;
-        color: #000;
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        cursor: pointer;
+        .adm-label {
+            white-space: nowrap;
+            font-size: 15px;
+            font-weight: light;
+            color: #000;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            cursor: pointer;
 
-        &.active {
-            text-decoration-style: solid;
-            text-decoration-thickness: 2px;
-            font-weight: 700;
+            &.active {
+                text-decoration-style: solid;
+                text-decoration-thickness: 2px;
+                font-weight: 700;
+            }
         }
     }
 }
