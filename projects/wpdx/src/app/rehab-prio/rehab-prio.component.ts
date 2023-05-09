@@ -809,7 +809,7 @@ export class RehabPrioComponent implements OnInit {
       // this.colorRange = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
     } else if (admanView === 'risk-index' && props.show_adm) {
       prop = ['get', 'predicted_risk_index'];
-      this.colorRange = ['#ffffff', '#fc9272', '#de2d26'];
+      this.colorRange = ['#ffffff', '#FDC8B8', '#fc9272', '#ED5F4C', '#de2d26'];
       this.borderColor = '#ccc';
       // this.colorRange = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15']; // Reds
     } else {
