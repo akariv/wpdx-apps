@@ -33,7 +33,7 @@ export class RpStateService {
     this.state.defaultValue('mode', 'basic');
     this.state.defaultValue('adman_level', 'best');
     this.state.defaultValue('nc_limit', 0);
-    this.state.defaultValue('show_adm', true);
+    this.state.defaultValue('show_adm', false);
     this.state.defaultValue('sort_by', this.sort_options[2].value);
   }
 
@@ -183,11 +183,25 @@ export class RpStateService {
   }
 
   set show_adman_labels(value) {
+    if (value) {
+      this.show_adm = true;
+    }
     this.state.setProp('show_adman_labels', value);
   }
 
   get show_adman_labels() {
     return this.state.getProp('show_adman_labels');
+  }
+
+  get show_adm() {
+    return this.state.getProp('show_adm');
+  }
+
+  set show_adm(value) {
+    if (!value) {
+      this.show_adman_labels = false;
+    }
+    this.state.setProp('show_adm', value);
   }
 
   set show_population_density(value) {
@@ -237,13 +251,5 @@ export class RpStateService {
 
   get show_adm_borders() {
     return this.state.getProp('show_adm_borders');
-  }
-
-  get show_adm() {
-    return this.state.getProp('show_adm');
-  }
-
-  set show_adm(value) {
-    this.state.setProp('show_adm', value);
   }
 }

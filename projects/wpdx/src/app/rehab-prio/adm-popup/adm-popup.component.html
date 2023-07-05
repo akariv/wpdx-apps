@@ -53,10 +53,10 @@
         
         <ng-container *ngIf='rpState.mode === "risk-index"'>
             <p>
-                <mat-icon>bolt</mat-icon><label>Risk Index:</label>&nbsp;{{admPopupSections[selectedSection].predicted_risk_index * 100 | number:'1.0-0'}}
+                <mat-icon>bolt</mat-icon><label>Predicted Risk Index:</label>&nbsp;{{admPopupSections[selectedSection].predicted_risk_index * 100 | number:'1.0-0'}}
             </p>
             <p>
-                <mat-icon>tips_and_updates</mat-icon><label>Predicted # of In-risk Points:</label>
+                <mat-icon>tips_and_updates</mat-icon><label>Predicted # of high risk Points:</label>
             </p>
             <ul>
                 <li><label>Newly Non-Functional:</label> {{ admPopupSections[selectedSection].non_func_new_waterpoints | number:'1.0-0'}}</li>

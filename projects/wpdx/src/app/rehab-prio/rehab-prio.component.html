@@ -310,7 +310,7 @@
                     <mat-option value="rehab-prio">Rehab Priority Analysis</mat-option>
                     <mat-option value="new_constructions">Service Gap Identification Analysis</mat-option>  
                     <mat-option value="staleness">Data Quality Analysis</mat-option>  
-                    <mat-option value="risk-index">Predicted Risk Index (BETA)</mat-option>  
+                    <mat-option value="risk-index">Status Prediction Analysis (BETA)</mat-option>  
                 </mat-select>
             </div>
             <ng-container *ngIf='rpState.mode === "basic"'>
@@ -340,6 +340,7 @@
             </ng-container>
             <ng-container *ngIf='rpState.mode === "risk-index"'>
                 <mat-slide-toggle [(ngModel)]='rpState.show_adm'>Show ADM Regions</mat-slide-toggle>
+                <mat-slide-toggle [(ngModel)]='rpState.show_adman_labels'>Show Region Titles</mat-slide-toggle>
             </ng-container>
             <ng-container *ngIf='rpState.mode === "adman" || rpState.mode === "staleness" || rpState.mode === "risk-index"'>
                 <mat-slide-toggle [(ngModel)]='rpState.any_waterpoints'>Show Water Points</mat-slide-toggle>
