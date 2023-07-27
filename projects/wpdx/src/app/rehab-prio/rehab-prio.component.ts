@@ -126,7 +126,8 @@ export class RehabPrioComponent implements OnInit {
       'status_id',
       'water_source_clean', 'water_tech_clean', 'water_source_category', 'water_tech_category',
       'distance_to_primary','distance_to_secondary','distance_to_tertiary','distance_to_city', 'is_urban',
-      'assigned_population as water_point_population', 'local_population', 'would_gain_access',
+      query ? 'assigned_population as water_point_population' : 'water_point_population', 
+      'local_population', 'would_gain_access',
       'crucialness', 'pressure', 'usage_cap',
       query ?
         'case when rehab_priority is null then NULL else RANK() OVER (order by rehab_priority desc nulls last) end as rehab_priority'
@@ -212,7 +213,7 @@ export class RehabPrioComponent implements OnInit {
       'converted', 'fecal_coliform_presence', 'fecal_coliform_value', 'scheme_id', 'notes',
       'clean_country_id', 'clean_country_name', 'clean_adm1', 'clean_adm2', 'clean_adm3', 'clean_adm4',
       'status_id', 'assigned_population', 'local_population',
-      'predicted_status_0y', 'predicted_status_2y', 'predicted_category', 'predicted_high_risk',
+      'predicted_status_0y', 'predicted_status_2y', 'predicted_category',
     ];
     const bounds = this.state.bounds;
     return this.db.download(this.queryDL(bounds, fields), 'xlsx', 'risk_index', fields);
